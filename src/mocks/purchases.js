@@ -1,0 +1,107 @@
+export const purchases = [
+  {
+    id: 1,
+    user: {
+      id: 1,
+      name: "PEDRO PEREZ",
+      email: "pedro.perez@mail.net",
+      mobile: "3105450888",
+      rol: "customer",
+      address: "carr 45 #45-89, Soledad",
+    },
+    purchaseDetails: [
+      {
+        id: 1,
+        purchaseId: "1",
+        productId: "Irish Cream - Baileys",
+        subTotal: 40000.0,
+        qty: 2,
+        unitPrice: 20000.0,
+        createdAt: "10-10-2022",
+      },
+      {
+        id: 2,
+        purchaseId: "1",
+        productId: "Cranberries - Frozen",
+        subTotal: 15000.0,
+        qty: 1,
+        unitPrice: 15000.0,
+        createdAt: "10-10-2022",
+      },
+    ],
+    total: 45000.0,
+    status: "send", //send | paid | delivered
+    createdAt: "10-10-2022",
+    updatedAt: "",
+  },
+  {
+    id: 2,
+    user: {
+      id: 1,
+      name: "PEDRO PEREZ",
+      email: "pedro.perez@mail.net",
+      mobile: "3105450888",
+      rol: "customer",
+      address: "carr 45 #45-89, Soledad",
+    },
+    purchaseDetails: [
+      {
+        id: 1,
+        purchaseId: "1",
+        productId: "Irish Cream - Baileys",
+        subTotal: 40000.0,
+        qty: 2,
+        unitPrice: 20000.0,
+        createdAt: "10-10-2022",
+      },
+      {
+        id: 2,
+        purchaseId: "1",
+        productId: "Cranberries - Frozen",
+        subTotal: 15000.0,
+        qty: 1,
+        unitPrice: 15000.0,
+        createdAt: "10-10-2022",
+      },
+    ],
+    total: 45000.0,
+    status: "send", //send | paid | delivered
+    createdAt: "10-10-2022",
+    updatedAt: "",
+  },
+  {
+    id: 3,
+    user: {
+      id: 1,
+      name: "PEDRO PEREZ",
+      email: "pedro.perez@mail.net",
+      mobile: "3105450888",
+      rol: "customer",
+      address: "carr 45 #45-89, Soledad",
+    },
+    purchaseDetails: [
+      {
+        id: 1,
+        purchaseId: "1",
+        productId: "Irish Cream - Baileys",
+        subTotal: 40000.0,
+        qty: 2,
+        unitPrice: 20000.0,
+        createdAt: "10-10-2022",
+      },
+      {
+        id: 2,
+        purchaseId: "1",
+        productId: "Cranberries - Frozen",
+        subTotal: 15000.0,
+        qty: 1,
+        unitPrice: 15000.0,
+        createdAt: "10-10-2022",
+      },
+    ],
+    total: 45000.0,
+    status: "send", //send | paid | delivered
+    createdAt: "10-10-2022",
+    updatedAt: "",
+  },
+];

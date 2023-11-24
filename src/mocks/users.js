@@ -1,0 +1,32 @@
+export const users = [
+  {
+    id: 1,
+    name: "MARIA PEREZ",
+    email: "maria.perez@mail.net",
+    mobile: "3105450889",
+    address: "crr 12 # 75-78, Los manantiales",
+    rol: "admin",
+    isActive: true,
+    createdAt: "10-10-2022",
+  },
+  {
+    id: 2,
+    name: "JUAN PEREZ",
+    email: "juan.perez@mail.net",
+    mobile: "3105450887",
+    address: "crr 12 # 75-78, Los manantiales",
+    rol: "customer",
+    isActive: true,
+    createdAt: "10-10-2022",
+  },
+  {
+    id: 3,
+    name: "PEDRO PEREZ",
+    email: "pedro.perez@mail.net",
+    mobile: "3105450888",
+    address: "crr 12 # 75-78, Los manantiales",
+    rol: "seller",
+    isActive: true,
+    createdAt: "10-10-2022",
+  },
+];

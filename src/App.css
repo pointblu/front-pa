@@ -1,0 +1,242 @@
+
+:root{
+  --color-a:rgb(255,255,255);
+  --color-b:cadetblue;
+  --color-c:grey;
+  --color-d:green;
+  --color-e:goldenrod;
+  --color-f:rgb(23,162,184);
+}
+
+
+.alphi-1{  
+  background: linear-gradient(90deg, var(--color-a)0%,var(--color-b)54%,var(--color-a)100%);  
+}
+
+.alphi-2{  
+  background: linear-gradient(90deg, var(--color-a)0%,var(--color-c)54%,var(--color-a)100%);  
+}
+
+.alphi-3{  
+  background: linear-gradient(90deg, var(--color-a)0%,var(--color-e)54%,var(--color-a)100%);  
+}
+
+.alphi-4{  
+  background: linear-gradient(90deg, var(--color-a)0%,var(--color-d)54%,var(--color-a)100%);  
+}
+
+.alphi-5{  
+  background: linear-gradient(90deg, var(--color-a)0%,var(--color-f)54%,var(--color-a)100%);  
+}
+
+.cont-a{
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+.cont-b{
+  perspective: 120px;
+  width: 500px;
+  height: 440px;
+  position: absolute;
+}
+.tarjeta{
+  width: 500px;
+  height: 640px;
+  background-color: #442222;
+  font-size: 20px;
+  position: absolute;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  animation: Carrusel 32s linear infinite;
+}
+
+@keyframes Carrusel
+{
+  from{
+    transform: rotateY(360deg) translateZ(640px);
+    z-index: 10;
+    
+  }
+  50%{
+    z-index: -10;
+  }
+
+  to{
+    transform: rotateX(0deg) translateZ(640px) rotateX(0deg);
+    z-index: 10;
+  }
+
+}
+
+#all_for_one{
+  background-image: url(../public/dist/img/publicidad/all_for_one.jpg);
+  background-size: cover;
+}
+
+#all_for_one:hover{
+  box-shadow: 0px 0px 10px yellow ;
+}
+
+
+#shigaraki{
+  background-image: url(../public/dist/img/publicidad/shigaraki.jpg);
+  background-size: cover;
+  animation-delay: -4s;
+}
+
+#shigaraki:hover{
+  box-shadow: 0px 0px 10px rgb(225, 0, 255) ;
+}
+
+#all_might{
+  background-image: url(../public/dist/img/publicidad/all_might.jpg);
+  background-size: cover;
+  animation-delay: -8s;
+}
+
+#all_might:hover{
+  box-shadow: 0px 0px 10px rgb(0, 102, 255) ;
+}
+
+
+#lemillion{
+  background-image: url(../public/dist/img/publicidad/lemillion.jpg);
+  background-size: cover;
+  animation-delay: -12s;
+}
+
+#lemillion:hover{
+  box-shadow: 0px 0px 10px rgb(0, 0, 0) ;
+}
+
+
+#Red_Riot{
+  background-image: url(../public/dist/img/publicidad/Red_Riot.jpg);
+  background-size: cover;
+  animation-delay: -16s;
+}
+
+
+#Red_Riot:hover{
+  box-shadow: 0px 0px 10px rgb(255, 0, 0) ;
+}
+
+#todoroki{
+  background-image: url(../public/dist/img/publicidad/Todoroki.jpg);
+  background-size: cover;
+  animation-delay: -20s;
+}
+
+#todoroki:hover{
+  box-shadow: 0px 0px 10px rgb(255, 166, 0) ;
+}
+
+#deku{
+  background-image: url(../public/dist/img/publicidad/Deku.jpg);
+  background-size: cover;
+  animation-delay: -24s;
+}
+
+#deku:hover{
+  box-shadow: 0px 0px 10px rgb(0, 255, 128) ;
+}
+
+#bakugo{
+  background-image: url(../public/dist/img/publicidad/Bakugo.jpg);
+  background-size: cover;
+  animation-delay: -28s;
+}
+
+#bakugo:hover{
+  box-shadow: 0px 0px 10px rgb(255, 0, 0) ;
+}
+
+.tarjeta h3{
+  color: white;
+  font-size: 48px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  margin-bottom: 70px;
+  background-color: #4b57fd;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {  
+  display: flex;
+  min-height: 5vh;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.focus-in-contract {
+	animation: focus-in-contract 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+.ctry{
+  display: flex;
+  justify-content: center;
+}
+
+video {
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0.7;
+  filter: blur(3px);
+  filter:sepia(1);
+
+}
+.video-wrapper {
+  
+  width: auto;
+  height: 75vh;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-header{
+  position: relative;  
+}
+
+@keyframes focus-in-contract {
+  0% {
+    letter-spacing: 1em;
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
