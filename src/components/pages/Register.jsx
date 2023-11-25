@@ -27,7 +27,10 @@ export const Register = () => {
         <section className="content">
           <div className="video-wrapper">
             <video playsInline autoPlay muted loop poster="">
-              <source src="dist/img/panaderia.mp4" type="video/mp4" />
+              <source
+                src={process.env.PUBLIC_URL + "dist/img/panaderia.mp4"}
+                type="video/mp4"
+              />
               Your browser does not support the video tag.
             </video>
             <div className="container-fluid ctry video-header">
@@ -35,7 +38,9 @@ export const Register = () => {
                 <div className="register-logo">
                   <Link to="/" className="brand-link">
                     <img
-                      src="dist/img/logo_punto_azul.png"
+                      src={
+                        process.env.PUBLIC_URL + "/dist/img/logo_punto_azul.png"
+                      }
                       alt="Punto Azul Logo"
                       className="brand-image-xl img-circle elevation-3"
                       style={{ opacity: ".8", maxHeight: "140px" }}

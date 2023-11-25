@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React from 'react'
+import React from "react";
 import { Link, NavLink } from "react-router-dom";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
-export const SideNav=()=> {
+export const SideNav = () => {
   return (
     <div>
       {/* Main Sidebar Container */}
@@ -11,7 +11,7 @@ export const SideNav=()=> {
         {/* Brand Logo */}
         <Link to="/" className="brand-link">
           <img
-            src="dist/img/logo_punto_azul_pq.png"
+            src={process.env.PUBLIC_URL + "/dist/img/logo_punto_azul_pq.png"}
             alt="Punto Azul Logo"
             className="brand-image img-circle elevation-3"
             style={{ opacity: ".8" }}
@@ -81,4 +81,4 @@ export const SideNav=()=> {
       </aside>
     </div>
   );
-}
+};
