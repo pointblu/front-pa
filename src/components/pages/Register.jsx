@@ -28,7 +28,7 @@ export const Register = () => {
           <div className="video-wrapper">
             <video playsInline autoPlay muted loop poster="">
               <source
-                src={process.env.PUBLIC_URL + "dist/img/panaderia.mp4"}
+                src={process.env.PUBLIC_URL + "/dist/img/panaderia.mp4"}
                 type="video/mp4"
               />
               Your browser does not support the video tag.
