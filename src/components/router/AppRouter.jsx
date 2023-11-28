@@ -13,6 +13,7 @@ import {
 } from "../pages";
 
 import { Route, Routes } from "react-router-dom";
+import Protected from "./Protected";
 
 export const AppRouter = () => {
   return (
@@ -20,9 +21,11 @@ export const AppRouter = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/usuarios" element={<Usuarios />} />
+        <Route path="/" element={<Protected />}>
+          <Route path="usuarios" element={<Usuarios />} />
+          <Route path="/ventas" element={<Ventas />} />
+        </Route>
         <Route path="/catalogo" element={<Catalogo />} />
-        <Route path="/ventas" element={<Ventas />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/registro" element={<Register />} />
         <Route path="/ingreso" element={<Login />} />

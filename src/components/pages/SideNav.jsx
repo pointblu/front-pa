@@ -7,7 +7,7 @@ export const SideNav = () => {
   return (
     <div>
       {/* Main Sidebar Container */}
-      <aside className="main-sidebar sidebar-dark-primary elevation-4">
+      <aside className="main-sidebar sidebar-dark-primary elevation-4 sidebar-collapse">
         {/* Brand Logo */}
         <Link to="/" className="brand-link">
           <img
