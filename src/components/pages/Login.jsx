@@ -1,6 +1,64 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthProvider";
+import { API_URL } from "../../auth/constants";
+
 export const Login = () => {
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorResponse, setErrorResponse] = useState("");
+  const [successResponse, setSuccessResponse] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const auth = useAuth();
+  const goTo = useNavigate();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName,
+          password,
+        }),
+      });
+      if (response.ok) {
+        console.log("Login successfully");
+        const json = await response.json();
+        if (json.accessToken) {
+          auth.saveUser(json);
+          setSuccessResponse(
+            "¡Conexión establecida! Tu inicio de sesión fue exitoso."
+          );
+          setErrorResponse(null);
+          setUserName("");
+          setPassword("");
+          goTo("/");
+        }
+      } else {
+        console.log("Something went wrong");
+        await response.json();
+        setErrorResponse(
+          "Oops, algo salio mal. Verifica tus credenciales e inténtalo nuevamente"
+        );
+        setSuccessResponse(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (auth.isAuthenticated) {
+    //todo: controlar por roles y ocultar botones en el sideNav y en el menu de login y register en el header
+    return <Navigate to="/" />;
+  }
   return (
     <div>
       {/* Content Wrapper. Contains page content */}
@@ -36,7 +94,7 @@ export const Login = () => {
             <div className="container-fluid ctry video-header">
               <div className="register-box">
                 <div className="register-logo">
-                  <Link to="/" className="brand-link">
+                  <Link to="/">
                     <img
                       src={
                         process.env.PUBLIC_URL + "/dist/img/logo_punto_azul.png"
@@ -47,36 +105,52 @@ export const Login = () => {
                     />
                   </Link>
                 </div>
+                {!!errorResponse && (
+                  <div className="errorMessage">{errorResponse}</div>
+                )}
+                {!!successResponse && (
+                  <div className="successMessage">{successResponse}</div>
+                )}
                 <div className="card">
                   <div
                     className="card-body register-card-body"
                     style={{ borderRadius: "100px" }}
                   >
-                    <form action="/" method="post">
+                    <form action="/" method="post" onSubmit={handleSubmit}>
                       <div className="input-group mb-3">
                         <input
-                          type="email"
+                          type="text"
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
                           className="form-control"
-                          placeholder="correo electrónico"
-                          name="email"
+                          placeholder="nombre clave"
+                          name="userName"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-envelope" />
+                            <span className="fas fa-user-secret" />
                           </div>
                         </div>
                       </div>
                       <div className="input-group mb-3">
                         <input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                           className="form-control"
                           placeholder="contraseña"
                           name="password"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-lock" />
+                            <i
+                              onClick={togglePasswordVisibility}
+                              style={{ cursor: "pointer" }}
+                              className={
+                                showPassword ? "fas fa-eye" : "fas fa-eye-slash"
+                              }
+                            />
                           </div>
                         </div>
                       </div>

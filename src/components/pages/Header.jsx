@@ -1,8 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
+import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../auth/AuthProvider";
 
-export const Header=()=> {
+export const Header = () => {
+  const auth = useAuth();
+  async function handleSignOut(e) {
+    e.preventDefault();
+    auth.signout();
+  }
   return (
     <div>
       {/* Navbar */}
@@ -10,12 +16,7 @@ export const Header=()=> {
         {/* Left navbar links */}
         <ul className="navbar-nav">
           <li className="nav-item">
-            <Link
-              className="nav-link"
-              data-widget="pushmenu"
-              href="#"
-              role="button"
-            >
+            <Link className="nav-link" data-widget="pushmenu" href="#">
               <i className="fas fa-bars" />
             </Link>
           </li>
@@ -26,12 +27,12 @@ export const Header=()=> {
           </li>
 
           <li className="nav-item">
-            <Link className="nav-link" to="/ingreso" role="button">
+            <Link className="nav-link" to="/ingreso">
               <i className="fas fa-sign-in-alt" />
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/registro" role="button">
+            <Link className="nav-link" to="/registro">
               <i className="fas fa-user-plus" />
             </Link>
           </li>
@@ -48,12 +49,13 @@ export const Header=()=> {
               <span className="dropdown-item dropdown-header">15 Pedidos</span>
               <div className="dropdown-divider" />
               <a href="#" className="dropdown-item">
-                <i className="fas fa-shipping-fast" /> En ruta
+                <i className="fas fa-shipping-fast" />
+                En ruta{" "}
                 <span className="float-right text-muted text-sm">3</span>
               </a>
               <div className="dropdown-divider" />
               <a href="#" className="dropdown-item">
-                <i className="fas fa-thumbs-up" /> Despachados
+                <i className="fas fa-thumbs-up" /> Despachados{" "}
                 <span className="float-right text-muted text-sm">12</span>
               </a>
               <div className="dropdown-divider" />
@@ -64,7 +66,7 @@ export const Header=()=> {
           </li>
 
           <li className="nav-item">
-            <a className="nav-link" href="#" role="button">
+            <a className="nav-link" href="#" onClick={handleSignOut}>
               <i className="fas fa-sign-out-alt" />
             </a>
           </li>
@@ -73,5 +75,4 @@ export const Header=()=> {
       {/* /.navbar */}
     </div>
   );
-}
-
+};

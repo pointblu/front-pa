@@ -1,6 +1,68 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthProvider";
+import { API_URL } from "../../auth/constants";
+
 export const Register = () => {
+  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [errorResponse, setErrorResponse] = useState("");
+  const [successResponse, setSuccessResponse] = useState("");
+
+  const auth = useAuth();
+  const goTo = useNavigate();
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          userName,
+          email,
+          phone,
+          address,
+        }),
+      });
+      if (response.ok) {
+        console.log("User register successfully");
+        const json = await response.json();
+        setSuccessResponse(json.message);
+        setErrorResponse(null);
+        // Limpiar los campos del formulario
+        setName(""); // Agrega estas líneas
+        setUserName(""); // Agrega estas líneas
+        setEmail(""); // Agrega estas líneas
+        setPhone(""); // Agrega estas líneas
+        setAddress(""); // Agrega estas líneas
+        //Redirigir al login
+        goTo("/ingreso");
+      } else {
+        console.log("Something went wrong");
+        const json = await response.json();
+        if (json.statusCode === 422) {
+          json.message = "Oops, campos sin llenar. Completa tu información";
+        }
+        setErrorResponse(json.message);
+        setSuccessResponse(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (auth.isAuthenticated) {
+    //todo: controlar por roles y ocultar botones en el sideNav y en el menu de login y register en el header
+    return <Navigate to="/" />;
+  }
   return (
     <div>
       {/* Content Wrapper. Contains page content */}
@@ -36,7 +98,7 @@ export const Register = () => {
             <div className="container-fluid ctry video-header">
               <div className="register-box">
                 <div className="register-logo">
-                  <Link to="/" className="brand-link">
+                  <Link to="/">
                     <img
                       src={
                         process.env.PUBLIC_URL + "/dist/img/logo_punto_azul.png"
@@ -47,18 +109,26 @@ export const Register = () => {
                     />
                   </Link>
                 </div>
+                {!!errorResponse && (
+                  <div className="errorMessage">{errorResponse}</div>
+                )}
+                {!!successResponse && (
+                  <div className="successMessage">{successResponse}</div>
+                )}
                 <div className="card">
                   <div
                     className="card-body register-card-body"
                     style={{ borderRadius: "100px" }}
                   >
-                    <form action="/" method="post">
+                    <form action="/" method="post" onSubmit={handleSubmit}>
                       <div className="input-group mb-3">
                         <input
                           type="text"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                           className="form-control"
                           placeholder="nombre"
-                          name="fullname"
+                          name="name"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -69,7 +139,25 @@ export const Register = () => {
                       </div>
                       <div className="input-group mb-3">
                         <input
+                          type="text"
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                          className="form-control"
+                          placeholder="nombre clave"
+                          name="userName"
+                          autoComplete="off"
+                        />
+                        <div className="input-group-append">
+                          <div className="input-group-text">
+                            <span className="fas fa-user-secret" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="input-group mb-3">
+                        <input
                           type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
                           className="form-control"
                           placeholder="correo electrónico"
                           name="email"
@@ -84,9 +172,11 @@ export const Register = () => {
                       <div className="input-group mb-3">
                         <input
                           type="text"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
                           className="form-control"
                           placeholder="número celular"
-                          name="mobile"
+                          name="phone"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
@@ -97,6 +187,8 @@ export const Register = () => {
                       <div className="input-group mb-3">
                         <input
                           type="text"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
                           className="form-control"
                           placeholder="dirección"
                           name="address"

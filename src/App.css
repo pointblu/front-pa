@@ -8,7 +8,6 @@
   --color-f:rgb(23,162,184);
 }
 
-
 .alphi-1{  
   background: linear-gradient(90deg, var(--color-a)0%,var(--color-b)54%,var(--color-a)100%);  
 }
