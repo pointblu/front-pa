@@ -1,9 +1,14 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useAuth } from "../../auth/AuthProvider";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export const SideNav = () => {
+  const auth = useAuth();
+  const userObject = JSON.parse(auth.getUser() || "{}");
+  const isAdmin =
+    auth.isAuthenticated && userObject && userObject.role === "ADMIN";
   return (
     <div>
       {/* Main Sidebar Container */}
@@ -33,16 +38,19 @@ export const SideNav = () => {
               {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
 
-              <li className="nav-item text-left">
-                <NavLink
-                  to="/usuarios"
-                  className="nav-link"
-                  style={{ backgroundColor: "grey" }}
-                >
-                  <i className="fas fa-users nav-icon" />
-                  <p>USUARIOS</p>
-                </NavLink>
-              </li>
+              {isAdmin && (
+                <li className="nav-item text-left">
+                  <NavLink
+                    to="/usuarios"
+                    className="nav-link"
+                    style={{ backgroundColor: "grey" }}
+                  >
+                    <i className="fas fa-users nav-icon" />
+                    <p>USUARIOS</p>
+                  </NavLink>
+                </li>
+              )}
+
               <li className="nav-item text-left ">
                 <NavLink
                   to="/catalogo"
@@ -53,6 +61,7 @@ export const SideNav = () => {
                   <p>CATÁLOGO</p>
                 </NavLink>
               </li>
+
               <li className="nav-item text-left">
                 <NavLink
                   to="/pedidos"
@@ -63,16 +72,18 @@ export const SideNav = () => {
                   <p>PEDIDOS</p>
                 </NavLink>
               </li>
-              <li className="nav-item text-left">
-                <NavLink
-                  to="/ventas"
-                  className="nav-link"
-                  style={{ backgroundColor: "green" }}
-                >
-                  <i className="fas fa-cash-register nav-icon" />
-                  <p>VENTAS</p>
-                </NavLink>
-              </li>
+              {isAdmin && (
+                <li className="nav-item text-left">
+                  <NavLink
+                    to="/ventas"
+                    className="nav-link"
+                    style={{ backgroundColor: "green" }}
+                  >
+                    <i className="fas fa-cash-register nav-icon" />
+                    <p>VENTAS</p>
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </nav>
           {/* /.sidebar-menu */}

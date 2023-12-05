@@ -52,6 +52,7 @@ export function AuthProvider({ children }) {
   const signout = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("userInfo");
+    window.location.reload(true);
     setAccessToken("");
     setUser(undefined);
     setIsAuthenticated(false);

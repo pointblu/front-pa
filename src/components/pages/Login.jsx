@@ -41,6 +41,7 @@ export const Login = () => {
           setUserName("");
           setPassword("");
           goTo("/");
+          window.location.reload(true);
         }
       } else {
         console.log("Something went wrong");
@@ -56,7 +57,6 @@ export const Login = () => {
   }
 
   if (auth.isAuthenticated) {
-    //todo: controlar por roles y ocultar botones en el sideNav y en el menu de login y register en el header
     return <Navigate to="/" />;
   }
   return (

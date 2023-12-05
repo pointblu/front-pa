@@ -5,6 +5,7 @@ import { useAuth } from "../../auth/AuthProvider";
 
 export const Header = () => {
   const auth = useAuth();
+
   async function handleSignOut(e) {
     e.preventDefault();
     auth.signout();
@@ -25,17 +26,21 @@ export const Header = () => {
               <i className="fas fa-home" />
             </Link>
           </li>
+          {!auth.isAuthenticated && (
+            <li className="nav-item">
+              <Link className="nav-link" to="/ingreso">
+                <i className="fas fa-sign-in-alt" />
+              </Link>
+            </li>
+          )}
 
-          <li className="nav-item">
-            <Link className="nav-link" to="/ingreso">
-              <i className="fas fa-sign-in-alt" />
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/registro">
-              <i className="fas fa-user-plus" />
-            </Link>
-          </li>
+          {!auth.isAuthenticated && (
+            <li className="nav-item">
+              <Link className="nav-link" to="/registro">
+                <i className="fas fa-user-plus" />
+              </Link>
+            </li>
+          )}
         </ul>
         {/* Right navbar links */}
         <ul className="navbar-nav ml-auto">
@@ -64,12 +69,13 @@ export const Header = () => {
               </Link>
             </div>
           </li>
-
-          <li className="nav-item">
-            <a className="nav-link" href="#" onClick={handleSignOut}>
-              <i className="fas fa-sign-out-alt" />
-            </a>
-          </li>
+          {auth.isAuthenticated && (
+            <li className="nav-item">
+              <a className="nav-link" href="#" onClick={handleSignOut}>
+                <i className="fas fa-sign-out-alt" />
+              </a>
+            </li>
+          )}
         </ul>
       </nav>
       {/* /.navbar */}

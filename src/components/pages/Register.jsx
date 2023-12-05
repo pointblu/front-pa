@@ -60,7 +60,6 @@ export const Register = () => {
   }
 
   if (auth.isAuthenticated) {
-    //todo: controlar por roles y ocultar botones en el sideNav y en el menu de login y register en el header
     return <Navigate to="/" />;
   }
   return (
