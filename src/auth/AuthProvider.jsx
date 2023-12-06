@@ -56,8 +56,6 @@ export function AuthProvider({ children }) {
     setAccessToken("");
     setUser(undefined);
     setIsAuthenticated(false);
-    window.location.href = "/";
-    window.location.reload(true);
   }, []);
 
   const contextValue = useMemo(() => {
