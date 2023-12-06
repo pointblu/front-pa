@@ -1,1 +1,1 @@
-export const API_URL = "http://65.19.191.151:3000/api";
+export const API_URL = "https://backend.puntoazulpanaderia.online/api";
