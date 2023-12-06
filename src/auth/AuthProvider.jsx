@@ -6,6 +6,7 @@ import {
   useMemo,
   useCallback,
 } from "react";
+import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 const AuthContext = createContext({
   isAuthenticated: false,
@@ -19,6 +20,7 @@ export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accessToken, setAccessToken] = useState("");
   const [user, setUser] = useState();
+  const history = useHistory();
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
@@ -52,11 +54,12 @@ export function AuthProvider({ children }) {
   const signout = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("userInfo");
-    window.location.reload(true);
     setAccessToken("");
     setUser(undefined);
     setIsAuthenticated(false);
-  }, []);
+    history.push("/");
+    window.location.reload(true);
+  }, [history]);
 
   const contextValue = useMemo(() => {
     return { isAuthenticated, getAccessToken, saveUser, getUser, signout };
