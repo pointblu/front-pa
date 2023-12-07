@@ -5,7 +5,8 @@ export const products = [
     name: "Flavouring - Orange",
     category: "panaderia",
     price: 9392.43,
-    image: "http://dummyimage.com/239x167.png/dddddd/000000",
+    image:
+      "https://res.cloudinary.com/diitm4dx7/image/upload/v1701572008/photo-1701572006677.webp",
     description:
       "Donec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.",
     stock: 248,
@@ -19,7 +20,8 @@ export const products = [
     name: "Ice Cream - Fudge Bars",
     category: "panaderia",
     price: 10785.4,
-    image: "http://dummyimage.com/102x190.png/dddddd/000000",
+    image:
+      "https://res.cloudinary.com/diitm4dx7/image/upload/v1701572008/photo-1701572006677.webp",
     description:
       "Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.",
     stock: 483,
@@ -33,7 +35,8 @@ export const products = [
     name: "Liners - Banana, Paper",
     category: "reposteria",
     price: 15618.47,
-    image: "http://dummyimage.com/156x211.png/ff4444/ffffff",
+    image:
+      "https://res.cloudinary.com/diitm4dx7/image/upload/v1701572008/photo-1701572006677.webp",
     description:
       "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
     stock: 361,
@@ -47,7 +50,8 @@ export const products = [
     name: "Chicken - Wings, Tip Off",
     category: "reposteria",
     price: 568.99,
-    image: "http://dummyimage.com/134x115.png/5fa2dd/ffffff",
+    image:
+      "https://res.cloudinary.com/diitm4dx7/image/upload/v1701569548/dsc02537-1701569547094.webp",
     description:
       "Donec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.",
     stock: 255,
