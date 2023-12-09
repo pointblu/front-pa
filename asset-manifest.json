@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.72e8b87b.css",
-    "main.js": "/static/js/main.9e944c2d.js",
+    "main.css": "/static/css/main.af815002.css",
+    "main.js": "/static/js/main.b8dd4e38.js",
     "static/media/Todoroki.jpg": "/static/media/Todoroki.09ae40eb9ed6474ddfd2.jpg",
     "static/media/shigaraki.jpg": "/static/media/shigaraki.dc2ffe900be359f03fa8.jpg",
     "static/media/Deku.jpg": "/static/media/Deku.f3050c79f796a1d09942.jpg",
@@ -11,11 +11,11 @@
     "static/media/Red_Riot.jpg": "/static/media/Red_Riot.65a9882a89ebd473580c.jpg",
     "static/media/all_might.jpg": "/static/media/all_might.6801261e902f3645a7e3.jpg",
     "index.html": "/index.html",
-    "main.72e8b87b.css.map": "/static/css/main.72e8b87b.css.map",
-    "main.9e944c2d.js.map": "/static/js/main.9e944c2d.js.map"
+    "main.af815002.css.map": "/static/css/main.af815002.css.map",
+    "main.b8dd4e38.js.map": "/static/js/main.b8dd4e38.js.map"
   },
   "entrypoints": [
-    "static/css/main.72e8b87b.css",
-    "static/js/main.9e944c2d.js"
+    "static/css/main.af815002.css",
+    "static/js/main.b8dd4e38.js"
   ]
 }
