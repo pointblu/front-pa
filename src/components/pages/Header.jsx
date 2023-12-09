@@ -2,21 +2,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
+import { Toaster, toast } from "sonner";
 
 export const Header = () => {
   const auth = useAuth();
 
   async function handleSignOut(e) {
     e.preventDefault();
-    auth.signout();
+    toast.success("¡Hasta la vista!", {
+      description: "Tu cierre de sesión fue exitoso.",
+    });
+    setTimeout(() => {
+      auth.signout();
+    }, 3000);
   }
   return (
     <div>
+      <Toaster position="top-center" richColors />
       {/* Navbar */}
       <nav className="main-header navbar navbar-expand navbar-cyan navbar-dark">
         {/* Left navbar links */}
         <ul className="navbar-nav">
-          <li className="nav-item">
+          <li className="nav-item hamburger">
             <Link className="nav-link" data-widget="pushmenu" href="#">
               <i className="fas fa-bars" />
             </Link>

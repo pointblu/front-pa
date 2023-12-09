@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { API_URL } from "../../auth/constants";
+import { Toaster, toast } from "sonner";
 
 export const Login = () => {
   const [userName, setUserName] = useState("");
@@ -34,21 +35,25 @@ export const Login = () => {
         const json = await response.json();
         if (json.accessToken) {
           auth.saveUser(json);
-          setSuccessResponse(
-            "¡Conexión establecida! Tu inicio de sesión fue exitoso."
-          );
+          toast.success("¡Conexión establecida!", {
+            description: "Tu inicio de sesión fue exitoso.",
+          });
+          setSuccessResponse("");
           setErrorResponse(null);
           setUserName("");
           setPassword("");
-          goTo("/");
-          window.location.reload(true);
+          setTimeout(() => {
+            goTo("/");
+            window.location.reload(true);
+          }, 3000);
         }
       } else {
         console.log("Something went wrong");
         await response.json();
-        setErrorResponse(
-          "Oops, algo salio mal. Verifica tus credenciales e inténtalo nuevamente"
-        );
+        toast.error("Oops, algo salio mal.", {
+          description: "Verifica tus credenciales e inténtalo nuevamente",
+        });
+        setErrorResponse();
         setSuccessResponse(null);
       }
     } catch (error) {
@@ -57,10 +62,13 @@ export const Login = () => {
   }
 
   if (auth.isAuthenticated) {
-    return <Navigate to="/" />;
+    setTimeout(() => {
+      return <Navigate to="/" />;
+    }, 3000);
   }
   return (
     <div>
+      <Toaster position="top-center" richColors />
       {/* Content Wrapper. Contains page content */}
       <div className="content-wrapper">
         {/* Content Header (Page header) */}

@@ -13,7 +13,7 @@ export const Pedidos = () => {
               <div className="col-sm-12">
                 <h1
                   className="m-0 App-header focus-in-contract alphi-3"
-                  style={{ backgroundColor: "goldenrod" }}
+                  style={{ backgroundColor: "#F1d100" }}
                 >
                   Pedidos
                 </h1>

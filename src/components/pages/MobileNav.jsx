@@ -3,16 +3,16 @@ import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
-export const SideNav = () => {
+export const MobileNav = () => {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
 
   return (
-    <div>
+    <div style={{ position: "fixed", width: "100%", bottom: 0, zIndex: 1000 }}>
       {/* Main Sidebar Container */}
-      <aside className="main-sidebar sidebar-dark-primary elevation-4 sidebar-collapse">
+      <div className="mobile-menu navbar navbar-expand navbar-dark">
         {/* Brand Logo */}
         <Link to="/" className="brand-link">
           <img
@@ -26,61 +26,52 @@ export const SideNav = () => {
           </span>
         </Link>
         {/* Sidebar */}
-        <div className="sidebar" style={{ position: "fixed" }}>
+        <div className="sidebar">
           {/* Sidebar Menu */}
           <nav className="mt-2">
-            <ul
-              className="nav nav-pills nav-sidebar flex-column"
-              data-widget="treeview"
-              role="menu"
-              data-accordion="false"
-            >
+            <ul className="nav nav-pills navbar-nav flex-row fixed justify-content-center">
               {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
 
               {isAdmin && (
-                <li className="nav-item text-left">
+                <li className="nav-item mx-2">
                   <NavLink
                     to="/usuarios"
                     className="nav-link"
                     style={{ backgroundColor: "grey" }}
                   >
                     <i className="fas fa-users nav-icon" />
-                    <p>USUARIOS</p>
                   </NavLink>
                 </li>
               )}
 
-              <li className="nav-item text-left ">
+              <li className="nav-item mx-2">
                 <NavLink
                   to="/catalogo"
                   className="nav-link"
                   style={{ backgroundColor: "cadetblue" }}
                 >
                   <i className="fas fa-boxes nav-icon" />
-                  <p>CATÁLOGO</p>
                 </NavLink>
               </li>
 
-              <li className="nav-item text-left">
+              <li className="nav-item mx-2">
                 <NavLink
                   to="/pedidos"
                   className="nav-link"
                   style={{ backgroundColor: "#C3a873" }}
                 >
                   <i className="fas fa-shopping-basket nav-icon" />
-                  <p>PEDIDOS</p>
                 </NavLink>
               </li>
               {isAdmin && (
-                <li className="nav-item text-left">
+                <li className="nav-item mx-2">
                   <NavLink
                     to="/ventas"
                     className="nav-link"
                     style={{ backgroundColor: "#91b77d" }}
                   >
                     <i className="fas fa-cash-register nav-icon" />
-                    <p>VENTAS</p>
                   </NavLink>
                 </li>
               )}
@@ -89,7 +80,7 @@ export const SideNav = () => {
           {/* /.sidebar-menu */}
         </div>
         {/* /.sidebar */}
-      </aside>
+      </div>
     </div>
   );
 };

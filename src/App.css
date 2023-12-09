@@ -3,9 +3,22 @@
   --color-a:rgb(255,255,255);
   --color-b:cadetblue;
   --color-c:grey;
-  --color-d:green;
-  --color-e:goldenrod;
+  --color-d:#91b77d;
+  --color-e:#C3a873;
   --color-f:rgb(23,162,184);
+}
+
+.sidebar-expand {
+  width: 100% !important; /* Establece el ancho del sidebar */
+}
+
+/* Ajusta el ancho de los elementos del sidebar */
+.nav-sidebar {
+  width: 80% !important; /* Establece el ancho del elemento del sidebar */
+}
+
+.navbar-nav ul .nav-item li  {
+  width: 80% !important; /* Establece el ancho del elemento del sidebar */
 }
 
 .alphi-1{  
@@ -238,4 +251,118 @@ video {
     filter: blur(0px);
     opacity: 1;
   }
+}
+
+@media (max-width: 767px) {
+  /* Estilos específicos para dispositivos móviles */
+  .main-sidebar {
+    display: none; /* Oculta el menú lateral en dispositivos móviles */
+  }
+
+  .mobile-menu {
+    display: block;    /* Muestra el menú inferior en dispositivos móviles */
+  }
+  .hamburger{
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Estilos específicos para dispositivos con pantallas más grandes */
+  .main-sidebar {
+    display: block; /* Muestra el menú lateral en dispositivos con pantallas más grandes */
+  }
+
+  .mobile-menu {
+    display: none;  /* Oculta el menú inferior en dispositivos con pantallas más grandes */
+  }
+
+  .hamburger {
+    display: inline-block; /* Asegura que el ícono de hamburguesa esté visible en dispositivos más grandes */
+  }
+}
+
+.navbar-nav li {
+  transition: transform 0.3s ease-in-out; /* Agrega una transición suave al efecto */
+  font-size: x-small;   /* Coloca los elementos en una línea horizontal */  
+}
+
+.navbar-nav li:hover {
+  transform: scale(1.05); /* Escala el elemento en un 10% al hacer hover */
+}
+
+.navbar-nav li i {
+  font-size: 1rem; /* Tamaño de fuente más pequeño para los iconos */
+}
+
+.navbar-nav{
+  overflow: hidden;
+}
+
+.scrollable{
+  overflow: hidden;
+}
+
+.scrollable li {
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.2rem;
+  border: 1px solid white;
+  user-select:none;
+}
+
+.scrollable li.active{
+  background: gray;
+}
+
+.scrollable ul{
+  overflow-x:scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.scrollable ul::-webkit-scrollbar{
+  display: none;
+}
+
+.scrollable .left-arrow,.scrollable .right-arrow{
+  font-size: 0.8rem;
+  position: absolute;
+  height: 100%;
+  width: 0.8rem;
+  top:0;
+  display: none;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.scrollable .left-arrow.active,.scrollable .right-arrow.active{
+  display: flex;
+}
+.scrollable .right-arrow{
+  right: 0;
+  background:linear-gradient(to left, dark 50%,transparent);
+  justify-content: flex-end;
+}
+
+.scrollable .left-arrow{
+  left: 0;
+  background: linear-gradient(to right,dark 50%,transparent);
+  justify-content: flex-start;
+}
+
+.scrollable .left-arrow i:hover{
+  background: #444;
+}
+
+.scrollable .right-arrow i:hover{
+  background:#444;
+}
+
+.scrollable i{
+  height: 1.2rem;
+  width: 1.2rem;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
 }

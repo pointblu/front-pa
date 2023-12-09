@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./Products.css";
-import "./Filters.css";
 import { Products } from "./Products.jsx";
 import { Filters } from "./Filters.jsx";
 import { products as initialProducts } from "./../../mocks/products";
@@ -8,15 +7,15 @@ import { useFilters } from "../../hooks/useFilters";
 
 export const Catalogo = () => {
   const [products] = useState(initialProducts);
-  const {filterProducts} = useFilters()
-  const filteredProducts = filterProducts(products)
+  const { filterProducts } = useFilters();
+  const filteredProducts = filterProducts(products);
 
   return (
     <div>
       {/* Content Wrapper. Contains page content */}
       <div className="content-wrapper">
         {/* Content Header (Page header) */}
-        <div className="content-header">
+        {/* <div className="content-header">
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-12">
@@ -28,11 +27,13 @@ export const Catalogo = () => {
                 </h1>
               </div>
             </div>
-            {/* /.row */}
+            
           </div>
-          {/* /.container-fluid */}
-        </div>
+        
+        </div>*/}
+
         {<Filters />}
+        <div style={{ margin: "6.5rem 0" }}></div>
         <section className="content products">
           <div className="container-fluid">
             <div className=" col-sm-12">

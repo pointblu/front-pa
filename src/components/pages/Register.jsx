@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { API_URL } from "../../auth/constants";
+import { Toaster, toast } from "sonner";
 
 export const Register = () => {
   const [name, setName] = useState("");
@@ -36,6 +37,7 @@ export const Register = () => {
         console.log("User register successfully");
         const json = await response.json();
         setSuccessResponse(json.message);
+        toast.success(json.message);
         setErrorResponse(null);
         // Limpiar los campos del formulario
         setName(""); // Agrega estas líneas
@@ -44,14 +46,20 @@ export const Register = () => {
         setPhone(""); // Agrega estas líneas
         setAddress(""); // Agrega estas líneas
         //Redirigir al login
-        goTo("/ingreso");
+        setTimeout(() => {
+          goTo("/ingreso");
+        }, 3000);
       } else {
         console.log("Something went wrong");
         const json = await response.json();
         if (json.statusCode === 422) {
-          json.message = "Oops, campos sin llenar. Completa tu información";
+          toast.error("Oops, campos sin llenar.", {
+            description: " Completa tu información",
+          });
+        } else {
+          toast.error(json.message);
         }
-        setErrorResponse(json.message);
+        setErrorResponse();
         setSuccessResponse(null);
       }
     } catch (error) {
@@ -60,10 +68,13 @@ export const Register = () => {
   }
 
   if (auth.isAuthenticated) {
-    return <Navigate to="/" />;
+    setTimeout(() => {
+      return <Navigate to="/" />;
+    }, 3000);
   }
   return (
     <div>
+      <Toaster position="top-center" richColors />
       {/* Content Wrapper. Contains page content */}
       <div className="content-wrapper">
         {/* Content Header (Page header) */}
