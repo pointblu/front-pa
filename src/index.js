@@ -9,7 +9,7 @@ import { AuthProvider } from "./auth/AuthProvider";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <FiltersProvider>
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <App />
       </BrowserRouter>
     </AuthProvider>

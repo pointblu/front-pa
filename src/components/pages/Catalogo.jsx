@@ -33,7 +33,6 @@ export const Catalogo = () => {
         </div>*/}
 
         {<Filters />}
-        <div style={{ margin: "6.5rem 0" }}></div>
         <section className="content products">
           <div className="container-fluid">
             <div className=" col-sm-12">

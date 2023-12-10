@@ -6,7 +6,7 @@ export function Products({ products }) {
     AOS.init({ once: false, mirror: false });
   }, []);
   return (
-    <ul>
+    <ul style={{ marginTop: "5rem" }}>
       {products.map((product) => {
         return (
           <li key={product.id} className="card" data-aos="fade-up">

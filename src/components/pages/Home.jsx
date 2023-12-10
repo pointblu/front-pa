@@ -1,4 +1,5 @@
 import React from "react";
+import "./Home.css";
 import { useAuth } from "../../auth/AuthProvider";
 export const Home = () => {
   const auth = useAuth();
@@ -6,7 +7,7 @@ export const Home = () => {
   return (
     <div>
       {/* Content Wrapper. Contains page content */}
-      <div className="content-wrapper">
+      <div className="container-fluid content-wrapper home-container">
         {/* Content Header (Page header) */}
         <div className="content-header">
           <div className="container-fluid">
@@ -26,42 +27,139 @@ export const Home = () => {
         </div>
         {/* /.content-header */}
         {/* Main content */}
-        <section className="content">
-          <div className="container-fluid cont-a">
-            <div className="row cont-b">
-              <div>
-                <div className="tarjeta" id="bakugo">
-                  <h3>TRIDENT</h3>
-                </div>
-                <div className="tarjeta" id="deku">
-                  <h3>LAY'S</h3>
-                </div>
-                <div className="tarjeta" id="todoroki">
-                  <h3>PONY</h3>
-                </div>
-                <div className="tarjeta" id="Red_Riot">
-                  <h3>NUTELLA</h3>
-                </div>
-                <div className="tarjeta" id="lemillion">
-                  <h3>TENTAZIONE</h3>
-                </div>
-                <div className="tarjeta" id="all_might">
-                  <h3>AGUA</h3>
-                </div>
-                <div className="tarjeta" id="shigaraki">
-                  <h3>GATORADE</h3>
-                </div>
-                <div className="tarjeta" id="all_for_one">
-                  <h3>CONTÉ</h3>
-                </div>
-              </div>
-            </div>
 
-            <div className="row"></div>
-            {/* /.row (main row) */}
-          </div>
-          {/* /.container-fluid */}
-        </section>
+        <div className="wrappered">
+          <ul className="container-publicity container-fluid">
+            <li className="publicity">
+              <img
+                src={
+                  "https://res.cloudinary.com/diitm4dx7/image/upload/v1702164821/kxyqnfckbz8896dartkg.jpg"
+                }
+                alt="p1"
+              />
+              <div className="info">
+                <h1>heading</h1>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Exercitationem, quis?
+                </p>
+                <button className="icon-buttoni">
+                  <i className="fas fa-shopping-basket" />
+                  <sup>
+                    <i className="fas fa-plus nav-icon" />
+                  </sup>
+                </button>
+              </div>
+            </li>
+            <li className="publicity">
+              <img
+                src={
+                  "https://res.cloudinary.com/diitm4dx7/image/upload/v1702164821/ybywjesmix5glubjlw2f.jpg"
+                }
+                alt="p1"
+              />
+              <div className="info ">
+                <h1>heading</h1>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Exercitationem, quis?
+                </p>
+                <button className="icon-buttoni">
+                  <i className="fas fa-shopping-basket" />
+                  <sup>
+                    <i className="fas fa-plus nav-icon" />
+                  </sup>
+                </button>
+              </div>
+            </li>
+            <li className="publicity">
+              <img
+                src={
+                  "https://res.cloudinary.com/diitm4dx7/image/upload/v1702164821/b86m2u25xdfsft3ltjac.jpg"
+                }
+                alt="p1"
+              />
+              <div className="info ">
+                <h1>heading</h1>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Exercitationem, quis?
+                </p>
+                <button className="icon-buttoni">
+                  <i className="fas fa-shopping-basket" />
+                  <sup>
+                    <i className="fas fa-plus nav-icon" />
+                  </sup>
+                </button>
+              </div>
+            </li>
+            <li className="publicity">
+              <img
+                src={
+                  "https://res.cloudinary.com/diitm4dx7/image/upload/v1702164821/kxyqnfckbz8896dartkg.jpg"
+                }
+                alt="p1"
+              />
+              <div className="info">
+                <h1>heading</h1>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Exercitationem, quis?
+                </p>
+                <button className="icon-buttoni">
+                  <i className="fas fa-shopping-basket" />
+                  <sup>
+                    <i className="fas fa-plus nav-icon" />
+                  </sup>
+                </button>
+              </div>
+            </li>
+            <li className="publicity">
+              <img
+                src={
+                  "https://res.cloudinary.com/diitm4dx7/image/upload/v1702164821/ybywjesmix5glubjlw2f.jpg"
+                }
+                alt="p1"
+              />
+              <div className="info ">
+                <h1>heading</h1>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Exercitationem, quis?
+                </p>
+                <button className="icon-buttoni">
+                  <i className="fas fa-shopping-basket" />
+                  <sup>
+                    <i className="fas fa-plus nav-icon" />
+                  </sup>
+                </button>
+              </div>
+            </li>
+            <li className="publicity">
+              <img
+                src={
+                  "https://res.cloudinary.com/diitm4dx7/image/upload/v1702164821/b86m2u25xdfsft3ltjac.jpg"
+                }
+                alt="p1"
+              />
+              <div className="info ">
+                <h1>heading</h1>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Exercitationem, quis?
+                </p>
+                <button className="icon-buttoni">
+                  <i className="fas fa-shopping-basket" />
+                  <sup>
+                    <i className="fas fa-plus nav-icon" />
+                  </sup>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+        {/* /.container-fluid */}
+
         {/* /.content */}
       </div>
     </div>
