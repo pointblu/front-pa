@@ -1,21 +1,13 @@
 {
   "files": {
-    "main.css": "/static/css/main.af815002.css",
-    "main.js": "/static/js/main.b8dd4e38.js",
-    "static/media/Todoroki.jpg": "/static/media/Todoroki.09ae40eb9ed6474ddfd2.jpg",
-    "static/media/shigaraki.jpg": "/static/media/shigaraki.dc2ffe900be359f03fa8.jpg",
-    "static/media/Deku.jpg": "/static/media/Deku.f3050c79f796a1d09942.jpg",
-    "static/media/Bakugo.jpg": "/static/media/Bakugo.63f74e56fbf31d4ba2ad.jpg",
-    "static/media/all_for_one.jpg": "/static/media/all_for_one.9b07e6ebb7a7c58abd0a.jpg",
-    "static/media/lemillion.jpg": "/static/media/lemillion.2f137dc29a0c164cf0a8.jpg",
-    "static/media/Red_Riot.jpg": "/static/media/Red_Riot.65a9882a89ebd473580c.jpg",
-    "static/media/all_might.jpg": "/static/media/all_might.6801261e902f3645a7e3.jpg",
+    "main.css": "/static/css/main.b1e2ac48.css",
+    "main.js": "/static/js/main.c07d36b3.js",
     "index.html": "/index.html",
-    "main.af815002.css.map": "/static/css/main.af815002.css.map",
-    "main.b8dd4e38.js.map": "/static/js/main.b8dd4e38.js.map"
+    "main.b1e2ac48.css.map": "/static/css/main.b1e2ac48.css.map",
+    "main.c07d36b3.js.map": "/static/js/main.c07d36b3.js.map"
   },
   "entrypoints": [
-    "static/css/main.af815002.css",
-    "static/js/main.b8dd4e38.js"
+    "static/css/main.b1e2ac48.css",
+    "static/js/main.c07d36b3.js"
   ]
 }
