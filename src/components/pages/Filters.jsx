@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { categories } from "../../mocks/categories.js";
 import { useFilters } from "../../hooks/useFilters.jsx";
+import { API_URL } from "../../auth/constants";
+import { fetchData } from "../../fetchData/fetchData";
+
+const apiData = fetchData(`${API_URL}/categories`);
 
 export function Filters() {
+  const categories = apiData.read();
   const { setFilters } = useFilters();
   const [activeCategory, setActiveCategory] = useState(null);
   const handleCategoryClick = (categId, categName) => {
@@ -73,7 +77,7 @@ export function Filters() {
                 >
                   TODAS
                 </li>
-                {categories.map((categ) => {
+                {categories.data.map((categ) => {
                   return (
                     <li
                       className={`mx-2 text-white ${

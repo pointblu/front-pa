@@ -1,160 +1,180 @@
 .products {
-    width: 100%;
-    display: flex;    
-    justify-content: center;
-    align-items: center;      
-  }
-  
-  .products ul {
-    display: grid;   
-    grid-auto-rows: 22rem;     
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(min(100%, 16rem),
-        1fr
-      )
-    );
-    gap: 1rem;      
-  }
-  
-  .products li {
-    display: flex;        
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    box-shadow: 0 0 10px 10px rgba(0, 0, 0, .1);
-    border-radius: 15px;
-    background: #111;
-    color: darkslategray;
-    padding: 1rem;
-  }
-  
-  .products h3 {
-    margin: 0;
-  }
-  
-  .products span {
-    font-size: 1rem;
-    opacity: .9;
-  }
-  
-  .products img {
-    border-radius: 15px;
-    width: 100%;
-    aspect-ratio: 16/9;
-    display: block;
-    object-fit: cover;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .products .card{   
-    object-fit: cover;
-    position: relative;
-    border: 1px solid #ccc;
-    overflow: hidden;    
-    transform-style: preserve-3d;
-    transition: transform all 0.5s ease-in-out;
-    background: linear-gradient( 45deg, #4891ad,#fff);    
-  }
-  
-  .products .card:hover{
-    transform: translateY(-15px) !important;
-    box-shadow: 0 12px 16px rgba(0, 0, 0, 0.2);
-  }
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .button-container {
-    position: absolute;
-    bottom: 10px; /* Ajusta según la posición vertical deseada */
-    left: 10px; /* Ajusta según la posición horizontal deseada */
-  }
+.products ul {
+  display: grid;
+  grid-auto-rows: 22rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+}
 
-  .icon-button {
-    background-color: transparent; /* Fondo transparente */
-    color: black; /* Color del texto */
-    border: 2.5px solid black; /* Borde sólido */
-    border-radius: 12px; /* Bordes redondeados */
-    padding: 5px 10px; /* Relleno interno */
-    cursor: pointer;    
-    font-size: 0.8rem;
-  }
-  
-  .icon-button:focus {
-    outline: none;
-  }
-  
-  .icon-button:hover {
-    background-color: lightgrey; /* Puedes cambiar el color al pasar el mouse */
-  }
+.products li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  background: #111;
+  color: darkslategray;
+  padding: 1rem;
+}
 
-  
-  .product-info {
-    flex-grow: 1;
-  }
-  
-  .product-info strong {
-    display: block;
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-    text-align: center;
-  }
-  
-  .price {
-    position: absolute;
-    font-size: 1.5rem;
-    right: -100%;
-    color: palegoldenrod;
-    background-color: darkblue; 
-    z-index: 1;
-    padding: 2px 100px 2px 2px; 
-    margin-bottom: 18rem;
-    margin-left: 12rem;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    transition: right 0.5s ease-in-out;
-  }
-  
-  .description {
-    text-align: center;
-    font-size: 0.6rem;
-  }
-  .card:hover .price{
-    right: 0;
-  }
+.products h3 {
+  margin: 0;
+}
 
-  .card:hover img {
-    transform: perspective(250px) rotateY(10deg);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  }
-  [data-aos] {
-    transition-duration: 0.6s; /* Ajusta la duración de la animación según tus preferencias */
-  }
+.products span {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.products img {
+  border-radius: 15px;
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: block;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.products .card {
+  object-fit: cover;
+  position: relative;
+  border: 1px solid #ccc;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform all 0.5s ease-in-out;
+  background: linear-gradient(45deg, #4891ad, #fff);
+}
+
+.products .card:hover {
+  transform: translateY(-15px) !important;
+  box-shadow: 0 12px 16px rgba(0, 0, 0, 0.2);
+}
+
+.button-container {
+  position: absolute;
+  bottom: 10px; /* Ajusta según la posición vertical deseada */
+  left: 10px; /* Ajusta según la posición horizontal deseada */
+}
+
+.icon-button {
+  background-color: transparent; /* Fondo transparente */
+  color: black; /* Color del texto */
+  border: 2.5px solid black; /* Borde sólido */
+  border-radius: 12px; /* Bordes redondeados */
+  padding: 5px 10px; /* Relleno interno */
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.icon-button:focus {
+  outline: none;
+}
+
+.icon-button:hover {
+  background-color: lightgrey; /* Puedes cambiar el color al pasar el mouse */
+}
+
+.product-info {
+  flex-grow: 1;
+}
+
+.product-info strong {
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.price {
+  position: absolute;
+  font-size: 1.5rem;
+  right: -100%;
+  color: palegoldenrod;
+  background-color: darkblue;
+  z-index: 1;
+  padding: 2px 100px 2px 2px;
+  margin-bottom: 18rem;
+  margin-left: 12rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transition: right 0.5s ease-in-out;
+}
+
+.description {
+  text-align: center;
+  font-size: 0.6rem;
+}
+.card:hover .price {
+  right: 0;
+}
+
+.card:hover img {
+  transform: perspective(250px) rotateY(10deg);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+[data-aos] {
+  transition-duration: 0.6s; /* Ajusta la duración de la animación según tus preferencias */
+}
 
 /* Media query para pantallas más pequeñas (hasta 768px) */
 @media screen and (max-width: 768px) {
-  .card { 
+  .card {
     margin: auto; /* Ajusta el ancho mínimo para dispositivos pequeños según sea necesario */
   }
 
-  .card:hover .price{
+  .card:hover .price {
     right: -5rem;
   }
-  .price{
-    right:-5rem;  
-    margin-bottom: 8.5rem;  
+  .price {
+    right: -5rem;
+    margin-bottom: 8.5rem;
     text-align: center;
     font-size: medium;
-    transition:unset;
-    transform: none;    
+    transition: unset;
+    transform: none;
   }
-  .product-info strong {    
+  .product-info strong {
     font-size: 0.8rem;
-    margin-bottom: 3rem;    
+    margin-bottom: 3rem;
   }
-  .description{
+  .description {
     display: none;
   }
-  .products ul {    
-    grid-auto-rows: 18rem;  
+  .products ul {
+    grid-auto-rows: 18rem;
   }
+}
 
+.flyer {
+  background-color: #000; /* Color de fondo del botón */
+  color: #fff; /* Color del texto del botón */
+  padding: 10px 20px; /* Espaciado interno del botón */
+  border: none; /* Eliminar el borde del botón */
+  border-radius: 50%; /* Borde circular */
+  cursor: pointer;
+  font-size: 16px;
+  position: fixed; /* Hace que el botón sea fijo */
+  top: 8rem; /* Coloca el botón en la mitad superior */
+  right: 2rem; /* Alinea el botón a la derecha */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada para un efecto de elevación */
+  transition: box-shadow 0.3s ease, transform 0.1s ease !important; /* Transiciones suaves de la sombra y la transformación */
+  z-index: 50;
+}
+
+/* Cambiar el estilo del botón al pasar el ratón sobre él */
+.flyer:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada al hacer hover */
+  transform: translateY(-1rem) scale(1.1) !important ; /* Elevación y escala al hacer hover */
+  background-color: grey; /* Cambiar el color de fondo al pasar el ratón */
+}
+
+.button-containero {
+  position: relative;
 }

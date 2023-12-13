@@ -14,6 +14,7 @@ import {
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
 import { MobileNav } from "../pages/MobileNav";
+import { CreateProduct } from "../pages/CreateProducts";
 
 export const AppRouter = () => {
   return (
@@ -24,6 +25,7 @@ export const AppRouter = () => {
         <Route path="/" element={<Protected />}>
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/ventas" element={<Ventas />} />
+          <Route path="/producto" element={<CreateProduct />} />
         </Route>
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/pedidos" element={<Pedidos />} />

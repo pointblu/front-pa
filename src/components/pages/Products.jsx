@@ -3,7 +3,11 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 export function Products({ products }) {
   useEffect(() => {
-    AOS.init({ once: false, mirror: false });
+    AOS.init({
+      once: false, // La animación solo ocurrirá una vez
+      duration: 800, // Duración de la animación en milisegundos
+      easing: "ease-out",
+    });
   }, []);
   return (
     <ul style={{ marginTop: "5rem" }}>
