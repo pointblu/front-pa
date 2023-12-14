@@ -18,6 +18,7 @@ export function Filters() {
   };
 
   useEffect(() => {
+    localStorage.setItem("categorias", JSON.stringify(categories));
     const rightArrow = document.querySelector(".scrollable .right-arrow i");
     const leftArrow = document.querySelector(".scrollable .left-arrow i");
     const tabList = document.querySelector(".scrollable ul");
@@ -48,7 +49,7 @@ export function Filters() {
         leftArrow.removeEventListener("click", handleLeftArrowClick);
       }
     };
-  }, []);
+  }, [categories]);
 
   return (
     <div>

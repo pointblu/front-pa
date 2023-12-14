@@ -6,16 +6,20 @@ import { useFilters } from "../../hooks/useFilters";
 import { API_URL } from "../../auth/constants";
 import { fetchData } from "../../fetchData/fetchData";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../../auth/AuthProvider.jsx";
 const apiData = fetchData(`${API_URL}/products`);
 
 export const Catalogo = () => {
+  const auth = useAuth();
+  const userObject = JSON.parse(auth.getUser() || "{}");
+  const isAdmin =
+    auth.isAuthenticated && userObject && userObject.role === "ADMIN";
   const products = apiData.read();
   const { filterProducts } = useFilters();
   const filteredProducts = filterProducts(products.data);
+
   const goTo = useNavigate();
   const handleButtonClick = () => {
-    // Dirige a la ruta que desees al hacer clic en el botón
     goTo("/producto");
   };
   return (
@@ -42,16 +46,17 @@ export const Catalogo = () => {
         </div>*/}
 
           {<Filters />}
-          <div className="button-containero">
-            <button
-              className="flyer"
-              data-aos="fade-left"
-              onClick={handleButtonClick}
-            >
-              <i className="fas fa-plus nav-icon" />
-            </button>
-          </div>
-
+          {isAdmin && (
+            <div className="button-containero">
+              <button
+                className="flyer"
+                data-aos="fade-left"
+                onClick={handleButtonClick}
+              >
+                <i className="fas fa-plus nav-icon" />
+              </button>
+            </div>
+          )}
           <section className="content products">
             <div className="container-fluid">
               <div className=" col-sm-12">
