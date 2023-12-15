@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../auth/constants";
 import { Toaster, toast } from "sonner";
 import { UploadImage } from "./UploadImage";
 
 export const CreateProduct = () => {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [name, setName] = useState("");
   const [cost, setCost] = useState("");
   const [price, setPrice] = useState("");
@@ -14,9 +15,20 @@ export const CreateProduct = () => {
   const [category, setCategory] = useState("");
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
-
+  const imageUrl = JSON.parse(localStorage.getItem("urlImage"));
   const categories = JSON.parse(localStorage.getItem("categorias"));
   const goTo = useNavigate();
+
+  useEffect(() => {
+    // Verifica si existe la URL de la imagen en localStorage
+    setIsButtonDisabled(!imageUrl);
+  }, [imageUrl]);
+
+  function handleCancel(e) {
+    e.preventDefault();
+    if (imageUrl) localStorage.removeItem("urlImage");
+    goTo("/catalogo");
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -26,7 +38,6 @@ export const CreateProduct = () => {
       const numericCost = parseFloat(cost);
       const numericPrice = parseFloat(price);
       const numericStock = parseInt(stock, 10);
-      const imageUrl = JSON.parse(localStorage.getItem("urlImage"));
 
       const response = await fetch(`${API_URL}/products`, {
         method: "POST",
@@ -75,7 +86,7 @@ export const CreateProduct = () => {
         } else {
           toast.error(json.message);
         }
-        setErrorResponse(JSON.stringify(json));
+        setErrorResponse("");
         setSuccessResponse(null);
       }
     } catch (error) {
@@ -105,7 +116,7 @@ export const CreateProduct = () => {
         {/* /.content-header */}
         {/* Main content */}
         <section className="content">
-          <div className="content-wrapper  ">
+          <div className="content-wrapper" style={{ marginTop: "1rem" }}>
             <div className="container-fluid ctry">
               <div className="register-box">
                 {!!errorResponse && (
@@ -114,7 +125,7 @@ export const CreateProduct = () => {
                 {!!successResponse && (
                   <div className="successMessage">{successResponse}</div>
                 )}
-                <div className="card"></div>
+
                 <div className="card ">
                   <div
                     className="card-body register-card-body"
@@ -123,15 +134,7 @@ export const CreateProduct = () => {
                       background: "cadetblue",
                     }}
                   >
-                    <UploadImage />
-                  </div>
-                  <div
-                    className="card-body register-card-body"
-                    style={{
-                      borderRadius: "0.6rem",
-                      background: "cadetblue",
-                    }}
-                  >
+                    <UploadImage setIsButtonDisabled={setIsButtonDisabled} />
                     <form action="/" method="post" onSubmit={handleSubmit}>
                       <div className="input-group mb-3">
                         <input
@@ -139,17 +142,22 @@ export const CreateProduct = () => {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           className="form-control"
-                          placeholder="Producto"
+                          placeholder="Nombre del producto"
                           name="name"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-wine-bottle" />
+                            <span className="fas fa-wine-bottle text-white" />
                           </div>
                         </div>
                       </div>
                       <div className="input-group mb-3">
+                        <div className="input-group-prepend bg-light">
+                          <span className="input-group-text">
+                            <i className="fas fa-dollar-sign"></i>
+                          </span>
+                        </div>
                         <input
                           type="number"
                           value={cost}
@@ -161,11 +169,16 @@ export const CreateProduct = () => {
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-hand-holding-usd " />
+                            <span className="fas fa-hand-holding-usd text-white" />
                           </div>
                         </div>
                       </div>
                       <div className="input-group mb-3">
+                        <div className="input-group-prepend bg-light">
+                          <span className="input-group-text">
+                            <i className="fas fa-dollar-sign"></i>
+                          </span>
+                        </div>
                         <input
                           type="number"
                           value={price}
@@ -177,7 +190,7 @@ export const CreateProduct = () => {
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-money-bill-wave" />
+                            <span className="fas fa-money-bill-wave text-white" />
                           </div>
                         </div>
                       </div>
@@ -191,11 +204,14 @@ export const CreateProduct = () => {
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-file-alt" />
+                            <span className="fas fa-file-alt text-white" />
                           </div>
                         </div>
                       </div>
                       <div className="input-group mb-3">
+                        <div className="input-group-prepend bg-light">
+                          <span className="input-group-text">Und.</span>
+                        </div>
                         <input
                           type="number"
                           value={stock}
@@ -206,7 +222,7 @@ export const CreateProduct = () => {
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-boxes" />
+                            <span className="fas fa-boxes text-white" />
                           </div>
                         </div>
                       </div>
@@ -221,7 +237,7 @@ export const CreateProduct = () => {
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-certificate" />
+                            <span className="fas fa-certificate text-white" />
                           </div>
                         </div>
                       </div>
@@ -232,7 +248,7 @@ export const CreateProduct = () => {
                           className="form-control"
                           name="category"
                         >
-                          <option value="">Selecciona una categoría</option>
+                          <option value="">Categoría</option>
                           {categories.data.map((cat) => (
                             <option key={cat.id} value={cat.id}>
                               {cat.name}
@@ -241,20 +257,33 @@ export const CreateProduct = () => {
                         </select>
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-tag" />
+                            <span className="fas fa-tag text-white" />
                           </div>
                         </div>
                       </div>
 
                       <div className="row ctry">
                         {/* /.col */}
+
                         <div className="col-4">
                           <button
                             type="submit"
-                            className="btn btn-secondary btn-block btn-xs"
+                            className="btn btn-outline-light btn-block btn-sm"
+                            disabled={isButtonDisabled}
                           >
                             Guardar
                           </button>
+                        </div>
+                        <div className="col-4">
+                          <button
+                            className="btn btn-outline-light btn-block btn-sm"
+                            onClick={handleCancel}
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                        <div className="errorMessage">
+                          {isButtonDisabled && "¡Debe cargar una imagen!"}
                         </div>
                         {/* /.col */}
                       </div>

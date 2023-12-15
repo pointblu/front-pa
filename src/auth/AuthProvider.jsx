@@ -41,6 +41,7 @@ export function AuthProvider({ children }) {
       setAccessToken(userData.accessToken);
       localStorage.setItem("token", JSON.stringify(userData.accessToken));
       localStorage.setItem("userInfo", JSON.stringify(userData.payload));
+      localStorage.setItem("isAuth", JSON.stringify(true));
       setIsAuthenticated(true);
     },
     [setAccessToken]
@@ -53,6 +54,7 @@ export function AuthProvider({ children }) {
   const signout = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("isAuth");
     setAccessToken("");
     setUser(undefined);
     setIsAuthenticated(false);

@@ -5,6 +5,7 @@ export * from "./Home";
 export * from "./Pedidos";
 export * from "./SideNav";
 export * from "./Usuarios";
+export * from "./Categorias";
 export * from "./Ventas";
 export * from "./Register";
 export * from "./Login";

@@ -1,8 +1,7 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { useAuth } from "../../auth/AuthProvider";
 
 export default function Protected() {
-  const auth = useAuth();
+  const auth = JSON.parse(localStorage.getItem("isAuth"));
 
-  return auth.isAuthenticated ? <Outlet /> : <Navigate to="/" />;
+  return auth ? <Outlet /> : <Navigate to="/" />;
 }

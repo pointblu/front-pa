@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import { API_URL } from "../../auth/constants";
+import { Toaster, toast } from "sonner";
 import "./UploadImage.css";
 
-export const UploadImage = () => {
+export const UploadImage = ({ setIsButtonDisabled }) => {
   const [image, setImage] = useState(null);
   const hiddenFileInput = useRef(null);
   const [errorResponse, setErrorResponse] = useState("");
@@ -47,7 +48,7 @@ export const UploadImage = () => {
   };
   const handleUploadButtonClick = async () => {
     if (!image || uploading) {
-      setErrorResponse("Please select an image.");
+      setErrorResponse("");
       return;
     }
     setUploading(true); // Deshabilitar el botón de carga durante la carga
@@ -71,14 +72,17 @@ export const UploadImage = () => {
       if (response.ok) {
         console.log("Image uploaded successfully");
         const json = await response.json();
-        setSuccessResponse(json.message);
+        setSuccessResponse("");
         setErrorResponse(null);
+        toast.success(json.message);
         //setImage(json.data.fileUrl); // Assuming you want to set the image after successful upload
         localStorage.setItem("urlImage", JSON.stringify(json.data.fileUrl));
+        setIsButtonDisabled(false);
       } else {
         console.log("Something went wrong");
         const json = await response.json();
-        setErrorResponse(JSON.stringify(json));
+        toast.error(json.message);
+        setErrorResponse("");
         setSuccessResponse(null);
       }
     } catch (error) {
@@ -94,23 +98,24 @@ export const UploadImage = () => {
     }
   };
   return (
-    <div>
+    <div style={{ marginBottom: "1rem" }}>
+      <Toaster position="top-center" richColors />
       <label htmlFor="image-upload-input" className="imput mb-3">
         {image ? image.name : "Seleciona una imagen"}
       </label>
-      <div onClick={handleClick} style={{ cursor: "pointer" }}>
+      <div
+        onClick={handleClick}
+        style={{ cursor: "pointer" }}
+        className="box-decoration"
+      >
         {image ? (
           <img
             src={URL.createObjectURL(image)}
             alt=""
-            className="img-display-after"
+            className="after-upload"
           />
         ) : (
-          <img
-            src={process.env.PUBLIC_URL + "/dist/img/logo_punto_azul_pq.png"}
-            alt=""
-            className="img-display-before"
-          />
+          <img src={process.env.PUBLIC_URL + "/dist/img/photo.png"} alt="" />
         )}
         {!!errorResponse && <div className="errorMessage">{errorResponse}</div>}
         {!!successResponse && (
@@ -125,13 +130,17 @@ export const UploadImage = () => {
           style={{ height: "10rem", display: "none" }}
           name="image"
         />
-        <button
-          className="btn btn-secondary btn-block btn-xs"
-          onClick={handleUploadButtonClick}
-          disabled={uploading}
-        >
-          {uploading ? "Cargando..." : "Cargar"}
-        </button>
+        <div className="row ctry">
+          <div className="col-4">
+            <button
+              className="btn btn-outline-light btn-block btn-sm"
+              onClick={handleUploadButtonClick}
+              disabled={uploading}
+            >
+              {uploading ? "Cargando..." : "Cargar"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

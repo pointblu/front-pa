@@ -3,14 +3,22 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { Toaster, toast } from "sonner";
+import { API_URL } from "../../auth/constants";
+import { fetchData } from "../../fetchData/fetchData";
+
+const apiData = fetchData(`${API_URL}/categories`);
 
 export const Header = () => {
+  const categories = apiData.read();
+  localStorage.setItem("categorias", JSON.stringify(categories));
+
   const auth = useAuth();
 
   async function handleSignOut(e) {
     e.preventDefault();
     toast.success("¡Hasta la vista!", {
       description: "Tu cierre de sesión fue exitoso.",
+      duration: 3000,
     });
     setTimeout(() => {
       auth.signout();

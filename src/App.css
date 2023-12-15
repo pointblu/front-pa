@@ -5,6 +5,7 @@
   --color-d: #91b77d;
   --color-e: #c3a873;
   --color-f: rgb(23, 162, 184);
+  --color-g: #803b3b;
 }
 
 .sidebar-expand {
@@ -65,6 +66,14 @@
   );
 }
 
+.alphi-6 {
+  background: linear-gradient(
+    90deg,
+    var(--color-a) 0%,
+    var(--color-g) 54%,
+    var(--color-a) 100%
+  );
+}
 .cont-a {
   height: 50vh;
   display: flex;
@@ -287,4 +296,12 @@ video {
   padding: 5px;
   border-radius: 50%;
   cursor: pointer;
+}
+.errorMessage {
+  color: #ac1f1f;
+  font-size: small;
+}
+
+.over-message {
+  overflow-x: visible;
 }

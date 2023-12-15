@@ -6,14 +6,20 @@
   height: 90vh;
 }
 
-.box-decoration {
-  border: 2px dashed #ccc;
-  border-radius: 5px;
-  padding: 130px 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.box-decoration img {
+  border-radius: 15px;
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: block;
+  object-fit: contain;
+  background: #fff;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.box-decoration .after-upload {
+  object-fit: cover;
 }
 
 .image-upload-label {
@@ -25,16 +31,4 @@
 
 .image-upload-input {
   display: none;
-}
-
-.img-display-before {
-  height: 200px;
-  width: 200px;
-  margin-left: 35px;
-}
-
-.img-display-after {
-  height: 200px;
-  width: 200px;
-  border-radius: 100%;
 }

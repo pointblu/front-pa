@@ -29,7 +29,10 @@ export const MobileNav = () => {
         <div className="sidebar">
           {/* Sidebar Menu */}
           <nav className="mt-2">
-            <ul className="nav nav-pills navbar-nav flex-row fixed justify-content-center">
+            <ul
+              className="nav nav-pills navbar-nav flex-row fixed justify-content-center"
+              style={{ gap: "0.2rem" }}
+            >
               {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
 
@@ -72,6 +75,17 @@ export const MobileNav = () => {
                     style={{ backgroundColor: "#91b77d" }}
                   >
                     <i className="fas fa-cash-register nav-icon" />
+                  </NavLink>
+                </li>
+              )}
+              {isAdmin && (
+                <li className="nav-item mx-2">
+                  <NavLink
+                    to="/categorias"
+                    className="nav-link"
+                    style={{ backgroundColor: "#803b3b" }}
+                  >
+                    <i className="fas fa-tag nav-icon" />
                   </NavLink>
                 </li>
               )}

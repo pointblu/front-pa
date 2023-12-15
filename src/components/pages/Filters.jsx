@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useFilters } from "../../hooks/useFilters.jsx";
-import { API_URL } from "../../auth/constants";
-import { fetchData } from "../../fetchData/fetchData";
 
-const apiData = fetchData(`${API_URL}/categories`);
-
+const categories = JSON.parse(localStorage.getItem("categorias"));
 export function Filters() {
-  const categories = apiData.read();
   const { setFilters } = useFilters();
   const [activeCategory, setActiveCategory] = useState(null);
   const handleCategoryClick = (categId, categName) => {
@@ -18,7 +14,6 @@ export function Filters() {
   };
 
   useEffect(() => {
-    localStorage.setItem("categorias", JSON.stringify(categories));
     const rightArrow = document.querySelector(".scrollable .right-arrow i");
     const leftArrow = document.querySelector(".scrollable .left-arrow i");
     const tabList = document.querySelector(".scrollable ul");
@@ -49,7 +44,7 @@ export function Filters() {
         leftArrow.removeEventListener("click", handleLeftArrowClick);
       }
     };
-  }, [categories]);
+  }, []);
 
   return (
     <div>
