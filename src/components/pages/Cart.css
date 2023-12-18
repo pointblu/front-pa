@@ -1,0 +1,40 @@
+.button-containeru {
+  position: relative;
+  z-index: 9998;
+}
+
+.button-containeri {
+  position: absolute;
+  margin-left: 10px;
+  z-index: 9998;
+}
+.basket {
+  position: fixed;
+  padding-top: 2rem;
+}
+
+.basket img {
+  aspect-ratio: 16/9;
+  width: 50%;
+}
+
+.basket li {
+  border-bottom: 1px solid #444;
+  padding-bottom: 16px;
+  list-style-type: none;
+}
+
+.basket footer {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.basket footer button {
+  padding: 8px;
+}
+
+.sub-basket {
+  margin-top: 4.5rem;
+}

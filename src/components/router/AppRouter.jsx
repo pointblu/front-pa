@@ -17,10 +17,11 @@ import Protected from "./Protected";
 import { MobileNav } from "../pages/MobileNav";
 import { CreateProduct } from "../pages/CreateProducts";
 import { CreateCategories } from "./../pages/CreateCategories";
+import { CartProvider } from "../../context/cart";
 
 export const AppRouter = () => {
   return (
-    <>
+    <CartProvider>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -39,6 +40,6 @@ export const AppRouter = () => {
       <SideNav />
       <MobileNav />
       <Footer />
-    </>
+    </CartProvider>
   );
 };

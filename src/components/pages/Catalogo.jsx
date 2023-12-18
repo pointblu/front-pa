@@ -7,6 +7,7 @@ import { API_URL } from "../../auth/constants";
 import { fetchData } from "../../fetchData/fetchData";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider.jsx";
+import { Cart } from "./Cart.jsx";
 const apiData = fetchData(`${API_URL}/products`);
 
 export const Catalogo = () => {
@@ -26,6 +27,7 @@ export const Catalogo = () => {
     <div>
       {/* Content Wrapper. Contains page content */}
       <Suspense>
+        <Cart />
         <div className="content-wrapper">
           {/* Content Header (Page header) */}
           {/* <div className="content-header">

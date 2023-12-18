@@ -52,7 +52,7 @@ export function Filters() {
         style={{
           position: "fixed",
           width: "100%",
-          zIndex: 1000,
+          zIndex: 9999,
           top: "3.5rem",
         }}
       >

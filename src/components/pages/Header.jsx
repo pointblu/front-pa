@@ -60,30 +60,13 @@ export const Header = () => {
         {/* Right navbar links */}
         <ul className="navbar-nav ml-auto">
           {/* cesta de compras */}
-          <li className="nav-item dropdown">
-            <a className="nav-link" data-toggle="dropdown" href="#">
+          <li className="nav-item">
+            <Link className="nav-link" to="/pedidos">
               <i className="fas fa-shopping-basket" />
               <span className="badge badge-warning navbar-badge">15</span>
-            </a>
-            <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <span className="dropdown-item dropdown-header">15 Pedidos</span>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item">
-                <i className="fas fa-shipping-fast" />
-                En ruta{" "}
-                <span className="float-right text-muted text-sm">3</span>
-              </a>
-              <div className="dropdown-divider" />
-              <a href="#" className="dropdown-item">
-                <i className="fas fa-thumbs-up" /> Despachados{" "}
-                <span className="float-right text-muted text-sm">12</span>
-              </a>
-              <div className="dropdown-divider" />
-              <Link to="pedidos" className="dropdown-item dropdown-footer">
-                Ver todos los pedidos
-              </Link>
-            </div>
+            </Link>
           </li>
+
           {auth.isAuthenticated && (
             <li className="nav-item">
               <a className="nav-link" href="#" onClick={handleSignOut}>

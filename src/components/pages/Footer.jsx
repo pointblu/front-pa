@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
-export const Footer=()=> {
+import React from "react";
+export const Footer = () => {
   return (
     <div>
       <div>
@@ -13,12 +13,7 @@ export const Footer=()=> {
             <b>Desarrollado por: </b> Gustavo Erazo
           </div>
         </footer>
-        {/* Control Sidebar */}
-        <aside className="control-sidebar control-sidebar-dark">
-          {/* Control sidebar content goes here */}
-        </aside>
       </div>
     </div>
   );
-}
-
+};
