@@ -10,7 +10,7 @@ export const MobileNav = () => {
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
 
   return (
-    <div style={{ position: "fixed", width: "100%", bottom: 0, zIndex: 1000 }}>
+    <div style={{ position: "fixed", width: "100%", bottom: 0, zIndex: 9998 }}>
       {/* Main Sidebar Container */}
       <div className="mobile-menu navbar navbar-expand navbar-dark">
         {/* Brand Logo */}

@@ -12,7 +12,10 @@ export const SideNav = () => {
   return (
     <div>
       {/* Main Sidebar Container */}
-      <aside className="main-sidebar sidebar-dark-primary elevation-4 sidebar-collapse">
+      <aside
+        className="main-sidebar sidebar-dark-primary elevation-4 sidebar-collapse"
+        style={{ zIndex: "9998" }}
+      >
         {/* Brand Logo */}
         <Link to="/" className="brand-link">
           <img

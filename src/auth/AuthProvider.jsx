@@ -55,6 +55,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
     localStorage.removeItem("userInfo");
     localStorage.removeItem("isAuth");
+    localStorage.removeItem("cart");
     setAccessToken("");
     setUser(undefined);
     setIsAuthenticated(false);

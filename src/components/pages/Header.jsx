@@ -28,7 +28,10 @@ export const Header = () => {
     <div>
       <Toaster position="top-center" richColors />
       {/* Navbar */}
-      <nav className="main-header navbar navbar-expand navbar-cyan navbar-dark">
+      <nav
+        className="main-header navbar navbar-expand navbar-cyan navbar-dark"
+        style={{ zIndex: 9999 }}
+      >
         {/* Left navbar links */}
         <ul className="navbar-nav">
           <li className="nav-item hamburger">

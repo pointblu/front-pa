@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useCart } from "../../hooks/useCarts";
+import { useAuth } from "../../auth/AuthProvider";
 
 export function Products({ products }) {
   useEffect(() => {
@@ -11,6 +12,11 @@ export function Products({ products }) {
       easing: "ease-out",
     });
   }, []);
+
+  const auth = useAuth();
+  const userObject = JSON.parse(auth.getUser() || "{}");
+  const isClient =
+    auth.isAuthenticated && userObject && userObject.role === "CLIENT";
 
   const { addToCart, removeFromCart, cart } = useCart();
 
@@ -39,6 +45,7 @@ export function Products({ products }) {
                     ? removeFromCart(product)
                     : addToCart(product);
                 }}
+                disabled={!isClient}
               >
                 <i className="fas fa-shopping-basket" />
                 <sup>

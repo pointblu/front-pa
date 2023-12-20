@@ -4,6 +4,7 @@ export const cartInitialState =
 export const CART_ACTION_TYPES = {
   ADD_TO_CART: "ADD_TO_CART",
   REMOVE_FROM_CART: "REMOVE_FROM_CART",
+  DECREMENT_QUANTITY: "DECREMENT_QUANTITY",
   CLEAR_CART: "CLEAR_CART",
 };
 
@@ -58,6 +59,31 @@ const UPDATE_STATE_BY_ACTION = {
 
     updateLocalStorage(newState);
     return newState;
+  },
+
+  [CART_ACTION_TYPES.DECREMENT_QUANTITY]: (state, action) => {
+    const { id } = action.payload;
+    const productInCartIndex = state.findIndex((item) => item.id === id);
+
+    if (productInCartIndex >= 0) {
+      // Reducir la cantidad en 1, asegurándote de que no sea menor que 1
+      const newQuantity = Math.max(1, state[productInCartIndex].quantity - 1);
+
+      const newState = [
+        ...state.slice(0, productInCartIndex),
+        {
+          ...state[productInCartIndex],
+          quantity: newQuantity,
+        },
+        ...state.slice(productInCartIndex + 1),
+      ];
+
+      updateLocalStorage(newState);
+      return newState;
+    }
+
+    // Si el producto no está en el carrito, no hagas nada
+    return state;
   },
   [CART_ACTION_TYPES.REMOVE_FROM_CART]: (state, action) => {
     const { id } = action.payload;
