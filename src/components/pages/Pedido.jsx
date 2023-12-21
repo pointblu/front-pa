@@ -7,7 +7,52 @@ const apiData = fetchData(`${API_URL}/purchases`);
 const columns = [
   { name: "CLIENTE", selector: (row) => row.buyer.name },
   { name: "TOTAL", selector: (row) => `$ ${row.total.toFixed(2)}` },
-  { name: "ESTADO", selector: (row) => row.status },
+  {
+    name: "ESTADO",
+    selector: (row) => row.status,
+    cell: (row) => {
+      const statusMap = {
+        REQUESTED: ["Enviado", "fas fa-share nav-icon", "goldenrod"],
+        ROUTED: ["En ruta", "fas fa-shipping-fast nav-icon", "cadetblue"],
+        DELIVERED: ["Entregado", "fas fa-check nav-icon", "green"],
+        CANCELED: ["Cancelado", "fas fa-times nav-icon", "red"],
+        // Puedes agregar más mapeos según tus necesidades
+      };
+
+      const estadoTexto = statusMap[row.status] || "Desconocido";
+
+      return (
+        <div
+          style={{
+            display: "flex",
+            gap: "2px",
+            color: estadoTexto[2],
+          }}
+        >
+          <i className={estadoTexto[1]} />
+          <p style={{ lineHeight: "1", fontSize: "0.7rem" }}>
+            <strong>{estadoTexto[0]}</strong>
+          </p>
+        </div>
+      );
+    },
+  },
+  {
+    name: "ACCIONES",
+    cell: (row) => (
+      <div>
+        <button>
+          <i className="fas fa-shipping-fast nav-icon" />
+        </button>
+        <button>
+          <i className="fas fa-check nav-icon" />
+        </button>
+        <button>
+          <i className="fas fa-times nav-icon" />
+        </button>
+      </div>
+    ),
+  },
 ];
 
 const ExpandedComponent = ({ data }) => {
@@ -93,7 +138,16 @@ const ExpandedComponent = ({ data }) => {
                 </tr>
                 <tr>
                   <td>Fecha: </td>
-                  <td className="text-right">27/10/2020</td>
+                  <td className="text-right">
+                    {Intl.DateTimeFormat("es-ES", {
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    }).format(new Date(data.createdAt))}
+                  </td>
                 </tr>
               </tbody>
             </table>

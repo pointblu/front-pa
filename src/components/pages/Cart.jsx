@@ -57,6 +57,11 @@ export function Cart() {
 
     try {
       const token = JSON.parse(localStorage.getItem("token"));
+      const cartDetails = JSON.parse(localStorage.getItem("cart"));
+      const calculatedTotal = cartDetails.reduce(
+        (acc, details) => acc + details.price * details.quantity,
+        0
+      );
       const numericTotal = parseFloat(0);
       const buyerId = JSON.parse(localStorage.getItem("userInfo"));
       const response = await fetch(`${API_URL}/purchases`, {
@@ -67,7 +72,7 @@ export function Cart() {
           "Cache-Control": "no-store",
         },
         body: JSON.stringify({
-          total: numericTotal,
+          total: parseFloat(calculatedTotal),
           status: "REQUESTED",
           buyer: buyerId.id,
         }),
@@ -79,39 +84,41 @@ export function Cart() {
         setSuccessResponse(json.message);
         localStorage.setItem("purchase", JSON.stringify(json.data.id));
         setErrorResponse(null);
-        const cartDetails = JSON.parse(localStorage.getItem("cart"));
 
-        for (const cartDetail of cartDetails) {
-          const responseDetail = await fetch(`${API_URL}/purchaseDetails`, {
-            method: "POST",
-            headers: {
-              Authorization: "Bearer " + token,
-              "Content-Type": "application/json",
-              "Cache-Control": "no-store",
-            },
-            body: JSON.stringify({
-              subtotal: numericTotal,
-              cost: numericTotal,
-              quantity: parseInt(cartDetail.quantity, 10),
-              product: cartDetail.id,
-              seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
-              detail: json.data.id,
-            }),
-          });
+        await Promise.all(
+          cartDetails.map(async (e) => {
+            const responseDetail = await fetch(`${API_URL}/purchaseDetails`, {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json",
+                "Cache-Control": "no-store",
+              },
+              body: JSON.stringify({
+                subtotal: numericTotal,
+                cost: numericTotal,
+                quantity: parseInt(e.quantity, 10),
+                product: e.id,
+                seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
+                detail: json.data.id,
+              }),
+            });
 
-          if (!responseDetail.ok) {
-            // Manejar el caso en que la creación de un Purchase Detail falle
-            const jsonDetail = await responseDetail.json();
-            toast.error(jsonDetail.message);
-            setSuccessResponse(null);
-          }
-        }
+            if (!responseDetail.ok) {
+              // Manejar el caso en que la creación de un Purchase Detail falle
+              const jsonDetail = await responseDetail.json();
+              toast.error(jsonDetail.message);
+              setSuccessResponse(null);
+            }
+            return responseDetail;
+          })
+        );
 
         clearCart();
-        setTimeout(() => {
+        setTimeout(async () => {
           goTo("/pedidos");
           window.location.reload();
-        }, 2000);
+        }, 3000);
         toast.success("¡Su pedido fue creado con éxito!");
       } else {
         console.log("Something went wrong");
