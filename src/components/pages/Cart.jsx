@@ -3,6 +3,8 @@ import { useAuth } from "../../auth/AuthProvider";
 import "./Cart.css";
 import { useCart } from "../../hooks/useCarts";
 import { API_URL } from "../../auth/constants";
+import { Toaster, toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 function CartItem({
   image,
@@ -42,11 +44,13 @@ function CartItem({
 export function Cart() {
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
+  const emptyCart = JSON.parse(localStorage.getItem("cart"));
 
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isClient =
     auth.isAuthenticated && userObject && userObject.role === "CLIENT";
+  const goTo = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -55,7 +59,6 @@ export function Cart() {
       const token = JSON.parse(localStorage.getItem("token"));
       const numericTotal = parseFloat(0);
       const buyerId = JSON.parse(localStorage.getItem("userInfo"));
-      console.log(buyerId);
       const response = await fetch(`${API_URL}/purchases`, {
         method: "POST",
         headers: {
@@ -76,10 +79,45 @@ export function Cart() {
         setSuccessResponse(json.message);
         localStorage.setItem("purchase", JSON.stringify(json.data.id));
         setErrorResponse(null);
+        const cartDetails = JSON.parse(localStorage.getItem("cart"));
+
+        for (const cartDetail of cartDetails) {
+          const responseDetail = await fetch(`${API_URL}/purchaseDetails`, {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/json",
+              "Cache-Control": "no-store",
+            },
+            body: JSON.stringify({
+              subtotal: numericTotal,
+              cost: numericTotal,
+              quantity: parseInt(cartDetail.quantity, 10),
+              product: cartDetail.id,
+              seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
+              detail: json.data.id,
+            }),
+          });
+
+          if (!responseDetail.ok) {
+            // Manejar el caso en que la creación de un Purchase Detail falle
+            const jsonDetail = await responseDetail.json();
+            toast.error(jsonDetail.message);
+            setSuccessResponse(null);
+          }
+        }
+
+        clearCart();
+        setTimeout(() => {
+          goTo("/pedidos");
+          window.location.reload();
+        }, 2000);
+        toast.success("¡Su pedido fue creado con éxito!");
       } else {
         console.log("Something went wrong");
         const json = await response.json();
         setErrorResponse(json.message);
+        toast.error(json.message);
         setSuccessResponse(null);
       }
     } catch (error) {
@@ -90,6 +128,7 @@ export function Cart() {
   const { cart, clearCart, addToCart, decrementQuantity } = useCart();
   return (
     <div>
+      <Toaster position="top-center" richColors />
       {isClient && (
         <div className="button-containeru">
           <button
@@ -110,7 +149,7 @@ export function Cart() {
             <i className="fas fa-eraser nav-icon" />
           </button>
           <form action="/" method="post" onSubmit={handleSubmit}>
-            <button className="iconio-button">
+            <button className="iconio-button" disabled={!emptyCart?.length > 0}>
               <i className="fas fa-check nav-icon" />
             </button>
           </form>

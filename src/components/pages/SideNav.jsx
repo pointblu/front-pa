@@ -14,7 +14,7 @@ export const SideNav = () => {
       {/* Main Sidebar Container */}
       <aside
         className="main-sidebar sidebar-dark-primary elevation-4 sidebar-collapse"
-        style={{ zIndex: "9998" }}
+        style={{ zIndex: "9999" }}
       >
         {/* Brand Logo */}
         <Link to="/" className="brand-link">
