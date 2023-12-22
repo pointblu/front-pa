@@ -1,10 +1,11 @@
 import DataTable from "react-data-table-component";
 import { API_URL } from "../../auth/constants";
 import { fetchData } from "../../fetchData/fetchData";
+import { useAuth } from "../../auth/AuthProvider";
 
 const apiData = fetchData(`${API_URL}/purchases`);
 
-const columns = [
+const columns = (isAdmin) => [
   { name: "CLIENTE", selector: (row) => row.buyer.name },
   { name: "TOTAL", selector: (row) => `$ ${row.total.toFixed(2)}` },
   {
@@ -16,7 +17,6 @@ const columns = [
         ROUTED: ["En ruta", "fas fa-shipping-fast nav-icon", "cadetblue"],
         DELIVERED: ["Entregado", "fas fa-check nav-icon", "green"],
         CANCELED: ["Cancelado", "fas fa-times nav-icon", "red"],
-        // Puedes agregar más mapeos según tus necesidades
       };
 
       const estadoTexto = statusMap[row.status] || "Desconocido";
@@ -26,6 +26,7 @@ const columns = [
           style={{
             display: "flex",
             gap: "2px",
+            flexDirection: "row",
             color: estadoTexto[2],
           }}
         >
@@ -40,16 +41,24 @@ const columns = [
   {
     name: "ACCIONES",
     cell: (row) => (
-      <div>
-        <button>
-          <i className="fas fa-shipping-fast nav-icon" />
-        </button>
-        <button>
-          <i className="fas fa-check nav-icon" />
-        </button>
-        <button>
-          <i className="fas fa-times nav-icon" />
-        </button>
+      <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
+        {isAdmin && row.status === "REQUESTED" ? (
+          <button className="ican-button act-rut">
+            <i className="fas fa-shipping-fast nav-icon" />
+          </button>
+        ) : null}
+
+        {row.status === "ROUTED" ? (
+          <button className="ican-button act-chk">
+            <i className="fas fa-check nav-icon" />
+          </button>
+        ) : null}
+
+        {row.status === "REQUESTED" ? (
+          <button className="ican-button act-ccl">
+            <i className="fas fa-times nav-icon" />
+          </button>
+        ) : null}
       </div>
     ),
   },
@@ -68,46 +77,50 @@ const ExpandedComponent = ({ data }) => {
         <div className="main-body separator">
           <div className="info-item-list">
             <table className="table1" style={{ width: "100%" }}>
-              <tr>
-                <td>
-                  <strong>Prod.</strong>
-                </td>
-                <td className="text-right">
-                  <strong>Cant.</strong>
-                </td>
-                <td className="text-right">
-                  <strong>P. unid.</strong>
-                </td>
-                <td className="text-right">
-                  <strong>Sub-tot.</strong>
-                </td>
-              </tr>
-              {data.prDetail.map((purchase) => (
-                <tr key={purchase.id}>
-                  <td>{purchase.product.name}</td>
-                  <td className="text-right">{purchase.quantity}</td>
-                  <td className="text-right">
-                    $ {purchase.product.price.toFixed(2)}
+              <thead>
+                <tr>
+                  <td>
+                    <strong>Prod.</strong>
                   </td>
                   <td className="text-right">
-                    $ {purchase.subtotal.toFixed(2)}
+                    <strong>Cant.</strong>
+                  </td>
+                  <td className="text-right">
+                    <strong>P. unid.</strong>
+                  </td>
+                  <td className="text-right">
+                    <strong>Sub-tot.</strong>
                   </td>
                 </tr>
-              ))}
-              <tr className="dark-background sub-total">
-                <td className="pad-l-5">SUB TOTAL</td>
-                <td className="text-right " colSpan={3}>
-                  $ {data.total.toFixed(2)}
-                </td>
-              </tr>
-              <tr className="total">
-                <td>TOTAL A PAGAR</td>
-                <td></td>
-                <td></td>
-                <td className="info-total-price text-right">
-                  $ {data.total.toFixed(2)}
-                </td>
-              </tr>
+              </thead>
+              <tbody>
+                {data.prDetail.map((purchase) => (
+                  <tr key={purchase.id}>
+                    <td>{purchase.product.name}</td>
+                    <td className="text-right">{purchase.quantity}</td>
+                    <td className="text-right">
+                      $ {purchase.product.price.toFixed(2)}
+                    </td>
+                    <td className="text-right">
+                      $ {purchase.subtotal.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="dark-background sub-total">
+                  <td className="pad-l-5">SUB TOTAL</td>
+                  <td className="text-right " colSpan={3}>
+                    $ {data.total.toFixed(2)}
+                  </td>
+                </tr>
+                <tr className="total">
+                  <td>TOTAL A PAGAR</td>
+                  <td></td>
+                  <td></td>
+                  <td className="info-total-price text-right">
+                    $ {data.total.toFixed(2)}
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -162,11 +175,16 @@ const ExpandedComponent = ({ data }) => {
 };
 
 export function Pedido() {
+  const auth = useAuth();
+  const userObject = JSON.parse(auth.getUser() || "{}");
+  const isAdmin =
+    auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+
   const datum = apiData.read();
   return (
     <div>
       <DataTable
-        columns={columns}
+        columns={columns(isAdmin)}
         data={datum.data}
         pagination
         expandableRows

@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
+import { Toaster, toast } from "sonner";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export const MobileNav = () => {
@@ -8,9 +9,18 @@ export const MobileNav = () => {
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
-
+  const goTo = useNavigate();
+  function handleNoAuth(e) {
+    e.preventDefault();
+    toast.info("¡Bienvenido a Punto Azul!", {
+      description:
+        "Regístrate para disfrutar de nuestras delicias recién horneadas. ¡Tus pedidos te esperan!",
+    });
+    goTo("/registro");
+  }
   return (
     <div style={{ position: "fixed", width: "100%", bottom: 0, zIndex: 9998 }}>
+      <Toaster position="top-center" richColors />
       {/* Main Sidebar Container */}
       <div className="mobile-menu navbar navbar-expand navbar-dark">
         {/* Brand Logo */}
@@ -30,14 +40,28 @@ export const MobileNav = () => {
           {/* Sidebar Menu */}
           <nav className="mt-2">
             <ul
-              className="nav nav-pills navbar-nav flex-row fixed justify-content-center"
-              style={{ gap: "0.2rem" }}
+              className="nav nav-pills navbar-nav fixed"
+              style={{
+                gap: "0.2rem",
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "nowrap",
+                overflowX: "scroll",
+                fontSize: "0.6rem",
+              }}
             >
               {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
 
               {isAdmin && (
-                <li className="nav-item mx-2">
+                <li
+                  className="nav-item mx-2"
+                  style={{
+                    minWidth: "45px",
+                    position: "relative",
+                    zIndex: 1100,
+                  }}
+                >
                   <NavLink
                     to="/usuarios"
                     className="nav-link"
@@ -48,7 +72,10 @@ export const MobileNav = () => {
                 </li>
               )}
 
-              <li className="nav-item mx-2">
+              <li
+                className="nav-item mx-2"
+                style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
+              >
                 <NavLink
                   to="/catalogo"
                   className="nav-link"
@@ -58,17 +85,28 @@ export const MobileNav = () => {
                 </NavLink>
               </li>
 
-              <li className="nav-item mx-2">
+              <li
+                className="nav-item mx-2"
+                style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
+              >
                 <NavLink
                   to="/pedidos"
                   className="nav-link"
                   style={{ backgroundColor: "#C3a873" }}
+                  onClick={!auth.isAuthenticated && handleNoAuth}
                 >
                   <i className="fas fa-shopping-basket nav-icon" />
                 </NavLink>
               </li>
               {isAdmin && (
-                <li className="nav-item mx-2">
+                <li
+                  className="nav-item mx-2"
+                  style={{
+                    minWidth: "45px",
+                    position: "relative",
+                    zIndex: 9999,
+                  }}
+                >
                   <NavLink
                     to="/ventas"
                     className="nav-link"
@@ -79,7 +117,14 @@ export const MobileNav = () => {
                 </li>
               )}
               {isAdmin && (
-                <li className="nav-item mx-2">
+                <li
+                  className="nav-item mx-2"
+                  style={{
+                    minWidth: "45px",
+                    position: "relative",
+                    zIndex: 9999,
+                  }}
+                >
                   <NavLink
                     to="/categorias"
                     className="nav-link"

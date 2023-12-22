@@ -5,10 +5,12 @@ import { useAuth } from "../../auth/AuthProvider";
 import { Toaster, toast } from "sonner";
 import { API_URL } from "../../auth/constants";
 import { fetchData } from "../../fetchData/fetchData";
+import { useNavigate } from "react-router-dom";
 
 const apiData = fetchData(`${API_URL}/categories`);
 
 export const Header = () => {
+  const goTo = useNavigate();
   const categories = apiData.read();
   localStorage.setItem("categorias", JSON.stringify(categories));
 
@@ -22,6 +24,7 @@ export const Header = () => {
     });
     setTimeout(() => {
       auth.signout();
+      goTo("/");
     }, 3000);
   }
   return (
@@ -63,16 +66,17 @@ export const Header = () => {
         {/* Right navbar links */}
         <ul className="navbar-nav ml-auto">
           {/* cesta de compras */}
-          <li className="nav-item">
-            <Link className="nav-link" to="/pedidos">
-              <i className="fas fa-shopping-basket" />
-              <span className="badge badge-warning navbar-badge">15</span>
-            </Link>
-          </li>
-
           {auth.isAuthenticated && (
             <li className="nav-item">
-              <a className="nav-link" href="#" onClick={handleSignOut}>
+              <Link className="nav-link" to="/pedidos">
+                <i className="fas fa-shopping-basket" />
+                <span className="badge badge-warning navbar-badge">15</span>
+              </Link>
+            </li>
+          )}
+          {auth.isAuthenticated && (
+            <li className="nav-item">
+              <a className="nav-link" onClick={handleSignOut}>
                 <i className="fas fa-sign-out-alt" />
               </a>
             </li>

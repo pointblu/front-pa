@@ -101,3 +101,36 @@ td {
   border-bottom: 2px dotted #000; /* 1px de ancho, punteado, color negro */
   width: 100%;
 }
+
+.ican-button {
+  background-color: transparent; /* Fondo transparente */
+  color: black; /* Color del texto */
+  border: 2.5px solid black; /* Borde sólido */
+  border-radius: 12px; /* Bordes redondeados */
+  padding: 5px 10px; /* Relleno interno */
+  cursor: pointer;
+  font-size: 0.8rem;
+  max-width: 2rem;
+}
+.act-chk {
+  color: green;
+  border-color: green;
+}
+
+.act-ccl {
+  color: red;
+  border-color: red;
+}
+
+.act-rut {
+  color: cadetblue;
+  border-color: cadetblue;
+}
+
+.ican-button:focus {
+  outline: none;
+}
+
+.ican-button:hover {
+  background-color: lightgrey; /* Puedes cambiar el color al pasar el mouse */
+}

@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
+import { Toaster, toast } from "sonner";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export const SideNav = () => {
@@ -8,10 +9,20 @@ export const SideNav = () => {
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+  const goTo = useNavigate();
+  function handleNoAuth(e) {
+    e.preventDefault();
+    toast.info("¡Bienvenido a Punto Azul!", {
+      description:
+        "Regístrate para disfrutar de nuestras delicias recién horneadas. ¡Tus pedidos te esperan!",
+    });
+    goTo("/registro");
+  }
 
   return (
     <div>
       {/* Main Sidebar Container */}
+      <Toaster position="top-center" richColors />
       <aside
         className="main-sidebar sidebar-dark-primary elevation-4 sidebar-collapse"
         style={{ zIndex: "9999" }}
@@ -70,6 +81,7 @@ export const SideNav = () => {
                   to="/pedidos"
                   className="nav-link"
                   style={{ backgroundColor: "#C3a873" }}
+                  onClick={!auth.isAuthenticated && handleNoAuth}
                 >
                   <i className="fas fa-shopping-basket nav-icon" />
                   <p>PEDIDOS</p>
