@@ -1,13 +1,22 @@
 import DataTable from "react-data-table-component";
 import { API_URL } from "../../auth/constants";
-import { fetchData } from "../../fetchData/fetchData";
 import { useAuth } from "../../auth/AuthProvider";
+import { useEffect, useId, useState } from "react";
 
-const apiData = fetchData(`${API_URL}/purchases`);
+const token = JSON.parse(localStorage.getItem("token"));
 
 const columns = (isAdmin) => [
-  { name: "CLIENTE", selector: (row) => row.buyer.name },
-  { name: "TOTAL", selector: (row) => `$ ${row.total.toFixed(2)}` },
+  {
+    name: "CLIENTE",
+    selector: (row) => row.buyer.name,
+    minWidth: "120px",
+    sortable: true,
+  },
+  {
+    name: "TOTAL",
+    selector: (row) => `$ ${row.total.toFixed(2)}`,
+    minWidth: "120px",
+  },
   {
     name: "ESTADO",
     selector: (row) => row.status,
@@ -37,6 +46,9 @@ const columns = (isAdmin) => [
         </div>
       );
     },
+    minWidth: "110px",
+    sortable: true,
+    filter: true,
   },
   {
     name: "ACCIONES",
@@ -174,15 +186,90 @@ const ExpandedComponent = ({ data }) => {
   );
 };
 
+const dataFilter = [
+  { id: 1, value: "", name: "Todos" },
+  { id: 2, value: "REQUESTED", name: "Enviado" },
+  { id: 3, value: "ROUTED", name: "En ruta" },
+  { id: 4, value: "DELIVERED", name: "Entregado" },
+  { id: 5, value: "CANCELED", name: "Cancelado" },
+];
+
 export function Pedido() {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+  const [datum, setDatum] = useState([]);
+  const [statum, setStatum] = useState("");
+  const [filter, dateFilterStart, dateFilterEnd] = useId();
 
-  const datum = apiData.read();
+  useEffect(() => {
+    const fetchDataAsync = async () => {
+      try {
+        const response = await fetch(`${API_URL}/purchases?status=${statum}`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+            "Cache-Control": "no-store",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const apiData = await response.json();
+        setDatum(apiData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchDataAsync();
+  }, [statum]);
+
+  const handleChangeStatus = (event) => {
+    setStatum(event.target.value);
+  };
+
   return (
     <div>
+      <pre
+        className=""
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "2rem",
+          justifyItems: "self-start",
+        }}
+      >
+        <div>
+          <label htmlFor={filter} style={{ marginRight: "1rem" }}>
+            ESTADO
+          </label>
+          <select id={filter} onChange={handleChangeStatus}>
+            {dataFilter.map((stat) => {
+              return (
+                <option key={stat.id} value={stat.value}>
+                  {stat.name.toUpperCase()}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div>
+          <label htmlFor={dateFilterStart} style={{ marginRight: "1rem" }}>
+            desde
+          </label>
+          <input id={dateFilterStart}></input>
+        </div>
+        <div>
+          <label htmlFor={dateFilterEnd} style={{ marginRight: "1rem" }}>
+            hasta
+          </label>
+          <input id={dateFilterEnd}></input>
+        </div>
+      </pre>
       <DataTable
         columns={columns(isAdmin)}
         data={datum.data}
@@ -195,6 +282,7 @@ export function Pedido() {
           noRowsPerPage: false,
           selectAllRowsItem: false,
           selectAllRowsItemText: "Todas",
+          noData: "¡No hay datos para mostrar!",
         }}
       />
     </div>

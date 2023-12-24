@@ -1,8 +1,22 @@
 import DataTable from "react-data-table-component";
 
 const columns = [
-  { name: "NOMBRE", selector: (row) => row.name },
-  { name: "DESCRIPCIÓN", selector: (row) => row.description },
+  { name: "NOMBRE", selector: (row) => row.name, maxWidth: "120px" },
+  {
+    name: "DESCRIPCIÓN",
+    selector: (row) => (
+      <div
+        style={{
+          overflow: "hidden",
+          whiteSpace: "wrap",
+          textOverflow: "unset",
+        }}
+      >
+        {row.description}
+      </div>
+    ),
+    minWidth: "400px",
+  },
 ];
 
 export function Categories() {
@@ -20,6 +34,7 @@ export function Categories() {
           noRowsPerPage: false,
           selectAllRowsItem: false,
           selectAllRowsItemText: "Todas",
+          noDataComponent: "¡No hay datos para mostrar!",
         }}
       />
     </div>

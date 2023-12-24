@@ -5,10 +5,52 @@ import { fetchData } from "../../fetchData/fetchData";
 
 const apiData = fetchData(`${API_URL}/users`);
 const columns = [
-  { name: "NOMBRE", selector: (row) => row.name },
-  { name: "CORREO-E", selector: (row) => row.email },
+  {
+    name: "NOMBRE",
+    selector: (row) => (
+      <div
+        style={{
+          overflow: "hidden",
+          whiteSpace: "wrap",
+          textOverflow: "unset",
+        }}
+      >
+        {row.name}
+      </div>
+    ),
+    minWidth: "200px",
+  },
+  {
+    name: "CORREO-E",
+    selector: (row) => (
+      <div
+        style={{
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+          textOverflow: "unset",
+        }}
+      >
+        {row.email}
+      </div>
+    ),
+    minWidth: "200px",
+  },
   { name: "CELULAR", selector: (row) => row.phone },
-  { name: "DIRECCIÓN", selector: (row) => row.address },
+  {
+    name: "DIRECCIÓN",
+    selector: (row) => (
+      <div
+        style={{
+          overflow: "hidden",
+          whiteSpace: "wrap",
+          textOverflow: "unset",
+        }}
+      >
+        {row.address}
+      </div>
+    ),
+    minWidth: "200px",
+  },
 ];
 
 export function Users() {
@@ -26,6 +68,7 @@ export function Users() {
             noRowsPerPage: false,
             selectAllRowsItem: false,
             selectAllRowsItemText: "Todas",
+            noDataComponent: "¡No hay datos para mostrar!",
           }}
         />
       </Suspense>
