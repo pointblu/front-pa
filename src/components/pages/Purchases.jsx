@@ -63,7 +63,9 @@ const columns = [
       ).toFixed(2)} %`,
   },
 ];
-
+const CustomNoDataComponent = () => (
+  <div className="text-center">¡No hay registros para mostrar!</div>
+);
 export function PurchaseDetails() {
   const purchaseDetails = apiData.read();
   return (
@@ -78,8 +80,8 @@ export function PurchaseDetails() {
           noRowsPerPage: false,
           selectAllRowsItem: false,
           selectAllRowsItemText: "Todas",
-          noDataComponent: "¡No hay datos para mostrar!",
         }}
+        noDataComponent={<CustomNoDataComponent />}
       />
     </div>
   );

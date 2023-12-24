@@ -52,7 +52,9 @@ const columns = [
     minWidth: "200px",
   },
 ];
-
+const CustomNoDataComponent = () => (
+  <div className="text-center">¡No hay registros para mostrar!</div>
+);
 export function Users() {
   const datum = apiData.read();
   return (
@@ -68,8 +70,8 @@ export function Users() {
             noRowsPerPage: false,
             selectAllRowsItem: false,
             selectAllRowsItemText: "Todas",
-            noDataComponent: "¡No hay datos para mostrar!",
           }}
+          noDataComponent={<CustomNoDataComponent />}
         />
       </Suspense>
     </div>

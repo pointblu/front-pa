@@ -1,11 +1,17 @@
 import DataTable from "react-data-table-component";
 import { API_URL } from "../../auth/constants";
 import { useAuth } from "../../auth/AuthProvider";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import DatePicker, { registerLocale } from "react-datepicker";
+import es from "date-fns/locale/es";
+import "react-datepicker/dist/react-datepicker.module.css";
+import { format } from "date-fns";
+import { useReactToPrint } from "react-to-print";
 
+registerLocale("es", es);
 const token = JSON.parse(localStorage.getItem("token"));
 
-const columns = (isAdmin) => [
+const columns = (isAdmin, handlePrint) => [
   {
     name: "CLIENTE",
     selector: (row) => row.buyer.name,
@@ -54,18 +60,22 @@ const columns = (isAdmin) => [
     name: "ACCIONES",
     cell: (row) => (
       <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
+        <div>
+          <button className="iconise-button" onClick={handlePrint}>
+            <i className="fas fa-print nav-icon" />
+          </button>
+        </div>
+
         {isAdmin && row.status === "REQUESTED" ? (
           <button className="ican-button act-rut">
             <i className="fas fa-shipping-fast nav-icon" />
           </button>
         ) : null}
-
         {row.status === "ROUTED" ? (
           <button className="ican-button act-chk">
             <i className="fas fa-check nav-icon" />
           </button>
         ) : null}
-
         {row.status === "REQUESTED" ? (
           <button className="ican-button act-ccl">
             <i className="fas fa-times nav-icon" />
@@ -77,9 +87,19 @@ const columns = (isAdmin) => [
 ];
 
 const ExpandedComponent = ({ data }) => {
+  const printRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
   return (
     <div className="section">
-      <pre>
+      <div>
+        <button className="iconise-button" onClick={handlePrint}>
+          <i className="fas fa-print nav-icon" />
+        </button>
+      </div>
+      <pre ref={printRef}>
         <header className="text-center">
           <h3 className="company-name">PANADERIA PUNTO AZUL</h3>
           <p> El Manantial, Soledad-AT </p>
@@ -194,6 +214,9 @@ const dataFilter = [
   { id: 5, value: "CANCELED", name: "Cancelado" },
 ];
 
+const CustomNoDataComponent = () => (
+  <div className="text-center">¡No hay registros para mostrar!</div>
+);
 export function Pedido() {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
@@ -201,19 +224,25 @@ export function Pedido() {
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
   const [datum, setDatum] = useState([]);
   const [statum, setStatum] = useState("");
-  const [filter, dateFilterStart, dateFilterEnd] = useId();
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
     const fetchDataAsync = async () => {
       try {
-        const response = await fetch(`${API_URL}/purchases?status=${statum}`, {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store",
-          },
-        });
+        const response = await fetch(
+          `${API_URL}/purchases?status=${statum}&startDate=${
+            startDate ? format(startDate, "yyyy-MM-dd") : ""
+          }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/json",
+              "Cache-Control": "no-store",
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -226,16 +255,26 @@ export function Pedido() {
       }
     };
     fetchDataAsync();
-  }, [statum]);
+  }, [statum, startDate, endDate]);
 
   const handleChangeStatus = (event) => {
     setStatum(event.target.value);
   };
 
+  const handleChangeDate = (date) => {
+    setStartDate(date[0]);
+    setEndDate(date[1]);
+  };
+
+  const handleClearDate = () => {
+    setStartDate(null);
+    setEndDate(null);
+  };
+
   return (
     <div>
-      <pre
-        className=""
+      <div
+        className="filterbar"
         style={{
           display: "flex",
           flexDirection: "row",
@@ -244,10 +283,10 @@ export function Pedido() {
         }}
       >
         <div>
-          <label htmlFor={filter} style={{ marginRight: "1rem" }}>
-            ESTADO
-          </label>
-          <select id={filter} onChange={handleChangeStatus}>
+          <select
+            onChange={handleChangeStatus}
+            className="form-control form-control-sm custom-form custom-input-form"
+          >
             {dataFilter.map((stat) => {
               return (
                 <option key={stat.id} value={stat.value}>
@@ -258,18 +297,26 @@ export function Pedido() {
           </select>
         </div>
         <div>
-          <label htmlFor={dateFilterStart} style={{ marginRight: "1rem" }}>
-            desde
-          </label>
-          <input id={dateFilterStart}></input>
+          <div style={{ display: "flex", flexDirection: "row", gap: "0.6rem" }}>
+            <DatePicker
+              selectsRange={true}
+              startDate={startDate}
+              endDate={endDate}
+              onChange={handleChangeDate}
+              locale="es"
+              dateFormat="dd/MM/yyyy"
+              placeholderText="Seleccione un interválo"
+              onKeyDown={(e) => {
+                e.preventDefault();
+              }}
+              className="custom-input-form"
+            />
+            <button className="iconise-button" onClick={handleClearDate}>
+              <i className="fas fa-eraser nav-icon" />
+            </button>
+          </div>
         </div>
-        <div>
-          <label htmlFor={dateFilterEnd} style={{ marginRight: "1rem" }}>
-            hasta
-          </label>
-          <input id={dateFilterEnd}></input>
-        </div>
-      </pre>
+      </div>
       <DataTable
         columns={columns(isAdmin)}
         data={datum.data}
@@ -282,8 +329,8 @@ export function Pedido() {
           noRowsPerPage: false,
           selectAllRowsItem: false,
           selectAllRowsItemText: "Todas",
-          noData: "¡No hay datos para mostrar!",
         }}
+        noDataComponent={<CustomNoDataComponent />}
       />
     </div>
   );

@@ -18,7 +18,9 @@ const columns = [
     minWidth: "400px",
   },
 ];
-
+const CustomNoDataComponent = () => (
+  <div className="text-center">¡No hay registros para mostrar!</div>
+);
 export function Categories() {
   const datum = JSON.parse(localStorage.getItem("categorias"));
   return (
@@ -34,8 +36,8 @@ export function Categories() {
           noRowsPerPage: false,
           selectAllRowsItem: false,
           selectAllRowsItemText: "Todas",
-          noDataComponent: "¡No hay datos para mostrar!",
         }}
+        noDataComponent={<CustomNoDataComponent />}
       />
     </div>
   );

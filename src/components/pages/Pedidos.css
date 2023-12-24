@@ -18,6 +18,22 @@ div pre {
   margin: 30px 10px;
 }
 
+.filterbar {
+  text-decoration: none;
+  color: #000;
+  background: #ffc;
+  display: block;
+  height: auto;
+  padding: 2mm;
+  max-width: 100%;
+  margin: 30px 10px;
+}
+
+.custom-form {
+  max-height: 30px;
+  min-width: 100px;
+}
+
 div pre:hover,
 div pre:focus {
   box-shadow: 10px 10px 7px rgba(0, 0, 0, 0.7);
@@ -133,4 +149,27 @@ td {
 
 .ican-button:hover {
   background-color: lightgrey; /* Puedes cambiar el color al pasar el mouse */
+}
+
+.iconise-button {
+  background-color: transparent; /* Fondo transparente */
+  color: black; /* Color del texto */
+  border: 2.5px solid black; /* Borde sólido */
+  border-radius: 10px; /* Bordes redondeados */
+  padding: 5px 10px; /* Relleno interno */
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.iconise-button:focus {
+  outline: none;
+}
+
+.iconise-button:hover {
+  background-color: lightgrey; /* Puedes cambiar el color al pasar el mouse */
+}
+
+.custom-input-form {
+  border: 2.5px solid black; /* Borde sólido */
+  border-radius: 10px; /* Bordes redondeados */
 }
