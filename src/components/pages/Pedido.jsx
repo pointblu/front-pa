@@ -11,7 +11,7 @@ import { useReactToPrint } from "react-to-print";
 registerLocale("es", es);
 const token = JSON.parse(localStorage.getItem("token"));
 
-const columns = (isAdmin, handlePrint) => [
+const columns = (isAdmin) => [
   {
     name: "CLIENTE",
     selector: (row) => row.buyer.name,
@@ -60,12 +60,6 @@ const columns = (isAdmin, handlePrint) => [
     name: "ACCIONES",
     cell: (row) => (
       <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
-        <div>
-          <button className="iconise-button" onClick={handlePrint}>
-            <i className="fas fa-print nav-icon" />
-          </button>
-        </div>
-
         {isAdmin && row.status === "REQUESTED" ? (
           <button className="ican-button act-rut">
             <i className="fas fa-shipping-fast nav-icon" />
@@ -93,13 +87,13 @@ const ExpandedComponent = ({ data }) => {
     content: () => printRef.current,
   });
   return (
-    <div className="section">
-      <div>
-        <button className="iconise-button" onClick={handlePrint}>
-          <i className="fas fa-print nav-icon" />
-        </button>
-      </div>
-      <pre ref={printRef}>
+    <div ref={printRef} className="section">
+      <pre>
+        <div>
+          <button className="iconise-button" onClick={handlePrint}>
+            <i className="fas fa-print nav-icon" />
+          </button>
+        </div>
         <header className="text-center">
           <h3 className="company-name">PANADERIA PUNTO AZUL</h3>
           <p> El Manantial, Soledad-AT </p>
@@ -129,19 +123,19 @@ const ExpandedComponent = ({ data }) => {
                 {data.prDetail.map((purchase) => (
                   <tr key={purchase.id}>
                     <td>{purchase.product.name}</td>
-                    <td className="text-right">{purchase.quantity}</td>
+                    <td className="text-center">{purchase.quantity}</td>
                     <td className="text-right">
-                      $ {purchase.product.price.toFixed(2)}
+                      ${purchase.product.price.toFixed(2)}
                     </td>
                     <td className="text-right">
-                      $ {purchase.subtotal.toFixed(2)}
+                      ${purchase.subtotal.toFixed(2)}
                     </td>
                   </tr>
                 ))}
                 <tr className="dark-background sub-total">
                   <td className="pad-l-5">SUB TOTAL</td>
                   <td className="text-right " colSpan={3}>
-                    $ {data.total.toFixed(2)}
+                    ${data.total.toFixed(2)}
                   </td>
                 </tr>
                 <tr className="total">
@@ -149,7 +143,7 @@ const ExpandedComponent = ({ data }) => {
                   <td></td>
                   <td></td>
                   <td className="info-total-price text-right">
-                    $ {data.total.toFixed(2)}
+                    ${data.total.toFixed(2)}
                   </td>
                 </tr>
               </tbody>
