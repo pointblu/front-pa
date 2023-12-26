@@ -11,7 +11,7 @@ import { useReactToPrint } from "react-to-print";
 registerLocale("es", es);
 const token = JSON.parse(localStorage.getItem("token"));
 
-const columns = (isAdmin) => [
+const columns = (isAdmin, handleUpdateStatus) => [
   {
     name: "CLIENTE",
     selector: (row) => row.buyer.name,
@@ -61,17 +61,26 @@ const columns = (isAdmin) => [
     cell: (row) => (
       <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
         {isAdmin && row.status === "REQUESTED" ? (
-          <button className="ican-button act-rut">
+          <button
+            className="ican-button act-rut"
+            onClick={() => handleUpdateStatus("ROUTED", row.id, row.total)}
+          >
             <i className="fas fa-shipping-fast nav-icon" />
           </button>
         ) : null}
         {row.status === "ROUTED" ? (
-          <button className="ican-button act-chk">
+          <button
+            className="ican-button act-chk"
+            onClick={() => handleUpdateStatus("DELIVERED", row.id, row.total)}
+          >
             <i className="fas fa-check nav-icon" />
           </button>
         ) : null}
         {row.status === "REQUESTED" ? (
-          <button className="ican-button act-ccl">
+          <button
+            className="ican-button act-ccl"
+            onClick={() => handleUpdateStatus("CANCELED", row.id, row.total)}
+          >
             <i className="fas fa-times nav-icon" />
           </button>
         ) : null}
@@ -221,33 +230,34 @@ export function Pedido() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  useEffect(() => {
-    const fetchDataAsync = async () => {
-      try {
-        const response = await fetch(
-          `${API_URL}/purchases?status=${statum}&startDate=${
-            startDate ? format(startDate, "yyyy-MM-dd") : ""
-          }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-              "Content-Type": "application/json",
-              "Cache-Control": "no-store",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+  const fetchDataAsync = async () => {
+    try {
+      const response = await fetch(
+        `${API_URL}/purchases?status=${statum}&startDate=${
+          startDate ? format(startDate, "yyyy-MM-dd") : ""
+        }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+            "Cache-Control": "no-store",
+          },
         }
+      );
 
-        const apiData = await response.json();
-        setDatum(apiData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
+
+      const apiData = await response.json();
+      setDatum(apiData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchDataAsync();
   }, [statum, startDate, endDate]);
 
@@ -263,6 +273,30 @@ export function Pedido() {
   const handleClearDate = () => {
     setStartDate(null);
     setEndDate(null);
+  };
+
+  const handleUpdateStatus = async (status, id, total) => {
+    try {
+      const response = await fetch(`${API_URL}/purchases/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+        },
+        body: JSON.stringify({
+          total: total,
+          status: status,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      fetchDataAsync();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   return (
@@ -312,7 +346,7 @@ export function Pedido() {
         </div>
       </div>
       <DataTable
-        columns={columns(isAdmin)}
+        columns={columns(isAdmin, handleUpdateStatus)}
         data={datum.data}
         pagination
         expandableRows
