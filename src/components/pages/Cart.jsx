@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useAuth } from "../../auth/AuthProvider";
 import "./Cart.css";
 import { useCart } from "../../hooks/useCarts";
@@ -45,12 +45,15 @@ export function Cart() {
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
   const emptyCart = JSON.parse(localStorage.getItem("cart"));
-
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isClient =
     auth.isAuthenticated && userObject && userObject.role === "CLIENT";
   const goTo = useNavigate();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -143,6 +146,7 @@ export function Cart() {
             data-slide="true"
             className="nav-link flyer"
             data-aos="fade-left"
+            onClick={scrollToTop}
           >
             <i className="fas fa-shopping-basket nav-icon" />
           </button>

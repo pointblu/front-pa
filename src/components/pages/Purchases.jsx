@@ -2,7 +2,7 @@ import DataTable from "react-data-table-component";
 import { API_URL } from "../../auth/constants";
 import { fetchData } from "../../fetchData/fetchData";
 
-const apiData = fetchData(`${API_URL}/purchaseDetails`);
+const apiData = fetchData(`${API_URL}/purchaseDetails?active=true`);
 const columns = [
   {
     name: "FECHA",

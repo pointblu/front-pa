@@ -111,13 +111,13 @@ const ExpandedComponent = ({ data }) => {
         </header>
         <div className="main-body separator">
           <div className="info-item-list">
-            <table className="table1" style={{ width: "100%" }}>
+            <table className="table1" style={{ width: "95%" }}>
               <thead>
                 <tr>
                   <td>
                     <strong>Prod.</strong>
                   </td>
-                  <td className="text-right">
+                  <td>
                     <strong>Cant.</strong>
                   </td>
                   <td className="text-right">
@@ -131,8 +131,12 @@ const ExpandedComponent = ({ data }) => {
               <tbody>
                 {data.prDetail.map((purchase) => (
                   <tr key={purchase.id}>
-                    <td>{purchase.product.name}</td>
-                    <td className="text-center">{purchase.quantity}</td>
+                    <td
+                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                    >
+                      {purchase.product.name}
+                    </td>
+                    <td className="text-rigth">{purchase.quantity}</td>
                     <td className="text-right">
                       ${purchase.product.price.toFixed(2)}
                     </td>
@@ -143,15 +147,13 @@ const ExpandedComponent = ({ data }) => {
                 ))}
                 <tr className="dark-background sub-total">
                   <td className="pad-l-5">SUB TOTAL</td>
-                  <td className="text-right " colSpan={3}>
+                  <td colSpan={3} className="text-right">
                     ${data.total.toFixed(2)}
                   </td>
                 </tr>
                 <tr className="total">
                   <td>TOTAL A PAGAR</td>
-                  <td></td>
-                  <td></td>
-                  <td className="info-total-price text-right">
+                  <td colSpan={3} className="info-total-price text-right">
                     ${data.total.toFixed(2)}
                   </td>
                 </tr>
@@ -164,29 +166,26 @@ const ExpandedComponent = ({ data }) => {
             <table style={{ width: "100%" }}>
               <tbody>
                 <tr>
-                  <td>Cliente: </td>
-                  <td className="text-right">
+                  <td style={{ width: "45px" }}>Cliente: </td>
+                  <td>
                     <strong>{data.buyer.name}</strong>
                   </td>
                 </tr>
                 <tr>
-                  <td>Dirección: </td>
-                  <td
-                    className="text-right"
-                    style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                  >
+                  <td style={{ width: "45px" }}>Direccion: </td>
+                  <td style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
                     <strong>{data.buyer.address}</strong>
                   </td>
                 </tr>
                 <tr>
-                  <td>Teléfono: </td>
-                  <td className="text-right">
+                  <td style={{ width: "45px" }}>Telefono: </td>
+                  <td>
                     <strong>{data.buyer.phone}</strong>
                   </td>
                 </tr>
                 <tr>
-                  <td>Fecha: </td>
-                  <td className="text-right">
+                  <td style={{ width: "45px" }}>Fecha: </td>
+                  <td style={{ textAlign: "start" }}>
                     {Intl.DateTimeFormat("es-ES", {
                       day: "numeric",
                       month: "numeric",
@@ -220,6 +219,7 @@ const dataFilter = [
 const CustomNoDataComponent = () => (
   <div className="text-center">¡No hay registros para mostrar!</div>
 );
+
 export function Pedido() {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
@@ -242,6 +242,8 @@ export function Pedido() {
             Authorization: "Bearer " + token,
             "Content-Type": "application/json",
             "Cache-Control": "no-store",
+            "Access-Control-Allow-Origin": "*",
+            mode: "no-cors",
           },
         }
       );
@@ -258,7 +260,16 @@ export function Pedido() {
   };
 
   useEffect(() => {
+    // Hacer la primera llamada
     fetchDataAsync();
+
+    // Configurar un intervalo para llamar cada minuto
+    const intervalId = setInterval(() => {
+      fetchDataAsync();
+    }, 30000); // 60000 milisegundos = 1 minuto
+
+    // Limpiar el intervalo al desmontar el componente
+    return () => clearInterval(intervalId);
   }, [statum, startDate, endDate]);
 
   const handleChangeStatus = (event) => {
@@ -283,6 +294,7 @@ export function Pedido() {
           Authorization: "Bearer " + token,
           "Content-Type": "application/json",
           "Cache-Control": "no-store",
+          "Access-Control-Allow-Origin": "no-cors",
         },
         body: JSON.stringify({
           total: total,

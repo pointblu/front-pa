@@ -12,7 +12,7 @@ div pre {
   height: auto;
   padding: 2mm;
   box-shadow: 5px 5px 7px rgba(33, 33, 33, 0.7);
-  max-width: 360px;
+  max-width: 215px;
   margin: 30px 10px;
 }
 
@@ -30,6 +30,7 @@ div pre {
 .custom-form {
   max-height: 30px;
   min-width: 100px;
+  max-width: 215mm;
 }
 
 div pre:hover,
@@ -43,14 +44,14 @@ div pre:focus {
 .company-name {
   font-weight: 600;
   padding-top: 20px;
-  font-size: 21px;
+  font-size: 14px;
   padding-bottom: 1px;
 }
 
 p {
   padding-bottom: 1px;
   margin-bottom: 2px;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .bill {
@@ -68,6 +69,7 @@ p {
 
 td {
   padding: 5px 0;
+  font-size: 10px;
 }
 
 .dark-background {
@@ -87,7 +89,7 @@ td {
 }
 
 .total td:last-child {
-  font-size: 21px;
+  font-size: 12px;
 }
 
 .info-graditude-text {
@@ -98,7 +100,7 @@ td {
 .info-graditude-text h1 {
   font-weight: 600;
   padding-top: 20px;
-  font-size: 21px;
+  font-size: 16px;
   padding-bottom: 8px;
 }
 
@@ -123,7 +125,7 @@ td {
   border-radius: 12px; /* Bordes redondeados */
   padding: 5px 10px; /* Relleno interno */
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.5rem;
   max-width: 2rem;
 }
 .act-chk {
@@ -156,7 +158,7 @@ td {
   border-radius: 10px; /* Bordes redondeados */
   padding: 5px 10px; /* Relleno interno */
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.5rem;
 }
 
 .iconise-button:focus {
