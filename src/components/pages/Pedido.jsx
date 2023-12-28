@@ -117,11 +117,11 @@ const ExpandedComponent = ({ data }) => {
                   <td>
                     <strong>Prod.</strong>
                   </td>
-                  <td>
+                  <td style={{ width: "10px" }}>
                     <strong>Cant.</strong>
                   </td>
-                  <td className="text-right">
-                    <strong>P. unid.</strong>
+                  <td>
+                    <strong>P/unid.</strong>
                   </td>
                   <td className="text-right">
                     <strong>Sub-tot.</strong>
@@ -136,25 +136,29 @@ const ExpandedComponent = ({ data }) => {
                     >
                       {purchase.product.name}
                     </td>
-                    <td className="text-rigth">{purchase.quantity}</td>
-                    <td className="text-right">
-                      ${purchase.product.price.toFixed(2)}
+                    <td className="text-rigth" style={{ width: "10px" }}>
+                      {purchase.quantity}
+                    </td>
+                    <td
+                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                    >
+                      ${purchase.product.price.toFixed(1)}
                     </td>
                     <td className="text-right">
-                      ${purchase.subtotal.toFixed(2)}
+                      ${purchase.subtotal.toFixed(1)}
                     </td>
                   </tr>
                 ))}
                 <tr className="dark-background sub-total">
                   <td className="pad-l-5">SUB TOTAL</td>
                   <td colSpan={3} className="text-right">
-                    ${data.total.toFixed(2)}
+                    ${data.total.toFixed(1)}
                   </td>
                 </tr>
                 <tr className="total">
                   <td>TOTAL A PAGAR</td>
                   <td colSpan={3} className="info-total-price text-right">
-                    ${data.total.toFixed(2)}
+                    ${data.total.toFixed(1)}
                   </td>
                 </tr>
               </tbody>
@@ -311,56 +315,22 @@ export function Pedido() {
     }
   };
 
+  const tableHeaderstyle = {
+    headCells: {
+      style: {
+        fontWeight: "bold",
+        fontSize: "12px",
+      },
+    },
+  };
   return (
     <div>
-      <div
-        className="filterbar"
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "2rem",
-          justifyItems: "self-start",
-        }}
-      >
-        <div>
-          <select
-            onChange={handleChangeStatus}
-            className="form-control form-control-sm custom-form custom-input-form"
-          >
-            {dataFilter.map((stat) => {
-              return (
-                <option key={stat.id} value={stat.value}>
-                  {stat.name.toUpperCase()}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-        <div>
-          <div style={{ display: "flex", flexDirection: "row", gap: "0.6rem" }}>
-            <DatePicker
-              selectsRange={true}
-              startDate={startDate}
-              endDate={endDate}
-              onChange={handleChangeDate}
-              locale="es"
-              dateFormat="dd/MM/yyyy"
-              placeholderText="Seleccione un interválo"
-              onKeyDown={(e) => {
-                e.preventDefault();
-              }}
-              className="custom-input-form"
-            />
-            <button className="iconise-button" onClick={handleClearDate}>
-              <i className="fas fa-eraser nav-icon" />
-            </button>
-          </div>
-        </div>
-      </div>
       <DataTable
         columns={columns(isAdmin, handleUpdateStatus)}
         data={datum.data}
         pagination
+        customStyles={tableHeaderstyle}
+        highlightOnHover="true"
         expandableRows
         expandableRowsComponent={ExpandedComponent}
         paginationComponentOptions={{
@@ -371,6 +341,64 @@ export function Pedido() {
           selectAllRowsItemText: "Todas",
         }}
         noDataComponent={<CustomNoDataComponent />}
+        subHeader
+        subHeaderComponent={
+          <div>
+            <div
+              className="filterbar"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: "0.5rem",
+                justifyItems: "self-start",
+                maxWidth: "auto",
+                marginLeft: "-2rem",
+              }}
+            >
+              <div>
+                <select
+                  onChange={handleChangeStatus}
+                  className="form-control form-control-sm custom-form custom-input-form"
+                >
+                  {dataFilter.map((stat) => {
+                    return (
+                      <option key={stat.id} value={stat.value}>
+                        {stat.name.toUpperCase()}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "0.6rem",
+                  }}
+                >
+                  <DatePicker
+                    selectsRange={true}
+                    startDate={startDate}
+                    endDate={endDate}
+                    onChange={handleChangeDate}
+                    locale="es"
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="Seleccione un interválo"
+                    onKeyDown={(e) => {
+                      e.preventDefault();
+                    }}
+                    className="custom-input-form"
+                  />
+                  <button className="iconise-button" onClick={handleClearDate}>
+                    <i className="fas fa-eraser nav-icon" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+        subHeaderAlign="left"
       />
     </div>
   );

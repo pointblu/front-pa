@@ -19,12 +19,23 @@ div pre {
 .filterbar {
   text-decoration: none;
   color: #000;
-  background: #ffc;
   display: block;
   height: auto;
   padding: 2mm;
   max-width: 100%;
   margin: 30px 10px;
+}
+
+.filterbari {
+  text-decoration: none;
+  color: #000;
+  display: block;
+  height: auto;
+  padding: 2mm;
+  max-width: 100% !important;
+  margin: 5px 10px;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .custom-form {
@@ -68,7 +79,7 @@ p {
 }
 
 td {
-  padding: 5px 0;
+  padding: 5px 2px;
   font-size: 10px;
 }
 
@@ -125,7 +136,7 @@ td {
   border-radius: 12px; /* Bordes redondeados */
   padding: 5px 10px; /* Relleno interno */
   cursor: pointer;
-  font-size: 0.5rem;
+  font-size: 0.7rem;
   max-width: 2rem;
 }
 .act-chk {
@@ -158,7 +169,7 @@ td {
   border-radius: 10px; /* Bordes redondeados */
   padding: 5px 10px; /* Relleno interno */
   cursor: pointer;
-  font-size: 0.5rem;
+  font-size: 0.7rem;
 }
 
 .iconise-button:focus {
