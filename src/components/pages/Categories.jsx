@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
+import { Link } from "react-router-dom";
 
-const columns = [
+const columns = (handleEditCategory) => [
   { name: "NOMBRE", selector: (row) => row.name, maxWidth: "120px" },
   {
     name: "DESCRIPCIÓN",
@@ -17,6 +18,21 @@ const columns = [
       </div>
     ),
     minWidth: "400px",
+  },
+  {
+    name: "ACCIONES",
+    cell: (row) => (
+      <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
+        <Link to={`/editar-categoria`}>
+          <button
+            className="ican-button act-rut"
+            onClick={() => handleEditCategory(row)}
+          >
+            <i className="fas fa-edit nav-icon" />
+          </button>
+        </Link>
+      </div>
+    ),
   },
 ];
 const CustomNoDataComponent = () => (
@@ -44,6 +60,9 @@ export function Categories() {
     setFilter(apiData.data);
   };
 
+  function handleEditCategory(categ) {
+    localStorage.setItem("editCateg", JSON.stringify(categ));
+  }
   const tableHeaderstyle = {
     headCells: {
       style: {
@@ -56,7 +75,7 @@ export function Categories() {
     <div>
       <DataTable
         name="datTab"
-        columns={columns}
+        columns={columns(handleEditCategory)}
         data={filter}
         pagination
         customStyles={tableHeaderstyle}

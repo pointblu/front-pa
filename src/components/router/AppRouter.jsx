@@ -12,6 +12,8 @@ import {
   Usuarios,
   Ventas,
   Replenish,
+  EditProduct,
+  EditCategories,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -30,6 +32,8 @@ export const AppRouter = () => {
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/ventas" element={<Ventas />} />
           <Route path="/producto" element={<CreateProduct />} />
+          <Route path="/editar-producto" element={<EditProduct />} />
+          <Route path="/editar-categoria" element={<EditCategories />} />
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/categoria" element={<CreateCategories />} />
           <Route

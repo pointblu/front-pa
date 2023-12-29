@@ -25,6 +25,10 @@ export function Products({ products }) {
     return cart.some((item) => item.id === product.id);
   };
 
+  function handleEditProduct(prod) {
+    localStorage.setItem("editProduct", JSON.stringify(prod));
+  }
+
   return (
     <ul style={{ marginTop: "5rem" }}>
       {products.map((product) => {
@@ -65,15 +69,18 @@ export function Products({ products }) {
                   <i className="fas fa-plus nav-icon" />
                 </sup>
               </button>
-              <button
-                className="icon-button"
-                style={{
-                  display: isClient || !auth.isAuthenticated ? "none" : "block",
-                }}
-              >
-                <i className="fas fa-edit" />
-              </button>
-
+              <Link to={`/editar-producto`}>
+                <button
+                  className="icon-button"
+                  onClick={() => handleEditProduct(product)}
+                  style={{
+                    display:
+                      isClient || !auth.isAuthenticated ? "none" : "block",
+                  }}
+                >
+                  <i className="fas fa-edit" />
+                </button>
+              </Link>
               <Link
                 to={`/reposicion/${product.id}/${product.cost}/${product.stock}/${product.name}`}
               >

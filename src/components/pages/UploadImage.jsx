@@ -4,6 +4,7 @@ import { Toaster, toast } from "sonner";
 import "./UploadImage.css";
 
 export const UploadImage = ({ setIsButtonDisabled }) => {
+  const editProd = JSON.parse(localStorage.getItem("editProduct"));
   const [image, setImage] = useState(null);
   const hiddenFileInput = useRef(null);
   const [errorResponse, setErrorResponse] = useState("");
@@ -12,6 +13,14 @@ export const UploadImage = ({ setIsButtonDisabled }) => {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
+    const maxSizeMB = 1; // Tamaño máximo permitido en megabytes
+    const maxSizeBytes = maxSizeMB * 1024 * 1024; // Convertir a bytes
+    if (file.size > maxSizeBytes) {
+      toast.error("Oops, la imagen es muy grande.", {
+        description: `Intenta con un tamaño menor a ${maxSizeMB} Mb`,
+      });
+      return;
+    }
     const imgname = event.target.files[0].name;
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -81,7 +90,13 @@ export const UploadImage = ({ setIsButtonDisabled }) => {
       } else {
         console.log("Something went wrong");
         const json = await response.json();
-        toast.error(json.message);
+        if (json.statusCode === 413) {
+          toast.error("Oops, la imagen es muy grande.", {
+            description: "Intenta con un tamaño menor a 1 Mb",
+          });
+        } else {
+          toast.error(json.message);
+        }
         setErrorResponse("");
         setSuccessResponse(null);
       }
@@ -115,7 +130,13 @@ export const UploadImage = ({ setIsButtonDisabled }) => {
             className="after-upload"
           />
         ) : (
-          <img src={process.env.PUBLIC_URL + "/dist/img/photo.png"} alt="" />
+          <img
+            src={
+              editProd?.image ?? process.env.PUBLIC_URL + "/dist/img/photo.png"
+            }
+            alt=""
+            className={editProd ? "after-upload" : ""}
+          />
         )}
         {!!errorResponse && <div className="errorMessage">{errorResponse}</div>}
         {!!successResponse && (

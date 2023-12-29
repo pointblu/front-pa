@@ -10,3 +10,5 @@ export * from "./Ventas";
 export * from "./Register";
 export * from "./Login";
 export * from "./Replenish";
+export * from "./EditProducts";
+export * from "./EditCategories";
