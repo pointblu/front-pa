@@ -180,3 +180,14 @@
 .button-containero {
   position: relative;
 }
+
+.agotado {
+  z-index: 99999;
+  width: 100%;
+  color: #ec090998;
+  rotate: 45deg;
+  font-size: 52px;
+  position: absolute;
+  font-weight: 700;
+  margin: 5rem;
+}

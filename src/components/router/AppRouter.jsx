@@ -11,6 +11,7 @@ import {
   SideNav,
   Usuarios,
   Ventas,
+  Replenish,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -31,6 +32,10 @@ export const AppRouter = () => {
           <Route path="/producto" element={<CreateProduct />} />
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/categoria" element={<CreateCategories />} />
+          <Route
+            path="/reposicion/:productId/:pCost/:pStock/:pName"
+            element={<Replenish />}
+          />
         </Route>
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/pedidos" element={<Pedidos />} />

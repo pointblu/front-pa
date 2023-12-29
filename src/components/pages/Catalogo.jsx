@@ -1,23 +1,52 @@
-import React, { Suspense } from "react";
+import React, { useEffect, useState } from "react";
 import "./Products.css";
 import { Products } from "./Products.jsx";
 import { Filters } from "./Filters.jsx";
 import { useFilters } from "../../hooks/useFilters";
 import { API_URL } from "../../auth/constants";
-import { fetchData } from "../../fetchData/fetchData";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider.jsx";
 import { Cart } from "./Cart.jsx";
-const apiData = fetchData(`${API_URL}/products`);
+
+const token = JSON.parse(localStorage.getItem("token"));
 
 export const Catalogo = () => {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
-  const products = apiData.read();
+  const [datum, setDatum] = useState([]);
+  const products = datum;
   const { filterProducts } = useFilters();
-  const filteredProducts = filterProducts(products.data);
+
+  useEffect(() => {
+    fetchDataAsync();
+  }, []);
+
+  const filteredProducts = filterProducts(products);
+
+  const fetchDataAsync = async () => {
+    try {
+      const response = await fetch(`${API_URL}/products`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+          "Access-Control-Allow-Origin": "*",
+          mode: "no-cors",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const apiData = await response.json();
+      setDatum(apiData.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const goTo = useNavigate();
   const handleButtonClick = () => {
@@ -26,11 +55,11 @@ export const Catalogo = () => {
   return (
     <div>
       {/* Content Wrapper. Contains page content */}
-      <Suspense>
-        <Cart />
-        <div className="content-wrapper">
-          {/* Content Header (Page header) */}
-          {/* <div className="content-header">
+
+      <Cart />
+      <div className="content-wrapper">
+        {/* Content Header (Page header) */}
+        {/* <div className="content-header">
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-12">
@@ -47,29 +76,28 @@ export const Catalogo = () => {
         
         </div>*/}
 
-          {<Filters />}
-          {isAdmin && (
-            <div className="button-containero">
-              <button
-                className="flyer"
-                data-aos="fade-left"
-                onClick={handleButtonClick}
-              >
-                <i className="fas fa-plus nav-icon" />
-              </button>
+        {<Filters />}
+        {isAdmin && (
+          <div className="button-containero">
+            <button
+              className="flyer"
+              data-aos="fade-left"
+              onClick={handleButtonClick}
+            >
+              <i className="fas fa-plus nav-icon" />
+            </button>
+          </div>
+        )}
+        <section className="content products">
+          <div className="container-fluid">
+            <div className=" col-sm-12">
+              <Products products={filteredProducts} />
             </div>
-          )}
-          <section className="content products">
-            <div className="container-fluid">
-              <div className=" col-sm-12">
-                <Products products={filteredProducts} />
-              </div>
-              {/* /.row (main row) */}
-            </div>
-            {/* /.container-fluid */}
-          </section>
-        </div>
-      </Suspense>
+            {/* /.row (main row) */}
+          </div>
+          {/* /.container-fluid */}
+        </section>
+      </div>
     </div>
   );
 };

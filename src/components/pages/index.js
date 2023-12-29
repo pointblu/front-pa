@@ -9,3 +9,4 @@ export * from "./Categorias";
 export * from "./Ventas";
 export * from "./Register";
 export * from "./Login";
+export * from "./Replenish";
