@@ -1,3 +1,21 @@
+body {
+  overflow: auto; /* Oculta la barra de desplazamiento */
+}
+
+/* Personaliza la apariencia de la barra de desplazamiento solo en navegadores WebKit */
+body::-webkit-scrollbar {
+  width: 12px; /* Ancho de la barra de desplazamiento */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color del pulgar (parte deslizable) de la barra de desplazamiento */
+  border-radius: 6px; /* Borde redondeado del pulgar */
+}
+
+body::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Color de la pista (fondo) de la barra de desplazamiento */
+}
+
 .products {
   width: 100%;
   display: flex;

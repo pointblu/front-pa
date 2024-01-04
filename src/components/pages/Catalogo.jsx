@@ -7,6 +7,7 @@ import { API_URL } from "../../auth/constants";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider.jsx";
 import { Cart } from "./Cart.jsx";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
@@ -18,16 +19,18 @@ export const Catalogo = () => {
   const [datum, setDatum] = useState([]);
   const products = datum;
   const { filterProducts } = useFilters();
+  const [page, setPage] = useState(1);
+  const [infoPage, setInfoPage] = useState(null);
 
   useEffect(() => {
     fetchDataAsync();
-  }, []);
+  }, [page]);
 
   const filteredProducts = filterProducts(products);
 
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(`${API_URL}/products`, {
+      const response = await fetch(`${API_URL}/products?pag=${page}&take=50`, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + token,
@@ -42,7 +45,10 @@ export const Catalogo = () => {
       }
 
       const apiData = await response.json();
-      setDatum(apiData.data);
+
+      let newDatum = datum.concat(apiData.data);
+      setDatum(newDatum);
+      setInfoPage(apiData.meta.hasNextPage);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -90,8 +96,20 @@ export const Catalogo = () => {
         )}
         <section className="content products">
           <div className="container-fluid">
-            <div className=" col-sm-12">
-              <Products products={filteredProducts} />
+            <div
+              className="col-sm-12 infinite-scroll-container"
+              id="infiniteScroll"
+            >
+              <InfiniteScroll
+                dataLength={datum.length}
+                next={() => {
+                  setPage(page + 1);
+                }}
+                hasMore={infoPage}
+                loader={infoPage ? <h4>Cargando... {infoPage}</h4> : null}
+              >
+                <Products products={filteredProducts} />
+              </InfiniteScroll>
             </div>
             {/* /.row (main row) */}
           </div>
