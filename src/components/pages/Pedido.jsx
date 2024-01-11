@@ -1,12 +1,11 @@
 import DataTable from "react-data-table-component";
 import { API_URL } from "../../auth/constants";
 import { useAuth } from "../../auth/AuthProvider";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 import "react-datepicker/dist/react-datepicker.module.css";
 import { format } from "date-fns";
-import { useReactToPrint } from "react-to-print";
 import ConectorPluginV3 from "../../pos-print/ConectorJavaScriptB";
 
 registerLocale("es", es);
@@ -92,94 +91,75 @@ const columns = (isAdmin, handleUpdateStatus) => [
 
 const ExpandedComponent = ({ data }) => {
   const handlePrintPos = async () => {
-    // Puede ser obtenida de la lista de impresoras o puedes escribirlo si lo conoces
     const conector = new ConectorPluginV3();
     const respuesta = await conector
       .Iniciar()
       .DeshabilitarElModoDeCaracteresChinos()
       .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
-      .DescargarImagenDeInternetEImprimir(
-        "http://assets.stickpng.com/thumbs/587e32259686194a55adab73.png",
-        0,
-        216
-      )
       .Feed(1)
-      .EscribirTexto("Parzibyte's blog\n")
-      .EscribirTexto("Blog de un programador\n")
-      .TextoSegunPaginaDeCodigos(2, "cp850", "Teléfono: 123456798\n")
+      .EscribirTexto("PANADERIA PUNTO AZUL\n")
+      .EscribirTexto("El Manantial, Soledad-AT\n")
+      .TextoSegunPaginaDeCodigos(2, "cp850", "Teléfono: 322 9560143\n")
       .EscribirTexto(
         "Fecha y hora: " + new Intl.DateTimeFormat("es-MX").format(new Date())
       )
-      .Feed(1)
+      .Feed(1);
+    data.prDetail.forEach((purchase) => {
+      conector
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+        .EscribirTexto(`____________________\n`)
+        .EscribirTexto(`${purchase.quantity} ${purchase.product.name}\n`)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+        .EscribirTexto(`$${purchase.subtotal.toFixed(1)}\n`);
+    }); // Continuar con las operaciones comunes
+    conector
+      .EscribirTexto("____________________\n")
       .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-      .EscribirTexto("____________________\n")
-      .TextoSegunPaginaDeCodigos(
-        2,
-        "cp850",
-        "Venta de plugin para impresoras versión 3\n"
-      )
+      .EscribirTexto(`Domicilio: \n`)
       .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-      .EscribirTexto("$25\n")
-      .EscribirTexto("____________________\n")
-      .EscribirTexto("TOTAL: $25\n")
-      .EscribirTexto("____________________\n")
+      .EscribirTexto(`$ 1000.0 \n`)
+      .EscribirTexto(`TOTAL: $${data.total.toFixed(1) + 1000} \n`)
       .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
-      .HabilitarCaracteresPersonalizados()
-      .EscribirTexto(
-        "En lugar del simbolo de pesos debe aparecer un among us\n"
-      )
-      .EscribirTexto("TOTAL: $25\n")
+      .EscribirTexto("____________________\n")
       .EstablecerEnfatizado(true)
       .EstablecerTamañoFuente(1, 1)
       .TextoSegunPaginaDeCodigos(2, "cp850", "¡Gracias por su compra!\n")
       .Feed(1)
-      .ImprimirCodigoQr(
-        "https://parzibyte.me/blog",
-        160,
-        ConectorPluginV3.RECUPERACION_QR_MEJOR,
-        ConectorPluginV3.TAMAÑO_IMAGEN_NORMAL
-      )
-      .Feed(1)
-      .ImprimirCodigoDeBarrasCode128(
-        "parzibyte.me",
-        80,
-        192,
-        ConectorPluginV3.TAMAÑO_IMAGEN_NORMAL
-      )
+      .EscribirTexto("____________________\n")
       .Feed(1)
       .EstablecerTamañoFuente(1, 1)
-      .EscribirTexto("parzibyte.me\n")
+      .EscribirTexto("DATOS DE ENVIO\n")
+      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+      .EscribirTexto(`Cliente: \n`)
+      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+      .TextoSegunPaginaDeCodigos(2, "cp850", `${data.buyer.name} \n`)
+      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+      .TextoSegunPaginaDeCodigos(2, "cp850", `Dirección: \n`)
+      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+      .TextoSegunPaginaDeCodigos(2, "cp850", `${data.buyer.address} \n`)
+      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+      .TextoSegunPaginaDeCodigos(2, "cp850", `Teléfono: \n`)
+      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+      .EscribirTexto(`${data.buyer.phone} \n`)
       .Feed(3)
       .Corte(1)
       .Pulso(48, 60, 120)
       .imprimirEn("ZJ-58");
     if (respuesta === true) {
-      alert("Impreso correctamente");
+      console.log("Impreso correctamente");
     } else {
-      alert("Error: " + respuesta);
+      console.log("Error: " + respuesta);
     }
   };
-  return (
-    <div>
-      <button className="iconise-button" onClick={handlePrintPos}>
-        <i className="fas fa-print nav-icon" />
-      </button>
-    </div>
-  );
 
-  /* const printRef = useRef();
-
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-  });
   return (
-    <div ref={printRef} className="section">
+    <div className="section">
+      <div>
+        <button className="iconise-button" onClick={handlePrintPos}>
+          <i className="fas fa-print nav-icon" />
+        </button>
+      </div>
       <pre>
-        <div>
-          <button className="iconise-button" onClick={handlePrint}>
-            <i className="fas fa-print nav-icon" />
-          </button>
-        </div>
         <header className="text-center">
           <h3 className="company-name">PANADERIA PUNTO AZUL</h3>
           <p> El Manantial, Soledad-AT </p>
@@ -286,7 +266,7 @@ const ExpandedComponent = ({ data }) => {
         </footer>
       </pre>
     </div>
-  );*/
+  );
 };
 
 const dataFilter = [
