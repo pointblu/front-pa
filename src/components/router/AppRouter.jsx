@@ -14,6 +14,7 @@ import {
   Replenish,
   EditProduct,
   EditCategories,
+  CreatePayment,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -36,6 +37,7 @@ export const AppRouter = () => {
           <Route path="/editar-categoria" element={<EditCategories />} />
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/categoria" element={<CreateCategories />} />
+          <Route path="/pago" element={<CreatePayment />} />
           <Route
             path="/reposicion/:productId/:pCost/:pStock/:pName"
             element={<Replenish />}

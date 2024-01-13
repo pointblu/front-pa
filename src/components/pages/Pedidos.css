@@ -16,6 +16,18 @@ div pre {
   margin: 30px 10px;
 }
 
+.pre-a {
+  text-decoration: none;
+  color: #000;
+  background: #ffc;
+  display: block;
+  height: auto;
+  padding: 2mm;
+  box-shadow: 5px 5px 7px rgba(33, 33, 33, 0.7);
+  max-width: 215px;
+  margin: 30px 10px;
+}
+
 .filterbar {
   text-decoration: none;
   color: #000;

@@ -209,3 +209,25 @@ body::-webkit-scrollbar-track {
   font-weight: 700;
   margin: 5rem;
 }
+
+.no-pago {
+  z-index: 99999;
+  width: 100%;
+  color: #ec090998;
+  rotate: 45deg;
+  font-size: 42px;
+  position: absolute;
+  font-weight: 700;
+  margin: 5rem;
+}
+
+.pago {
+  z-index: 99999;
+  width: 100%;
+  color: #25c20698;
+  rotate: 45deg;
+  font-size: 42px;
+  position: absolute;
+  font-weight: 700;
+  margin: 5rem;
+}

@@ -45,8 +45,13 @@ export const Catalogo = () => {
       }
 
       const apiData = await response.json();
+      const apiDatum = apiData.data.filter((datu) => {
+        return datu.active !== false;
+      });
 
-      let newDatum = datum.concat(apiData.data);
+      let newDatum = datum.concat(
+        !isAdmin || !auth.isAuthenticated ? apiDatum : apiData.data
+      );
       setDatum(newDatum);
       setInfoPage(apiData.meta.hasNextPage);
     } catch (error) {

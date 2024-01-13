@@ -3,8 +3,9 @@ import { API_URL } from "../../auth/constants";
 import { Toaster, toast } from "sonner";
 import "./UploadImage.css";
 
-export const UploadImage = ({ setIsButtonDisabled }) => {
+export const UploadImage = ({ setIsButtonDisabled, fromPayment }) => {
   const editProd = JSON.parse(localStorage.getItem("editProduct"));
+  const editPay = JSON.parse(localStorage.getItem("editPayment"));
   const [image, setImage] = useState(null);
   const hiddenFileInput = useRef(null);
   const [errorResponse, setErrorResponse] = useState("");
@@ -115,8 +116,12 @@ export const UploadImage = ({ setIsButtonDisabled }) => {
   return (
     <div style={{ marginBottom: "1rem" }}>
       <Toaster position="top-center" richColors />
-      <label htmlFor="image-upload-input" className="imput mb-3">
-        {image ? image.name : "Seleciona una imagen"}
+      <label
+        htmlFor="image-upload-input"
+        className="imput mb-3"
+        style={{ color: fromPayment ? "white" : "gray" }}
+      >
+        {image ? image.name : "Selecciona una imagen"}
       </label>
       <div
         onClick={handleClick}
@@ -132,7 +137,10 @@ export const UploadImage = ({ setIsButtonDisabled }) => {
         ) : (
           <img
             src={
-              editProd?.image ?? process.env.PUBLIC_URL + "/dist/img/photo.png"
+              fromPayment
+                ? editPay.paymentImage
+                : editProd?.image ??
+                  process.env.PUBLIC_URL + "/dist/img/photo.png"
             }
             alt=""
             className={editProd ? "after-upload" : ""}

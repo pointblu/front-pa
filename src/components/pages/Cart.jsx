@@ -55,12 +55,27 @@ export function Cart() {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
+  const [payment, setPayment] = useState("EFECTIVO");
+  const handlePayment = () => {
+    if (payment === "EFECTIVO") {
+      setPayment("TRANSFERENCIA");
+    } else {
+      setPayment("EFECTIVO");
+    }
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       const token = JSON.parse(localStorage.getItem("token"));
       const cartDetails = JSON.parse(localStorage.getItem("cart"));
+      const domicilio = {
+        id: "0e230b3f-34d2-4b6a-b0f4-a646bca3d893",
+        quantity: 1,
+        price: 0,
+      };
+      cartDetails.push(domicilio);
       const calculatedTotal = cartDetails.reduce(
         (acc, details) => acc + details.price * details.quantity,
         0
@@ -78,6 +93,12 @@ export function Cart() {
           total: parseFloat(calculatedTotal),
           status: "REQUESTED",
           buyer: buyerId.id,
+          paymentImage:
+            "https://res.cloudinary.com/diitm4dx7/image/upload/v1705016689/acuse-base-1705016688615.webp",
+          paymented: false,
+          paymentType: payment,
+          paymentCash: 0,
+          paymentChange: 0,
         }),
       });
 
@@ -104,6 +125,7 @@ export function Cart() {
                 product: e.id,
                 seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
                 detail: json.data.id,
+                active: true,
               }),
             });
 
@@ -156,7 +178,19 @@ export function Cart() {
       {/* Control Sidebar */}
       <aside className="control-sidebar control-sidebar-dark basket">
         <div className="button-containeri">
-          <button className="iconio-button" onClick={clearCart}>
+          <button className="iconio-button" onClick={handlePayment}>
+            <i
+              className="fas fa-money-bill-wave nav-icon"
+              style={{ marginRight: "5px" }}
+            />{" "}
+            {payment}
+          </button>
+
+          <button
+            className="iconio-button"
+            onClick={clearCart}
+            style={{ maxWidth: "37px" }}
+          >
             <i className="fas fa-eraser nav-icon" />
           </button>
           <form action="/" method="post" onSubmit={handleSubmit}>

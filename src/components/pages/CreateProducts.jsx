@@ -134,7 +134,10 @@ export const CreateProduct = () => {
                       background: "cadetblue",
                     }}
                   >
-                    <UploadImage setIsButtonDisabled={setIsButtonDisabled} />
+                    <UploadImage
+                      setIsButtonDisabled={setIsButtonDisabled}
+                      fromPayment={false}
+                    />
                     <form action="/" method="post" onSubmit={handleSubmit}>
                       <div className="input-group mb-3">
                         <input

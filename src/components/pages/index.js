@@ -12,3 +12,4 @@ export * from "./Login";
 export * from "./Replenish";
 export * from "./EditProducts";
 export * from "./EditCategories";
+export * from "./CreatePayment";

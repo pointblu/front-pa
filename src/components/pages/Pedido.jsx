@@ -7,11 +7,12 @@ import es from "date-fns/locale/es";
 import "react-datepicker/dist/react-datepicker.module.css";
 import { format } from "date-fns";
 import ConectorPluginV3 from "../../pos-print/ConectorJavaScriptB";
+import { Toaster, toast } from "sonner";
+import { Link } from "react-router-dom";
 
 registerLocale("es", es);
 const token = JSON.parse(localStorage.getItem("token"));
-
-const columns = (isAdmin, handleUpdateStatus) => [
+const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
   {
     name: "CLIENTE",
     selector: (row) => row.buyer.name,
@@ -63,7 +64,9 @@ const columns = (isAdmin, handleUpdateStatus) => [
         {isAdmin && row.status === "REQUESTED" ? (
           <button
             className="ican-button act-rut"
-            onClick={() => handleUpdateStatus("ROUTED", row.id, row.total)}
+            onClick={() =>
+              handleUpdateStatus("ROUTED", row.id, row.total, row.paymentType)
+            }
           >
             <i className="fas fa-shipping-fast nav-icon" />
           </button>
@@ -71,7 +74,14 @@ const columns = (isAdmin, handleUpdateStatus) => [
         {row.status === "ROUTED" ? (
           <button
             className="ican-button act-chk"
-            onClick={() => handleUpdateStatus("DELIVERED", row.id, row.total)}
+            onClick={() =>
+              handleUpdateStatus(
+                "DELIVERED",
+                row.id,
+                row.total,
+                row.paymentType
+              )
+            }
           >
             <i className="fas fa-check nav-icon" />
           </button>
@@ -79,192 +89,294 @@ const columns = (isAdmin, handleUpdateStatus) => [
         {row.status === "REQUESTED" ? (
           <button
             className="ican-button act-ccl"
-            onClick={() => handleUpdateStatus("CANCELED", row.id, row.total)}
+            onClick={() =>
+              handleUpdateStatus("CANCELED", row.id, row.total, row.paymentType)
+            }
           >
             <i className="fas fa-times nav-icon" />
           </button>
+        ) : null}
+        {row.status === "REQUESTED" && row.paymented === false && !isAdmin ? (
+          <Link to={`/pago`}>
+            <button
+              className="ican-button"
+              onClick={() => handleCreatePayment(row)}
+            >
+              <i className="fas fa-money-bill-wave nav-icon" />
+            </button>
+          </Link>
         ) : null}
       </div>
     ),
   },
 ];
 
-const ExpandedComponent = ({ data }) => {
+const ExpandedComponent = (props) => {
+  const { isAdmin, data } = props;
   const handlePrintPos = async () => {
-    const conector = new ConectorPluginV3();
-    const respuesta = await conector
-      .Iniciar()
-      .DeshabilitarElModoDeCaracteresChinos()
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
-      .Feed(1)
-      .EscribirTexto("PANADERIA PUNTO AZUL\n")
-      .EscribirTexto("El Manantial, Soledad-AT\n")
-      .TextoSegunPaginaDeCodigos(2, "cp850", "Teléfono: 322 9560143\n")
-      .EscribirTexto(
-        "Fecha y hora: " + new Intl.DateTimeFormat("es-MX").format(new Date())
-      )
-      .Feed(1);
-    data.prDetail.forEach((purchase) => {
+    try {
+      const conector = new ConectorPluginV3();
+      const respuesta = await conector
+        .Iniciar()
+        .DeshabilitarElModoDeCaracteresChinos()
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
+        .Feed(1)
+        .EscribirTexto("PANADERIA PUNTO AZUL\n")
+        .EscribirTexto("El Manantial, Soledad-AT\n")
+        .TextoSegunPaginaDeCodigos(2, "cp850", "Teléfono: 322 9560143\n")
+        .EscribirTexto(
+          "Fecha y hora: " + new Intl.DateTimeFormat("es-MX").format(new Date())
+        )
+        .Feed(1);
+      data.prDetail.forEach((purchase) => {
+        conector
+          .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+          .EscribirTexto(`____________________\n`)
+          .EscribirTexto(`${purchase.quantity} ${purchase.product.name}\n`)
+          .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+          .EscribirTexto(`$${purchase.subtotal.toFixed(1)}\n`);
+      }); // Continuar con las operaciones comunes
       conector
         .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
         .EscribirTexto(`____________________\n`)
-        .EscribirTexto(`${purchase.quantity} ${purchase.product.name}\n`)
+        .EscribirTexto(`Domicilio: \n`)
         .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-        .EscribirTexto(`$${purchase.subtotal.toFixed(1)}\n`);
-    }); // Continuar con las operaciones comunes
-    conector
-      .EscribirTexto("____________________\n")
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-      .EscribirTexto(`Domicilio: \n`)
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-      .EscribirTexto(`$ 1000.0 \n`)
-      .EscribirTexto(`TOTAL: $${data.total.toFixed(1) + 1000} \n`)
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
-      .EscribirTexto("____________________\n")
-      .EstablecerEnfatizado(true)
-      .EstablecerTamañoFuente(1, 1)
-      .TextoSegunPaginaDeCodigos(2, "cp850", "¡Gracias por su compra!\n")
-      .Feed(1)
-      .EscribirTexto("____________________\n")
-      .Feed(1)
-      .EstablecerTamañoFuente(1, 1)
-      .EscribirTexto("DATOS DE ENVIO\n")
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-      .EscribirTexto(`Cliente: \n`)
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-      .TextoSegunPaginaDeCodigos(2, "cp850", `${data.buyer.name} \n`)
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-      .TextoSegunPaginaDeCodigos(2, "cp850", `Dirección: \n`)
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-      .TextoSegunPaginaDeCodigos(2, "cp850", `${data.buyer.address} \n`)
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-      .TextoSegunPaginaDeCodigos(2, "cp850", `Teléfono: \n`)
-      .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-      .EscribirTexto(`${data.buyer.phone} \n`)
-      .Feed(3)
-      .Corte(1)
-      .Pulso(48, 60, 120)
-      .imprimirEn("ZJ-58");
-    if (respuesta === true) {
-      console.log("Impreso correctamente");
-    } else {
-      console.log("Error: " + respuesta);
+        .EscribirTexto(`$ 1000.0 \n`)
+        .EscribirTexto(`____________________\n`)
+        .EscribirTexto(`TOTAL: $${(data.total + 1000).toFixed(1)} \n`)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
+        .EscribirTexto("____________________\n")
+        .Feed(1)
+        .EstablecerEnfatizado(true)
+        .EstablecerTamañoFuente(1, 1)
+        .TextoSegunPaginaDeCodigos(2, "cp850", "¡Gracias por su compra!\n")
+        .Feed(1)
+        .EscribirTexto(".............................\n")
+        .Feed(1)
+        .EstablecerTamañoFuente(1, 1)
+        .EscribirTexto("DATOS DE ENVIO\n")
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+        .EscribirTexto(`Cliente: \n`)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+        .TextoSegunPaginaDeCodigos(2, "cp850", `${data.buyer.name} \n`)
+        .Feed(1)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+        .TextoSegunPaginaDeCodigos(2, "cp850", `Dirección: \n`)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+        .TextoSegunPaginaDeCodigos(2, "cp850", `${data.buyer.address} \n`)
+        .Feed(1)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+        .TextoSegunPaginaDeCodigos(2, "cp850", `Teléfono: \n`)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+        .EscribirTexto(`${data.buyer.phone} \n`)
+        .Feed(2)
+        .EscribirTexto(".............................\n")
+        .Feed(3)
+        .Corte(1)
+        .Pulso(48, 60, 120)
+        .imprimirEn("ZJ-58");
+      if (respuesta === true) {
+        toast.success("Impersión exitosa");
+      } else {
+        toast.error("Oops, Error al imprimir.", {
+          description:
+            "Valida que este funcionando el controlador de impresión",
+        });
+      }
+    } catch (error) {
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        console.error("Error de red durante la impresión. Puede ser ignorado.");
+        toast.error(
+          "Error al imprimir. Problema de red. Consulta la consola para más detalles."
+        );
+      } else {
+        console.error("Error durante la impresión:", error);
+        toast.error(
+          "Error al imprimir. Consulta la consola para más detalles."
+        );
+      }
     }
   };
 
   return (
-    <div className="section">
-      <div>
-        <button className="iconise-button" onClick={handlePrintPos}>
-          <i className="fas fa-print nav-icon" />
-        </button>
-      </div>
-      <pre>
-        <header className="text-center">
-          <h3 className="company-name">PANADERIA PUNTO AZUL</h3>
-          <p> El Manantial, Soledad-AT </p>
-          <p>TEL: 310 555 5555</p>
-          <p className="bill">¡Bienvenido!</p>
-        </header>
-        <div className="main-body separator">
-          <div className="info-item-list">
-            <table className="table1" style={{ width: "95%" }}>
-              <thead>
-                <tr>
-                  <td>
-                    <strong>Prod.</strong>
-                  </td>
-                  <td style={{ width: "10px" }}>
-                    <strong>Cant.</strong>
-                  </td>
-                  <td>
-                    <strong>P/unid.</strong>
-                  </td>
-                  <td className="text-right">
-                    <strong>Sub-tot.</strong>
-                  </td>
-                </tr>
-              </thead>
-              <tbody>
-                {data.prDetail.map((purchase) => (
-                  <tr key={purchase.id}>
-                    <td
-                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                    >
-                      {purchase.product.name}
+    <div className="row">
+      <div className="section col-md-6">
+        {isAdmin && (
+          <div>
+            <button className="iconise-button" onClick={handlePrintPos}>
+              <i className="fas fa-print nav-icon" />
+            </button>
+          </div>
+        )}
+        <pre style={{ maxWidth: "250px" }}>
+          <header className="text-center">
+            <h3 className="company-name">PANADERIA PUNTO AZUL</h3>
+            <p> El Manantial, Soledad-AT </p>
+            <p>TEL: 310 555 5555</p>
+            <p className="bill">¡Bienvenido!</p>
+          </header>
+          <div className="main-body separator">
+            <div className="info-item-list">
+              <table className="table1" style={{ width: "95%" }}>
+                <thead>
+                  <tr>
+                    <td>
+                      <strong>Prod.</strong>
                     </td>
-                    <td className="text-rigth" style={{ width: "10px" }}>
-                      {purchase.quantity}
+                    <td style={{ width: "10px" }}>
+                      <strong>Cant.</strong>
                     </td>
-                    <td
-                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                    >
-                      ${purchase.product.price.toFixed(1)}
+                    <td>
+                      <strong>P/unid.</strong>
                     </td>
                     <td className="text-right">
-                      ${purchase.subtotal.toFixed(1)}
+                      <strong>Sub-tot.</strong>
                     </td>
                   </tr>
-                ))}
-                <tr className="dark-background sub-total">
-                  <td className="pad-l-5">SUB TOTAL</td>
-                  <td colSpan={3} className="text-right">
-                    ${data.total.toFixed(1)}
-                  </td>
-                </tr>
-                <tr className="total">
-                  <td>TOTAL A PAGAR</td>
-                  <td colSpan={3} className="info-total-price text-right">
-                    ${data.total.toFixed(1)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data.prDetail.map((purchase) => (
+                    <tr key={purchase.id}>
+                      <td
+                        style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                      >
+                        {purchase.product.name}
+                      </td>
+                      <td className="text-rigth" style={{ width: "10px" }}>
+                        {purchase.quantity}
+                      </td>
+                      <td
+                        style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                      >
+                        ${purchase.product.price.toFixed(1)}
+                      </td>
+                      <td className="text-right">
+                        ${purchase.subtotal.toFixed(1)}
+                      </td>
+                    </tr>
+                  ))}
+
+                  <tr className="dark-background sub-total">
+                    <td className="pad-l-5">SUB TOTAL</td>
+                    <td colSpan={3} className="text-right">
+                      ${data.total.toFixed(1)}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                    >
+                      Domicilio
+                    </td>
+                    <td className="text-rigth" style={{ width: "10px" }}>
+                      1
+                    </td>
+                    <td
+                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                    >
+                      $1000.0
+                    </td>
+                    <td className="text-right">$1000.0</td>
+                  </tr>
+                  <tr className="total">
+                    <td>TOTAL A PAGAR</td>
+                    <td colSpan={3} className="info-total-price text-right">
+                      $ {(data.total + 1000).toFixed(1)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+          <footer className="info-client">
+            <div className="info-table-client border-bottom">
+              <table style={{ width: "100%" }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: "45px" }}>Cliente: </td>
+                    <td>
+                      <strong>{data.buyer.name}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "45px" }}>Direccion: </td>
+                    <td
+                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                    >
+                      <strong>{data.buyer.address}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "45px" }}>Telefono: </td>
+                    <td>
+                      <strong>{data.buyer.phone}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "45px" }}>Fecha: </td>
+                    <td style={{ textAlign: "start" }}>
+                      {Intl.DateTimeFormat("es-ES", {
+                        day: "numeric",
+                        month: "numeric",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: true,
+                      }).format(new Date(data.createdAt))}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="info-graditude-text text-center border-bottom">
+              <h1>!Gracias por su compra!</h1>
+            </div>
+          </footer>
+        </pre>
+      </div>
+      <div className="section col-md-6">
+        <div className="pre-a" style={{ maxWidth: "450px" }}>
+          <header className="text-center">
+            <h3 className="company-name">
+              Forma de pago: <strong>{data.paymentType}</strong>
+            </h3>
+          </header>
+          {data.paymentType === "EFECTIVO" ? (
+            <div
+              className="main-body separator"
+              style={{ marginTop: "0.5rem" }}
+            >
+              <p>
+                Monto entregado:{" "}
+                <strong>$ {data.paymentCash.toFixed(1)}</strong>
+              </p>
+              <p>
+                Vuelto:{" "}
+                <strong>
+                  $ {(data.paymentCash - data.total - 1000).toFixed(1)}
+                </strong>
+              </p>
+            </div>
+          ) : (
+            <div
+              className="main-body separator"
+              style={{ marginTop: "0.5rem" }}
+            >
+              {data.paymented === false ? (
+                <div className="no-pago">NO PAGADO</div>
+              ) : (
+                <div className="pago">PAGADO</div>
+              )}
+              <img src={data.paymentImage} alt={data.paymentType} />
+            </div>
+          )}
+          <footer
+            className="info-client"
+            style={{ marginTop: "0.5rem" }}
+          ></footer>
         </div>
-        <footer className="info-client">
-          <div className="info-table-client border-bottom">
-            <table style={{ width: "100%" }}>
-              <tbody>
-                <tr>
-                  <td style={{ width: "45px" }}>Cliente: </td>
-                  <td>
-                    <strong>{data.buyer.name}</strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "45px" }}>Direccion: </td>
-                  <td style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-                    <strong>{data.buyer.address}</strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "45px" }}>Telefono: </td>
-                  <td>
-                    <strong>{data.buyer.phone}</strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "45px" }}>Fecha: </td>
-                  <td style={{ textAlign: "start" }}>
-                    {Intl.DateTimeFormat("es-ES", {
-                      day: "numeric",
-                      month: "numeric",
-                      year: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    }).format(new Date(data.createdAt))}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="info-graditude-text text-center border-bottom">
-            <h1>!Gracias por su compra!</h1>
-          </div>
-        </footer>
-      </pre>
+      </div>
     </div>
   );
 };
@@ -347,7 +459,7 @@ export function Pedido() {
     setEndDate(null);
   };
 
-  const handleUpdateStatus = async (status, id, total) => {
+  const handleUpdateStatus = async (status, id, total, paymentType) => {
     try {
       const response = await fetch(`${API_URL}/purchases/${id}`, {
         method: "PUT",
@@ -360,6 +472,7 @@ export function Pedido() {
         body: JSON.stringify({
           total: total,
           status: status,
+          paymentType: paymentType,
         }),
       });
 
@@ -372,6 +485,9 @@ export function Pedido() {
     }
   };
 
+  function handleCreatePayment(payment) {
+    localStorage.setItem("editPayment", JSON.stringify(payment));
+  }
   const tableHeaderstyle = {
     headCells: {
       style: {
@@ -382,14 +498,17 @@ export function Pedido() {
   };
   return (
     <div>
+      <Toaster position="top-center" richColors />
       <DataTable
-        columns={columns(isAdmin, handleUpdateStatus)}
+        columns={columns(isAdmin, handleUpdateStatus, handleCreatePayment)}
         data={datum.data}
         pagination
         customStyles={tableHeaderstyle}
         highlightOnHover="true"
         expandableRows
-        expandableRowsComponent={ExpandedComponent}
+        expandableRowsComponent={(datum) => (
+          <ExpandedComponent data={datum.data} isAdmin={isAdmin} />
+        )}
         paginationComponentOptions={{
           rowsPerPageText: "Registros por página:",
           rangeSeparatorText: "de",
