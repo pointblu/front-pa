@@ -50,7 +50,7 @@ export const Header = () => {
 
       const dates = await response.json();
 
-      setApiData(dates.data);
+      setApiData(dates);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
