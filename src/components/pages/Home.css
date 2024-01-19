@@ -1,77 +1,47 @@
-.wrappered {
-  overflow-x: hidden;
-  justify-content: center;
-  align-items: center;
-  max-width: 1620px;
-  margin: 0;
-}
-
 .home-container {
   overflow-x: hidden;
 }
-.wrappered li {
-  list-style: none;
-}
 
-.container-publicity {
+.container-advertisement {
   display: flex;
-  width: 400%;
-  padding: 0;
-  margin: 0;
-  animation: slide 20s infinite linear;
-  &:hover {
-    animation-play-state: paused;
-  }
-}
-
-.publicity {
-  width: 100%;
-  padding: 4% 4%;
+  justify-content: center;
+  align-items: center;
   position: relative;
-  display: flex;
-  align-items: cover;
-  box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.5);
-  transition: 1s ease-in-out;
-  margin-left: 0;
-  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.publicity:hover {
-  transform: translateY(20px);
-}
-
-.publicity img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.publicity .info {
+.container-advertisement img {
+  width: 80%;
+  display: block;
+  margin: 0 auto;
+  aspect-ratio: 16/9;
   position: relative;
-  z-index: 10;
+}
+
+.container-advertisement .info {
+  z-index: 30;
   color: #fff;
   opacity: 0;
   transform: translateY(30px);
   transition: 1s all;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 1);
-  margin-left: 2rem !important;
+  position: absolute;
+  margin-top: -45%;
+  margin-left: 12%;
 }
 
-.publicity:hover .info {
+.container-advertisement:hover .info {
   opacity: 1;
   transform: translateY(0px);
 }
 
-.publicity .info h1 {
+.container-advertisement .info h1 {
   margin: 0;
 }
 
-.publicity .info p {
+.container-advertisement .info p {
   letter-spacing: 1px;
-  font-size: 0.6rem;
+  font-size: 1rem;
   margin-top: 0.3rem;
   margin-bottom: 0.8rem;
 }
@@ -94,24 +64,49 @@
   background-color: grey; /* Puedes cambiar el color al pasar el mouse */
 }
 
-@keyframes slide {
-  0%,
-  100% {
-    margin-left: 0;
-  }
-  25% {
-    margin-left: -100%;
-  }
-  50% {
-    margin-left: -200%;
-  }
-  75% {
-    margin-left: -300%;
-  }
+.next-button {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: large;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.prev-button {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: large;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 767px) {
-  .publicity {
-    padding: 15% 5%;
+  .container-advertisement img {
+    width: 250%;
+    object-fit: cover;
+  }
+
+  .container-advertisement .info {
+    margin-top: -140%;
+    margin-left: 7%;
+  }
+
+  .container-advertisement .info p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .next-button {
+    margin-right: 3rem;
+  }
+
+  .prev-button {
+    margin-left: 3rem;
   }
 }

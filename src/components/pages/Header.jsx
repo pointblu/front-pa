@@ -1,20 +1,84 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { Toaster, toast } from "sonner";
 import { API_URL } from "../../auth/constants";
-import { fetchData } from "../../fetchData/fetchData";
-import { useNavigate } from "react-router-dom";
+import { useSpring, animated } from "react-spring";
 
-const apiData = fetchData(`${API_URL}/categories`);
+const token = JSON.parse(localStorage.getItem("token"));
+
+function UserNumber({ n }) {
+  const { animatedNumber } = useSpring({
+    from: { animatedNumber: 0 },
+    animatedNumber: Number(n),
+    delay: 200,
+    config: { mass: 1, tension: 20, friction: 10 },
+  });
+  return <animated.div>{animatedNumber.to((n) => n.toFixed(0))}</animated.div>;
+}
 
 export const Header = () => {
+  const [datum, setDatum] = useState([]);
+  const [apiData, setApiData] = useState([]);
   const goTo = useNavigate();
-  const categories = apiData.read();
+  const categories = apiData;
   localStorage.setItem("categorias", JSON.stringify(categories));
 
   const auth = useAuth();
+
+  useEffect(() => {
+    fetchDataAsync();
+    fetchCategoriesAsync();
+  }, []);
+
+  const fetchCategoriesAsync = async () => {
+    try {
+      const response = await fetch(`${API_URL}/categories`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+          "Access-Control-Allow-Origin": "*",
+          mode: "no-cors",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const dates = await response.json();
+
+      setApiData(dates.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchDataAsync = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users/all/counter`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+          "Access-Control-Allow-Origin": "*",
+          mode: "no-cors",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const datos = await response.json();
+
+      setDatum(datos);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   async function handleSignOut(e) {
     e.preventDefault();
@@ -65,6 +129,14 @@ export const Header = () => {
         </ul>
         {/* Right navbar links */}
         <ul className="navbar-nav ml-auto">
+          <li className="nav-item" style={{ flexFlow: "row" }}>
+            <div className="nav-link">
+              <i className="fas fa-users" />
+              <span className="badge badge-success navbar-badge">
+                <UserNumber n={datum} />
+              </span>
+            </div>
+          </li>
           {/* cesta de compras */}
           {auth.isAuthenticated && (
             <li className="nav-item">
