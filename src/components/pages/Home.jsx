@@ -5,7 +5,7 @@ import "aos/dist/aos.css";
 import { useAuth } from "../../auth/AuthProvider";
 import { API_URL } from "../../auth/constants";
 import Carousel from "nuka-carousel";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
@@ -21,6 +21,10 @@ export const Home = () => {
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+
+  const isClient =
+    auth.isAuthenticated && userObject && userObject.role === "CLIENT";
+
   const [datum, setDatum] = useState([]);
 
   useEffect(() => {
@@ -76,6 +80,11 @@ export const Home = () => {
       },
     },
   };
+
+  function handleEditAdvertisement(advertisem) {
+    localStorage.setItem("editAdvertisement", JSON.stringify(advertisem));
+  }
+
   return (
     <div>
       {/* Content Wrapper. Contains page content */}
@@ -114,6 +123,18 @@ export const Home = () => {
           <Carousel {...params}>
             {datum.map((advertisement) => (
               <div key={advertisement.id}>
+                <Link to={`/editar-anuncio`}>
+                  <button
+                    className="icon-button"
+                    onClick={() => handleEditAdvertisement(advertisement)}
+                    style={{
+                      display:
+                        isClient || !auth.isAuthenticated ? "none" : "block",
+                    }}
+                  >
+                    <i className="fas fa-edit" />
+                  </button>
+                </Link>
                 <img src={advertisement.urlImage} alt="p1" />
                 <div className="info">
                   <h1>{advertisement.title}</h1>

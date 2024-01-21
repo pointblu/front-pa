@@ -64,6 +64,7 @@ export const CreateAdvertisement = () => {
     };
     setImage(file);
   };
+
   useEffect(() => {
     if (image) {
       const reader = new FileReader();
@@ -75,7 +76,9 @@ export const CreateAdvertisement = () => {
       setPreview("");
     }
   }, [image]);
+
   const goTo = useNavigate();
+
   function handleCancel(e) {
     e.preventDefault();
     goTo("/");

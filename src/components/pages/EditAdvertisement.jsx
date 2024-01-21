@@ -1,64 +1,119 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../auth/constants";
 import { Toaster, toast } from "sonner";
-import { UploadImage } from "./UploadImage";
 
 export const EditAdvertisement = () => {
-  const editProd = JSON.parse(localStorage.getItem("editProduct"));
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [name, setName] = useState(editProd.name);
-  const [cost, setCost] = useState(editProd.cost);
-  const [price, setPrice] = useState(editProd.price);
-  const [description, setDescription] = useState(editProd.description);
-  const [stock, setStock] = useState(editProd.stock);
-  const [brand, setBrand] = useState(editProd.brand);
-  const [category, setCategory] = useState(editProd.category.id);
+  const editAdvertisement = JSON.parse(
+    localStorage.getItem("editAdvertisement")
+  );
+
+  const [title, setTitle] = useState(editAdvertisement.title);
+  const [description, setDescription] = useState(editAdvertisement.description);
+  const [whatsapp, setWhatsapp] = useState(editAdvertisement.whatsapp);
+  const [active, setActive] = useState(editAdvertisement.active);
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
-  const imageUrl = JSON.parse(localStorage.getItem("urlImage"));
-  const categories = JSON.parse(localStorage.getItem("categorias"));
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(editAdvertisement.urlImage);
+  console.log(editAdvertisement.urlImage.toString());
+  const referencia = useRef();
+
+  const uploadFiles = () => {
+    referencia.current.click();
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    const maxSizeMB = 1; // Tamaño máximo permitido en megabytes
+    const maxSizeBytes = maxSizeMB * 1024 * 1024; // Convertir a bytes
+    if (file.size > maxSizeBytes) {
+      toast.error("Oops, la imagen es muy grande.", {
+        description: `Intenta con un tamaño menor a ${maxSizeMB} Mb`,
+      });
+      return;
+    }
+    const imgname = event.target.files[0].name;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      const img = new Image();
+      img.src = reader.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const maxSize = Math.max(img.width, img.height);
+        canvas.width = maxSize;
+        canvas.height = maxSize;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(
+          img,
+          (maxSize - img.width) / 2,
+          (maxSize - img.height) / 2
+        );
+        canvas.toBlob(
+          (blob) => {
+            const file = new File([blob], imgname, {
+              type: "image/png",
+              lastModified: Date.now(),
+            });
+
+            console.log(file);
+            setImage(file);
+          },
+          "image/jpeg",
+          0.8
+        );
+      };
+    };
+    setImage(file);
+  };
+
+  useEffect(() => {
+    if (image) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result.toString());
+      };
+      reader.readAsDataURL(image);
+    } else {
+      setPreview("");
+    }
+  }, [image]);
 
   const goTo = useNavigate();
 
-  useEffect(() => {
-    setIsButtonDisabled(!imageUrl);
-  }, [imageUrl]);
-
   function handleCancel(e) {
     e.preventDefault();
-    if (imageUrl) localStorage.removeItem("urlImage");
-    goTo("/catalogo");
-    localStorage.removeItem("editProduct");
+    goTo("/");
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+    console.log(image);
     try {
       const token = JSON.parse(localStorage.getItem("token"));
-      const numericCost = parseFloat(cost);
-      const numericPrice = parseFloat(price);
-      const numericStock = parseInt(stock, 10);
 
-      const response = await fetch(`${API_URL}/products/${editProd.id}`, {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("whatsapp", whatsapp);
+      formData.append("active", active);
+
+      const requestOptions = {
         method: "PUT",
         headers: {
           Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
           "Cache-Control": "no-store",
         },
-        body: JSON.stringify({
-          name,
-          cost: numericCost,
-          price: numericPrice,
-          description,
-          stock: numericStock,
-          brand,
-          category,
-          image: imageUrl ?? editProd.image,
-        }),
-      });
+        body: formData,
+        redirect: "follow",
+      };
+
+      const response = await fetch(
+        `${API_URL}/advertisements/${editAdvertisement.id}`,
+        requestOptions
+      );
 
       if (response.ok) {
         console.log("User register successfully");
@@ -66,17 +121,17 @@ export const EditAdvertisement = () => {
         setSuccessResponse(json.message);
         toast.success(json.message);
         setErrorResponse(null);
-        setName("");
-        setCost("");
-        setPrice("");
+        setTitle("");
+        setWhatsapp("");
+        setActive(false);
         setDescription("");
-        setStock("");
-        setBrand("");
-        setCategory("");
-        localStorage.removeItem("urlImage");
-        localStorage.removeItem("editProduct");
-        goTo("/catalogo");
+        localStorage.removeItem("editAdvertisement");
+        setTimeout(() => {
+          goTo("/");
+          window.location.reload();
+        }, 2000);
       } else {
+        console.log(active);
         console.log("Something went wrong");
         const json = await response.json();
         if (json.statusCode === 422) {
@@ -94,6 +149,8 @@ export const EditAdvertisement = () => {
     }
   }
 
+  //const response = await fetch(`${API_URL}/products/${editProd.id}`, {
+
   return (
     <div>
       <Toaster position="top-center" richColors />
@@ -105,7 +162,7 @@ export const EditAdvertisement = () => {
             <div className="row mb-2">
               <div className="col-sm-12">
                 <h1 className="m-0 App-header focus-in-contract alphi-1">
-                  Editar {name}
+                  Crear Anuncio
                 </h1>
               </div>
             </div>
@@ -134,62 +191,45 @@ export const EditAdvertisement = () => {
                       background: "cadetblue",
                     }}
                   >
-                    <UploadImage setIsButtonDisabled={setIsButtonDisabled} />
                     <form action="/" method="post" onSubmit={handleSubmit}>
+                      <div className="input-group mb-3 upload-image">
+                        <input
+                          id="image-upload-input"
+                          accept="image/*"
+                          type="file"
+                          style={{ display: "none" }}
+                          className="form-control"
+                          ref={referencia}
+                          onChange={handleImageChange}
+                          name="image"
+                        />
+                        {image ? (
+                          <img
+                            src={JSON.parse(preview)}
+                            onClick={uploadFiles}
+                            style={{ width: "100", cursor: "pointer" }}
+                          />
+                        ) : (
+                          <img
+                            src={editAdvertisement?.urlImage}
+                            alt=""
+                            onClick={uploadFiles}
+                          />
+                        )}
+                      </div>
                       <div className="input-group mb-3">
                         <input
                           type="text"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
                           className="form-control"
-                          placeholder="Nombre del producto"
-                          name="name"
-                        />
-                        <div className="input-group-append">
-                          <div className="input-group-text">
-                            <span className="fas fa-wine-bottle text-white" />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="input-group mb-3">
-                        <div className="input-group-prepend bg-light">
-                          <span className="input-group-text">
-                            <i className="fas fa-dollar-sign"></i>
-                          </span>
-                        </div>
-                        <input
-                          type="number"
-                          value={cost}
-                          onChange={(e) => setCost(e.target.value)}
-                          className="form-control"
-                          placeholder="Costo"
-                          name="cost"
+                          placeholder="Titulo"
+                          name="title"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-hand-holding-usd text-white" />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="input-group mb-3">
-                        <div className="input-group-prepend bg-light">
-                          <span className="input-group-text">
-                            <i className="fas fa-dollar-sign"></i>
-                          </span>
-                        </div>
-                        <input
-                          type="number"
-                          value={price}
-                          onChange={(e) => setPrice(e.target.value)}
-                          className="form-control"
-                          placeholder="Precio"
-                          name="price"
-                          autoComplete="off"
-                        />
-                        <div className="input-group-append">
-                          <div className="input-group-text">
-                            <span className="fas fa-money-bill-wave text-white" />
+                            <span className="fas fa-ad text-white" />
                           </div>
                         </div>
                       </div>
@@ -208,56 +248,38 @@ export const EditAdvertisement = () => {
                         </div>
                       </div>
                       <div className="input-group mb-3">
-                        <div className="input-group-prepend bg-light">
-                          <span className="input-group-text">Und.</span>
-                        </div>
-                        <input
-                          type="number"
-                          value={stock}
-                          onChange={(e) => setStock(e.target.value)}
-                          className="form-control"
-                          placeholder="Existencias"
-                          name="stock"
-                        />
-                        <div className="input-group-append">
-                          <div className="input-group-text">
-                            <span className="fas fa-boxes text-white" />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="input-group mb-3">
                         <input
                           type="text"
-                          value={brand}
-                          onChange={(e) => setBrand(e.target.value)}
+                          value={whatsapp}
+                          onChange={(e) => setWhatsapp(e.target.value)}
                           className="form-control"
-                          placeholder="Marca"
-                          name="brand"
+                          placeholder="WhatsApp"
+                          name="whatsapp"
+                          autoComplete="off"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-certificate text-white" />
+                            <span className="fab fa-whatsapp text-white" />
                           </div>
                         </div>
                       </div>
-                      <div className="input-group mb-3">
-                        <select
-                          value={category}
-                          onChange={(e) => setCategory(e.target.value)}
-                          className="form-control"
-                          name="category"
-                        >
-                          <option value="">Categoría</option>
-                          {categories.data.map((cat) => (
-                            <option key={cat.id} value={cat.id}>
-                              {cat.name}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="input-group-append">
-                          <div className="input-group-text">
-                            <span className="fas fa-tag text-white" />
-                          </div>
+
+                      <div className="form-group">
+                        <div className="custom-control custom-switch">
+                          <input
+                            type="checkbox"
+                            checked={active}
+                            onChange={(e) => setActive(e.target.checked)}
+                            className="custom-control-input"
+                            name="active"
+                            id="customSwitch1"
+                          />
+                          <label
+                            className="custom-control-label"
+                            htmlFor="customSwitch1"
+                          >
+                            Publicar
+                          </label>
                         </div>
                       </div>
 
@@ -280,7 +302,6 @@ export const EditAdvertisement = () => {
                             Cancelar
                           </button>
                         </div>
-
                         {/* /.col */}
                       </div>
                     </form>
