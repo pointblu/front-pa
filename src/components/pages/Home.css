@@ -85,6 +85,32 @@
   justify-content: center;
 }
 
+.flyer {
+  background-color: #000; /* Color de fondo del botón */
+  color: #fff; /* Color del texto del botón */
+  padding: 10px 20px; /* Espaciado interno del botón */
+  border: none; /* Eliminar el borde del botón */
+  border-radius: 50%; /* Borde circular */
+  cursor: pointer;
+  font-size: 16px;
+  position: fixed; /* Hace que el botón sea fijo */
+  top: 8rem; /* Coloca el botón en la mitad superior */
+  right: 2rem; /* Alinea el botón a la derecha */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada para un efecto de elevación */
+  transition: box-shadow 0.3s ease, transform 0.1s ease !important; /* Transiciones suaves de la sombra y la transformación */
+  z-index: 999999;
+}
+
+/* Cambiar el estilo del botón al pasar el ratón sobre él */
+.flyer:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada al hacer hover */
+  transform: translateY(-1rem) scale(1.1) !important ; /* Elevación y escala al hacer hover */
+  background-color: grey; /* Cambiar el color de fondo al pasar el ratón */
+}
+
+.button-containero {
+  position: relative;
+}
 @media (max-width: 767px) {
   .container-advertisement img {
     width: 250%;
@@ -98,6 +124,9 @@
 
   .container-advertisement .info p {
     font-size: 0.8rem;
+  }
+  .container-advertisement .info h1 {
+    font-size: medium;
   }
 }
 

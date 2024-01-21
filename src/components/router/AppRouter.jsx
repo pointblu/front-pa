@@ -15,6 +15,8 @@ import {
   EditProduct,
   EditCategories,
   CreatePayment,
+  CreateAdvertisement,
+  EditAdvertisement,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -38,6 +40,8 @@ export const AppRouter = () => {
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/categoria" element={<CreateCategories />} />
           <Route path="/pago" element={<CreatePayment />} />
+          <Route path="/crear-anuncio" element={<CreateAdvertisement />} />
+          <Route path="/editar-anuncio" element={<EditAdvertisement />} />
           <Route
             path="/reposicion/:productId/:pCost/:pStock/:pName"
             element={<Replenish />}

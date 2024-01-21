@@ -103,9 +103,7 @@ export function PurchaseDetails() {
       const response = await fetch(
         `${API_URL}/purchaseDetails?active=true&startDate=${
           startDate ? format(startDate, "yyyy-MM-dd") : ""
-        }&endDate=${
-          endDate ? format(endDate, "yyyy-MM-dd") : ""
-        }&pag=${page}&take=${perPage}`,
+        }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
         {
           method: "GET",
           headers: {
@@ -164,10 +162,6 @@ export function PurchaseDetails() {
         columns={columns}
         data={filter}
         pagination
-        paginationServer
-        paginationTotalRows={totalRows}
-        onChangeRowsPerPage={handlePerRowsChange}
-        onChangePage={handlePageChange}
         customStyles={tableHeaderstyle}
         fixedHeader
         paginationComponentOptions={{

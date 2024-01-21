@@ -347,6 +347,11 @@ const ExpandedComponent = (props) => {
               className="main-body separator"
               style={{ marginTop: "0.5rem" }}
             >
+              {data.paymented === false ? (
+                <div className="no-pago">NO PAGADO</div>
+              ) : (
+                <div className="pago">PAGADO</div>
+              )}
               <p>
                 Monto entregado:{" "}
                 <strong>$ {data.paymentCash.toFixed(1)}</strong>

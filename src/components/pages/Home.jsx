@@ -1,21 +1,36 @@
 import React, { useEffect, useState } from "react";
 import "./Home.css";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { useAuth } from "../../auth/AuthProvider";
 import { API_URL } from "../../auth/constants";
 import Carousel from "nuka-carousel";
+import { useNavigate } from "react-router-dom";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
 export const Home = () => {
+  useEffect(() => {
+    AOS.init({
+      once: false, // La animación solo ocurrirá una vez
+      duration: 800, // Duración de la animación en milisegundos
+      easing: "ease-out",
+    });
+  }, []);
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
-
+  const isAdmin =
+    auth.isAuthenticated && userObject && userObject.role === "ADMIN";
   const [datum, setDatum] = useState([]);
 
   useEffect(() => {
     fetchDataAsync();
   }, []);
 
+  const goTo = useNavigate();
+  const handleButtonClick = () => {
+    goTo("/crear-anuncio");
+  };
   const fetchDataAsync = async () => {
     try {
       const response = await fetch(`${API_URL}/advertisements`, {
@@ -33,8 +48,8 @@ export const Home = () => {
       }
 
       const apiData = await response.json();
-
-      setDatum(apiData.data);
+      const filteredData = apiData.data.filter((item) => item.active === true);
+      setDatum(filteredData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -83,6 +98,17 @@ export const Home = () => {
           {/* /.container-fluid */}
         </div>
         {/* /.content-header */}
+        {isAdmin && (
+          <div className="button-containero" style={{ zIndex: 9999 }}>
+            <button
+              className="flyer"
+              data-aos="fade-left"
+              onClick={handleButtonClick}
+            >
+              <i className="fas fa-plus nav-icon" />
+            </button>
+          </div>
+        )}
         {/* Main content */}
         <div className="container-advertisement">
           <Carousel {...params}>
