@@ -8,17 +8,17 @@ export const EditAdvertisement = () => {
     localStorage.getItem("editAdvertisement")
   );
 
-  const [title, setTitle] = useState(editAdvertisement.title);
-  const [description, setDescription] = useState(editAdvertisement.description);
-  const [whatsapp, setWhatsapp] = useState(editAdvertisement.whatsapp);
-  const [active, setActive] = useState(editAdvertisement.active);
+  const [title, setTitle] = useState(editAdvertisement?.title);
+  const [description, setDescription] = useState(
+    editAdvertisement?.description
+  );
+  const [whatsapp, setWhatsapp] = useState(editAdvertisement?.whatsapp);
+  const [active, setActive] = useState(editAdvertisement?.active);
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(editAdvertisement.urlImage);
-  console.log(editAdvertisement.urlImage.toString());
+  const [preview, setPreview] = useState(editAdvertisement?.urlImage);
   const referencia = useRef();
-
   const uploadFiles = () => {
     referencia.current.click();
   };
@@ -89,7 +89,6 @@ export const EditAdvertisement = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(image);
     try {
       const token = JSON.parse(localStorage.getItem("token"));
 
@@ -125,13 +124,10 @@ export const EditAdvertisement = () => {
         setWhatsapp("");
         setActive(false);
         setDescription("");
+        goTo("/");
+
         localStorage.removeItem("editAdvertisement");
-        setTimeout(() => {
-          goTo("/");
-          window.location.reload();
-        }, 2000);
       } else {
-        console.log(active);
         console.log("Something went wrong");
         const json = await response.json();
         if (json.statusCode === 422) {
@@ -205,9 +201,10 @@ export const EditAdvertisement = () => {
                         />
                         {image ? (
                           <img
-                            src={JSON.parse(preview)}
+                            src={preview}
                             onClick={uploadFiles}
                             style={{ width: "100", cursor: "pointer" }}
+                            alt=""
                           />
                         ) : (
                           <img

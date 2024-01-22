@@ -53,7 +53,7 @@ export const Home = () => {
 
       const apiData = await response.json();
       const filteredData = apiData.data.filter((item) => item.active === true);
-      setDatum(filteredData);
+      setDatum(isClient || !auth.isAuthenticated ? filteredData : apiData.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -130,11 +130,15 @@ export const Home = () => {
                     style={{
                       display:
                         isClient || !auth.isAuthenticated ? "none" : "block",
+                      marginLeft: "2rem",
                     }}
                   >
                     <i className="fas fa-edit" />
                   </button>
                 </Link>
+                {isAdmin && !advertisement.active && (
+                  <i className="fas fa-eye-slash nav-icon no-visible" />
+                )}
                 <img src={advertisement.urlImage} alt="p1" />
                 <div className="info">
                   <h1>{advertisement.title}</h1>

@@ -111,6 +111,26 @@
 .button-containero {
   position: relative;
 }
+
+.no-visible {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 8em; /* Ajusta el tamaño del icono según sea necesario */
+  color: white;
+  border: 3px solid black;
+  border-radius: 50%;
+  padding: 10px; /* Ajusta el espacio interior del borde según sea necesario */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Ajusta la opacidad del fondo según sea necesario */
+  z-index: 1; /* Asegúrate de que el icono esté sobre la imagen */
+}
+
 @media (max-width: 767px) {
   .container-advertisement img {
     width: 250%;
