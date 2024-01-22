@@ -52,12 +52,19 @@ export const Home = () => {
       }
 
       const apiData = await response.json();
-      const filteredData = apiData.data.filter((item) => item.active === true);
-      setDatum(isClient || !auth.isAuthenticated ? filteredData : apiData.data);
+      let filteredData = apiData.data;
+
+      if (!isAdmin) {
+        // Si no es ADMIN, aplicar el filtro para CLIENT o cuando no esté autenticado
+        filteredData = apiData.data.filter((item) => item.active === true);
+      }
+
+      setDatum(filteredData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
   const params = {
     wrapAround: true,
     autoplay: true,

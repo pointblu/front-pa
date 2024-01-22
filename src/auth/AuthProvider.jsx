@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import PropTypes from "prop-types";
+
 const AuthContext = createContext({
   isAuthenticated: false,
   getAccessToken: () => "",
@@ -59,6 +60,7 @@ export function AuthProvider({ children }) {
     setAccessToken("");
     setUser(undefined);
     setIsAuthenticated(false);
+    window.location.reload(true);
   }, []);
 
   const contextValue = useMemo(() => {

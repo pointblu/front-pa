@@ -11,11 +11,13 @@ export const Login = () => {
   const [successResponse, setSuccessResponse] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const auth = useAuth();
+
   const goTo = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -43,8 +45,7 @@ export const Login = () => {
           setUserName("");
           setPassword("");
           setTimeout(() => {
-            goTo("/");
-            window.location.reload(true);
+            goTo("/pedidos");
           }, 3000);
         }
       } else {
@@ -63,7 +64,8 @@ export const Login = () => {
 
   if (auth.isAuthenticated) {
     setTimeout(() => {
-      return <Navigate to="/" />;
+      window.location.reload(true);
+      return <Navigate to="/pedidos" />;
     }, 3000);
   }
   return (
