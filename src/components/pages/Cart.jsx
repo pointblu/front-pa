@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../auth/AuthProvider";
 import "./Cart.css";
 import { useCart } from "../../hooks/useCarts";
@@ -54,6 +54,8 @@ export function Cart() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
+
+  const [cartCounter, setCartCounter] = useState(0);
 
   const [payment, setPayment] = useState("EFECTIVO");
   const handlePayment = () => {
@@ -158,6 +160,10 @@ export function Cart() {
   }
 
   const { cart, clearCart, addToCart, decrementQuantity } = useCart();
+  useEffect(() => {
+    // Actualizar el contador cada vez que cambie el carrito
+    setCartCounter(cart.length);
+  }, [cart]);
   return (
     <div>
       <Toaster position="top-center" richColors />
@@ -171,6 +177,9 @@ export function Cart() {
             onClick={scrollToTop}
           >
             <i className="fas fa-shopping-basket nav-icon" />
+            <span className="badge badge-light navbar-badge">
+              {cartCounter}
+            </span>
           </button>
         </div>
       )}

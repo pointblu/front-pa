@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider.jsx";
 import { Cart } from "./Cart.jsx";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Tooltip } from "react-tooltip";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
@@ -89,11 +90,24 @@ export const Catalogo = () => {
 
         {<Filters />}
         {isAdmin && (
-          <div className="button-containero">
+          <div
+            className="button-containero"
+            style={{ display: "flex", overflow: "visible" }}
+          >
+            <Tooltip
+              id="tt-add-product"
+              style={{ position: "relative", zIndex: 2 }}
+            />
             <button
               className="flyer"
               data-aos="fade-left"
               onClick={handleButtonClick}
+              data-tooltip-id="tt-add-product"
+              data-tooltip-content="- Agregar producto"
+              data-tooltip-float={false}
+              data-tooltip-place="bootom"
+              data-tooltip-offset={-165}
+              data-tooltip-class-name="custom-tooltip"
             >
               <i className="fas fa-plus nav-icon" />
             </button>

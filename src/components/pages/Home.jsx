@@ -6,6 +6,7 @@ import { useAuth } from "../../auth/AuthProvider";
 import { API_URL } from "../../auth/constants";
 import Carousel from "nuka-carousel";
 import { Link, useNavigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
@@ -116,10 +117,17 @@ export const Home = () => {
         {/* /.content-header */}
         {isAdmin && (
           <div className="button-containero" style={{ zIndex: 9999 }}>
+            <Tooltip id="tt-add-advertisement" />
             <button
               className="flyer"
               data-aos="fade-left"
               onClick={handleButtonClick}
+              data-tooltip-id="tt-add-advertisement"
+              data-tooltip-content="Agregar anuncio"
+              data-tooltip-place="right"
+              data-tooltip-float={false}
+              data-tooltip-offset={10}
+              data-tooltip-class-name="custom-tooltip"
             >
               <i className="fas fa-plus nav-icon" />
             </button>
@@ -127,6 +135,7 @@ export const Home = () => {
         )}
         {/* Main content */}
         <div className="container-advertisement">
+          <Tooltip id={`tt-edit-advertisement`} />
           <Carousel {...params}>
             {datum.map((advertisement) => (
               <div key={advertisement.id}>
@@ -139,6 +148,10 @@ export const Home = () => {
                         isClient || !auth.isAuthenticated ? "none" : "block",
                       marginLeft: "2rem",
                     }}
+                    data-tooltip-id={`tt-edit-advertisement`}
+                    data-tooltip-content="Editar anuncio"
+                    data-tooltip-place="right"
+                    data-tooltip-float={false}
                   >
                     <i className="fas fa-edit" />
                   </button>
