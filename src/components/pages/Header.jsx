@@ -89,10 +89,8 @@ export const Header = () => {
       description: "Tu cierre de sesión fue exitoso.",
       duration: 3000,
     });
-    setTimeout(() => {
-      auth.signout();
-      goTo("/");
-    }, 3000);
+    goTo("/catalogo");
+    auth.signout();
   }
   return (
     <div>
@@ -108,9 +106,20 @@ export const Header = () => {
           style={{ display: "flex", overflow: "visible" }}
         >
           <li className="nav-item hamburger">
-            <Link className="nav-link" data-widget="pushmenu" href="#">
+            <Link
+              className="nav-link"
+              data-widget="pushmenu"
+              href="#"
+              data-tooltip-id="tt-menu"
+              data-tooltip-content="Menú"
+              data-tooltip-place="bottom"
+              data-tooltip-float={false}
+              data-tooltip-offset={-10}
+              data-tooltip-class-name="custom-tooltip"
+            >
               <i className="fas fa-bars" />
             </Link>
+            <Tooltip id="tt-menu" />
           </li>
           <li className="nav-item d-none d-sm-inline-block">
             <Link
@@ -133,7 +142,7 @@ export const Header = () => {
                 className="nav-link"
                 to="/ingreso"
                 data-tooltip-id="tt-login"
-                data-tooltip-content="Ingresar"
+                data-tooltip-content="Ingresa"
                 data-tooltip-place="bottom"
                 data-tooltip-float={false}
                 data-tooltip-offset={-10}
@@ -151,7 +160,7 @@ export const Header = () => {
                 className="nav-link"
                 to="/registro"
                 data-tooltip-id="tt-register"
-                data-tooltip-content="Registrar"
+                data-tooltip-content="Registrate"
                 data-tooltip-place="right"
                 data-tooltip-float={false}
                 data-tooltip-offset={-10}

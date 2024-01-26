@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../auth/constants";
 import { Toaster, toast } from "sonner";
 import { UploadImage } from "./UploadImage";
+import { Tooltip } from "react-tooltip";
 
 export const CreatePayment = () => {
   const editPayment = JSON.parse(localStorage.getItem("editPayment"));
@@ -11,7 +12,7 @@ export const CreatePayment = () => {
   const [active, setActive] = useState(editPayment.active);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [paymentType, setPaymentType] = useState(editPayment.paymentType);
-  const [paymentCash, setPaymentCash] = useState(editPayment.paymentCash);
+  const [paymentCash, setPaymentCash] = useState("");
   const [paymentChange, setPaymentChange] = useState(editPayment.paymentChange);
   const [paymented, setPaymented] = useState(editPayment.paymented);
   const [errorResponse, setErrorResponse] = useState("");
@@ -24,6 +25,19 @@ export const CreatePayment = () => {
   useEffect(() => {
     setIsButtonDisabled(!imageUrl);
   }, [imageUrl]);
+
+  const calculatePaymentChange = (cashValue) => {
+    const numericCash = isTrans ? 0 : parseFloat(cashValue);
+    const numericTotal = parseFloat(total);
+
+    // Calcular el cambio
+    const calculatedChange = numericCash - (numericTotal + 1000);
+
+    // Actualizar el estado de paymentChange
+    setPaymentChange(
+      isNaN(calculatedChange) ? "" : calculatedChange.toString()
+    );
+  };
 
   function handleCancel(e) {
     e.preventDefault();
@@ -167,15 +181,25 @@ export const CreatePayment = () => {
                           <input
                             type="number"
                             value={paymentCash}
-                            onChange={(e) => setPaymentCash(e.target.value)}
+                            onChange={(e) => {
+                              setPaymentCash(e.target.value);
+                              calculatePaymentChange(e.target.value);
+                            }}
                             className="form-control"
-                            placeholder="Monto Entregado"
+                            placeholder="Monto neto a pagar"
                             name="paymentCash"
                             autoComplete="off"
                           />
                           <div className="input-group-append">
                             <div className="input-group-text">
-                              <span className="fas fa-hand-holding-usd text-white" />
+                              <Tooltip id="tt-cash" />
+                              <span
+                                className="fas fa-hand-holding-usd text-white"
+                                data-tooltip-id="tt-cash"
+                                data-tooltip-html="💵<br />Indique el monto neto en efectivo <br />con el que va a pagar"
+                                data-tooltip-place="right"
+                                data-tooltip-float={false}
+                              />
                             </div>
                           </div>
                         </div>

@@ -153,7 +153,7 @@ export const Register = () => {
                           value={userName}
                           onChange={(e) => setUserName(e.target.value)}
                           className="form-control"
-                          placeholder="nombre clave"
+                          placeholder="usuario de ingreso"
                           name="userName"
                           autoComplete="off"
                         />

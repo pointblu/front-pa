@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import ConectorPluginV3 from "../../pos-print/ConectorJavaScriptB";
 import { Toaster, toast } from "sonner";
 import { Link } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 
 registerLocale("es", es);
 const token = JSON.parse(localStorage.getItem("token"));
@@ -21,7 +22,7 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
   },
   {
     name: "TOTAL",
-    selector: (row) => `$ ${row.total.toFixed(2)}`,
+    selector: (row) => `$ ${(row.total + 1000).toFixed(2)}`,
     minWidth: "120px",
   },
   {
@@ -61,12 +62,18 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
     name: "ACCIONES",
     cell: (row) => (
       <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
+        <Tooltip id="tt-action" />
         {isAdmin && row.status === "REQUESTED" ? (
           <button
             className="ican-button act-rut"
             onClick={() =>
               handleUpdateStatus("ROUTED", row.id, row.total, row.paymentType)
             }
+            data-tooltip-id="tt-action"
+            data-tooltip-content="Despachar"
+            data-tooltip-place="left"
+            data-tooltip-float={false}
+            data-tooltip-class-name="custom-tooltip"
           >
             <i className="fas fa-shipping-fast nav-icon" />
           </button>
@@ -82,6 +89,11 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
                 row.paymentType
               )
             }
+            data-tooltip-id="tt-action"
+            data-tooltip-content="Entregado"
+            data-tooltip-place="left"
+            data-tooltip-float={false}
+            data-tooltip-class-name="custom-tooltip"
           >
             <i className="fas fa-check nav-icon" />
           </button>
@@ -92,6 +104,11 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
             onClick={() =>
               handleUpdateStatus("CANCELED", row.id, row.total, row.paymentType)
             }
+            data-tooltip-id="tt-action"
+            data-tooltip-content="Cancelar"
+            data-tooltip-place="top"
+            data-tooltip-float={false}
+            data-tooltip-class-name="custom-tooltip"
           >
             <i className="fas fa-times nav-icon" />
           </button>
@@ -101,6 +118,11 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
             <button
               className="ican-button"
               onClick={() => handleCreatePayment(row)}
+              data-tooltip-id="tt-action"
+              data-tooltip-content="Pagar"
+              data-tooltip-place="right"
+              data-tooltip-float={false}
+              data-tooltip-class-name="custom-tooltip"
             >
               <i className="fas fa-money-bill-wave nav-icon" />
             </button>
@@ -203,7 +225,16 @@ const ExpandedComponent = (props) => {
       <div className="section col-md-6">
         {isAdmin && (
           <div>
-            <button className="iconise-button" onClick={handlePrintPos}>
+            <Tooltip id="tt-print" />
+            <button
+              className="iconise-button"
+              onClick={handlePrintPos}
+              data-tooltip-id="tt-print"
+              data-tooltip-content="Imprimir"
+              data-tooltip-place="bottom"
+              data-tooltip-float={false}
+              data-tooltip-class-name="custom-tooltip"
+            >
               <i className="fas fa-print nav-icon" />
             </button>
           </div>
@@ -212,7 +243,7 @@ const ExpandedComponent = (props) => {
           <header className="text-center">
             <h3 className="company-name">PANADERIA PUNTO AZUL</h3>
             <p> El Manantial, Soledad-AT </p>
-            <p>TEL: 310 555 5555</p>
+            <p>TEL: 322 9560143</p>
             <p className="bill">¡Bienvenido!</p>
           </header>
           <div className="main-body separator">
@@ -347,11 +378,6 @@ const ExpandedComponent = (props) => {
               className="main-body separator"
               style={{ marginTop: "0.5rem" }}
             >
-              {data.paymented === false ? (
-                <div className="no-pago">NO PAGADO</div>
-              ) : (
-                <div className="pago">PAGADO</div>
-              )}
               <p>
                 Monto entregado:{" "}
                 <strong>$ {data.paymentCash.toFixed(1)}</strong>
@@ -565,13 +591,21 @@ export function Pedido() {
                     onChange={handleChangeDate}
                     locale="es"
                     dateFormat="dd/MM/yyyy"
-                    placeholderText="Seleccione un interválo"
+                    placeholderText="Interválo de fechas"
                     onKeyDown={(e) => {
                       e.preventDefault();
                     }}
                     className="custom-input-form"
                   />
-                  <button className="iconise-button" onClick={handleClearDate}>
+                  <Tooltip id="tt-clean" />
+                  <button
+                    className="iconise-button"
+                    onClick={handleClearDate}
+                    data-tooltip-id="tt-clean"
+                    data-tooltip-content="Limpiar intervalo"
+                    data-tooltip-place="right"
+                    data-tooltip-float={false}
+                  >
                     <i className="fas fa-eraser nav-icon" />
                   </button>
                 </div>

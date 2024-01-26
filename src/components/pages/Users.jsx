@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { API_URL } from "../../auth/constants";
+import { Tooltip } from "react-tooltip";
 
 const token = JSON.parse(localStorage.getItem("token"));
 const columns = [
@@ -49,6 +50,23 @@ const columns = [
       </div>
     ),
     minWidth: "200px",
+  },
+  {
+    name: "ACCIONES",
+    cell: (row) => (
+      <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
+        <Tooltip id={`tt-delete`} />
+        <button
+          className="ican-button act-ccl"
+          data-tooltip-id="tt-delete"
+          data-tooltip-content="Eliminar usuario"
+          data-tooltip-place="right"
+          data-tooltip-float={false}
+        >
+          <i className="fas fa-times nav-icon" />
+        </button>
+      </div>
+    ),
   },
 ];
 

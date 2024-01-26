@@ -172,6 +172,12 @@ export const Home = () => {
                       <i className="fab fa-whatsapp" />
                     </button>
                   </a>
+                  <button
+                    className="icon-buttoni"
+                    style={{ marginLeft: "0.5rem" }}
+                  >
+                    <i className="fas fa-link" />
+                  </button>
                 </div>
               </div>
             ))}
