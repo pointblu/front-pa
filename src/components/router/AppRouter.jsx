@@ -17,6 +17,7 @@ import {
   CreatePayment,
   CreateAdvertisement,
   EditAdvertisement,
+  Recover,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -51,6 +52,7 @@ export const AppRouter = () => {
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/registro" element={<Register />} />
         <Route path="/ingreso" element={<Login />} />
+        <Route path="/recuperar" element={<Recover />} />
       </Routes>
       <SideNav />
       <MobileNav />

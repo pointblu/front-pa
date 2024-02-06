@@ -1,58 +1,43 @@
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth/AuthProvider";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../auth/constants";
 import { Toaster, toast } from "sonner";
 
-export const Login = () => {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorResponse, setErrorResponse] = useState("");
+export const Recover = () => {
+  const [email, setEmail] = useState("");
+
   const [successResponse, setSuccessResponse] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const auth = useAuth();
+  const [errorResponse, setErrorResponse] = useState("");
 
   const goTo = useNavigate();
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName,
-          password,
-        }),
+      const response = await fetch(`${API_URL}/users/send/${email}/email`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
       if (response.ok) {
         console.log("Login successfully");
         const json = await response.json();
-        if (json.accessToken) {
-          auth.saveUser(json);
-          toast.success("¡Conexión establecida!", {
-            description: "Tu inicio de sesión fue exitoso.",
-          });
-          setSuccessResponse("");
-          setErrorResponse(null);
-          setUserName("");
-          setPassword("");
-          setTimeout(() => {
-            goTo("/pedidos");
-          }, 3000);
-        }
+        console.log(json);
+        toast.success("¡Solicitud enviada!", {
+          description: "Enviamos a tu correo electrónico los datos de ingreso.",
+        });
+
+        setSuccessResponse("");
+        setErrorResponse(null);
+        setEmail("");
+        setTimeout(() => {
+          goTo("/ingreso");
+        }, 3000);
       } else {
         console.log("Something went wrong");
         await response.json();
         toast.error("Oops, algo salio mal.", {
-          description: "Verifica tus credenciales e inténtalo nuevamente",
+          description: "Verifica tu correo electrónico e inténtalo nuevamente",
         });
         setErrorResponse();
         setSuccessResponse(null);
@@ -62,12 +47,6 @@ export const Login = () => {
     }
   }
 
-  if (auth.isAuthenticated) {
-    setTimeout(() => {
-      window.location.reload(true);
-      return <Navigate to="/pedidos" />;
-    }, 3000);
-  }
   return (
     <div>
       <Toaster position="top-center" richColors />
@@ -82,7 +61,7 @@ export const Login = () => {
                   className="m-0 App-header focus-in-contract alphi-2"
                   style={{ backgroundColor: "#17a2b8" }}
                 >
-                  Ingresar
+                  Recupera tu datos
                 </h1>
               </div>
             </div>
@@ -128,39 +107,22 @@ export const Login = () => {
                   >
                     <form action="/" method="post" onSubmit={handleSubmit}>
                       <div className="input-group mb-3">
+                        <label>
+                          {" "}
+                          Indica el correo electrónico con el que te registraste
+                        </label>
                         <input
                           type="text"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
                           className="form-control"
-                          placeholder="usuario de ingreso"
-                          name="userName"
+                          placeholder="Correo electrónico"
+                          name="email"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-user-secret" />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="input-group mb-3">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="form-control"
-                          placeholder="contraseña"
-                          name="password"
-                        />
-                        <div className="input-group-append">
-                          <div className="input-group-text">
-                            <i
-                              onClick={togglePasswordVisibility}
-                              style={{ cursor: "pointer" }}
-                              className={
-                                showPassword ? "fas fa-eye" : "fas fa-eye-slash"
-                              }
-                            />
+                            <span className="fas fa-mail" />
                           </div>
                         </div>
                       </div>
@@ -177,9 +139,6 @@ export const Login = () => {
                         {/* /.col */}
                       </div>
                     </form>
-                    <Link to="/recuperar" className="text-center ctry">
-                      Olvide mis datos!
-                    </Link>
                   </div>
                   {/* /.form-box */}
                 </div>

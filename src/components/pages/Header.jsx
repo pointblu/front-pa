@@ -7,6 +7,7 @@ import { API_URL } from "../../auth/constants";
 import { useSpring, animated } from "react-spring";
 import { Tooltip } from "react-tooltip";
 import "./Header.css";
+import { format } from "date-fns";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
@@ -29,6 +30,7 @@ export const Header = () => {
   localStorage.setItem("categorias", JSON.stringify(categories));
 
   const auth = useAuth();
+  const userObject = JSON.parse(auth.getUser() || "{}");
 
   useEffect(() => {
     fetchDataAsync();
@@ -81,6 +83,11 @@ export const Header = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const convertDateFormat = (fecha) => {
+    const fechaOriginal = new Date(fecha);
+    return format(fechaOriginal, "dd/MM/yyyy");
   };
 
   async function handleSignOut(e) {
@@ -177,13 +184,51 @@ export const Header = () => {
           className="navbar-nav ml-auto"
           style={{ display: "flex", overflow: "visible" }}
         >
+          {auth.isAuthenticated && (
+            <li
+              className="nav-item"
+              data-tooltip-id="tt-puntos"
+              data-tooltip-content="Puntos Azules"
+              data-tooltip-float={false}
+              data-tooltip-class-name="custom-tooltip"
+            >
+              <div className="nav-link">
+                <img
+                  src={process.env.PUBLIC_URL + "/dist/img/puntos_azules.png"}
+                  alt="Número resaltado"
+                  style={{
+                    width: "1.5rem",
+                    position: "relative",
+                    top: 0,
+                    left: 0,
+                    zIndex: 1,
+                  }}
+                />
+                <span
+                  className="badge badge-dark navbar-badge"
+                  style={{ right: "-0.5rem" }}
+                >
+                  <UserNumber n={userObject.points} />
+                </span>
+                <span
+                  className="badge navbar-badge"
+                  style={{ left: "-0.5rem", top: "2rem" }}
+                >
+                  Validos hasta el:{" "}
+                  {auth.isAuthenticated &&
+                    convertDateFormat(userObject.resetpointsat)}
+                </span>
+              </div>
+
+              <Tooltip id="tt-puntos" />
+            </li>
+          )}
           <li
             className="nav-item"
             style={{ flexFlow: "row" }}
             data-tooltip-id="tt-user-registered"
             data-tooltip-content="Usuarios registrados"
             data-tooltip-float={false}
-            data-tooltip-offset={-10}
             data-tooltip-class-name="custom-tooltip"
           >
             <div className="nav-link">
@@ -211,6 +256,7 @@ export const Header = () => {
               </Link>
             </li>
           )}
+
           {auth.isAuthenticated && (
             <li
               className="nav-item"

@@ -15,3 +15,4 @@ export * from "./EditCategories";
 export * from "./CreatePayment";
 export * from "./CreateAdvertisement";
 export * from "./EditAdvertisement";
+export * from "./Recover";

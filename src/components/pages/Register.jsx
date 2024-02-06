@@ -185,7 +185,7 @@ export const Register = () => {
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           className="form-control"
-                          placeholder="número celular"
+                          placeholder="número celular /contraseña"
                           name="phone"
                         />
                         <div className="input-group-append">

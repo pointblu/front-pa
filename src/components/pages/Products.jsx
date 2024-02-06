@@ -39,6 +39,25 @@ export function Products({ products }) {
             {product.stock <= 0 && <div className="agotado">AGOTADO</div>}
             <div className="price">${product.price}</div>
             <img src={product.image} alt={product.name} />
+            <div className="pricePoint">
+              <div style={{ position: "relative" }}>
+                {product.points}
+                <img
+                  src={
+                    process.env.PUBLIC_URL + "/dist/img/logo_punto_azul_pq.png"
+                  }
+                  alt="Número resaltado"
+                  style={{
+                    width: "25px",
+                    height: "25px",
+                    position: "absolute",
+                    top: ".2rem",
+                    right: "-2rem",
+                    zIndex: 1,
+                  }}
+                />
+              </div>
+            </div>{" "}
             <div className="product-info">
               <strong>{product.name}</strong>
               <div className="description">{product.description} </div>

@@ -2,6 +2,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { Toaster, toast } from "sonner";
+import { Tooltip } from "react-tooltip";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export const MobileNav = () => {
@@ -50,6 +51,7 @@ export const MobileNav = () => {
                 fontSize: "0.6rem",
               }}
             >
+              <Tooltip id="tt-menu-m" />
               {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
 
@@ -61,6 +63,11 @@ export const MobileNav = () => {
                     position: "relative",
                     zIndex: 1100,
                   }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Usuarios"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
                 >
                   <NavLink
                     to="/usuarios"
@@ -75,6 +82,11 @@ export const MobileNav = () => {
               <li
                 className="nav-item mx-2"
                 style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
+                data-tooltip-id="tt-menu-m"
+                data-tooltip-content="Catalogo"
+                data-tooltip-place="top"
+                data-tooltip-float={false}
+                data-tooltip-class-name="custom-tooltip"
               >
                 <NavLink
                   to="/catalogo"
@@ -88,6 +100,11 @@ export const MobileNav = () => {
               <li
                 className="nav-item mx-2"
                 style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
+                data-tooltip-id="tt-menu-m"
+                data-tooltip-content="Pedidos"
+                data-tooltip-place="top"
+                data-tooltip-float={false}
+                data-tooltip-class-name="custom-tooltip"
               >
                 <NavLink
                   to="/pedidos"
@@ -106,6 +123,11 @@ export const MobileNav = () => {
                     position: "relative",
                     zIndex: 9999,
                   }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Ventas"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
                 >
                   <NavLink
                     to="/ventas"
@@ -124,6 +146,11 @@ export const MobileNav = () => {
                     position: "relative",
                     zIndex: 9999,
                   }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Categorias"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
                 >
                   <NavLink
                     to="/categorias"

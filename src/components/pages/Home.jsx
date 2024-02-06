@@ -102,12 +102,18 @@ export const Home = () => {
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-12">
-                <h1
-                  className="m-0 App-header focus-in-contract alphi-5"
-                  style={{ backgroundColor: "#17a2b8" }}
-                >
-                  Inicio {userObject.name}
-                </h1>
+                <div style={{ position: "relative" }}>
+                  <h1
+                    className="m-0 App-header focus-in-contract alphi-5"
+                    style={{
+                      backgroundColor: "#17a2b8",
+                      position: "relative",
+                      zIndex: 0,
+                    }}
+                  >
+                    Inicio {userObject.name}
+                  </h1>
+                </div>
               </div>
             </div>
             {/* /.row */}
@@ -172,12 +178,29 @@ export const Home = () => {
                       <i className="fab fa-whatsapp" />
                     </button>
                   </a>
-                  <button
-                    className="icon-buttoni"
-                    style={{ marginLeft: "0.5rem" }}
-                  >
-                    <i className="fas fa-link" />
-                  </button>
+                  {console.log(advertisement.link)}
+                  {advertisement.link !== "null" ? (
+                    <a
+                      href={advertisement.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <button
+                        className="icon-buttoni"
+                        style={{ marginLeft: "0.5rem" }}
+                      >
+                        <i className="fas fa-link" />
+                      </button>
+                    </a>
+                  ) : (
+                    <button
+                      className="icon-buttoni"
+                      style={{ marginLeft: "0.5rem", cursor: "not-allowed" }}
+                      disabled
+                    >
+                      <i className="fas fa-link" />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

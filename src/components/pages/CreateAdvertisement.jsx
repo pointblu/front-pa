@@ -12,6 +12,7 @@ export const CreateAdvertisement = () => {
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
   const [image, setImage] = useState(null);
+  const [link, setLink] = useState(null);
   const [preview, setPreview] = useState("");
 
   const referencia = useRef();
@@ -96,6 +97,7 @@ export const CreateAdvertisement = () => {
       formData.append("description", description);
       formData.append("whatsapp", whatsapp);
       formData.append("active", active);
+      formData.append("link", link);
 
       const requestOptions = {
         method: "POST",
@@ -118,6 +120,7 @@ export const CreateAdvertisement = () => {
         setErrorResponse(null);
         setTitle("");
         setWhatsapp("");
+        setLink("");
         setActive(false);
         setDescription("");
         setTimeout(() => {
@@ -241,6 +244,7 @@ export const CreateAdvertisement = () => {
                           </div>
                         </div>
                       </div>
+
                       <div className="input-group mb-3">
                         <input
                           type="text"
@@ -254,6 +258,23 @@ export const CreateAdvertisement = () => {
                         <div className="input-group-append">
                           <div className="input-group-text">
                             <span className="fab fa-whatsapp text-white" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="input-group mb-3">
+                        <input
+                          type="text"
+                          value={link}
+                          onChange={(e) => setLink(e.target.value)}
+                          className="form-control"
+                          placeholder="Página web (opcional)"
+                          name="link"
+                          autoComplete="off"
+                        />
+                        <div className="input-group-append">
+                          <div className="input-group-text">
+                            <span className="fas fa-link text-white" />
                           </div>
                         </div>
                       </div>

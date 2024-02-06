@@ -436,8 +436,11 @@ export function Pedido() {
 
   const fetchDataAsync = async () => {
     try {
+      console.log(userObject.id);
       const response = await fetch(
-        `${API_URL}/purchases?status=${statum}&startDate=${
+        `${API_URL}/purchases?status=${statum}&buyerId=${
+          isAdmin ? "" : userObject.id
+        }&startDate=${
           startDate ? format(startDate, "yyyy-MM-dd") : ""
         }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
         {
@@ -451,12 +454,12 @@ export function Pedido() {
           },
         }
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const apiData = await response.json();
+
       setDatum(apiData);
     } catch (error) {
       console.error("Error fetching data:", error);

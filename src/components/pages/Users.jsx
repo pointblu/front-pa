@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { API_URL } from "../../auth/constants";
 import { Tooltip } from "react-tooltip";
+import { Toaster, toast } from "sonner";
 
 const token = JSON.parse(localStorage.getItem("token"));
-const columns = [
+
+const columns = (handleDeleteUser) => [
   {
     name: "NOMBRE",
     selector: (row) => (
@@ -52,11 +54,27 @@ const columns = [
     minWidth: "200px",
   },
   {
+    name: "PUNTOS AZULES",
+    selector: (row) => (
+      <div
+        style={{
+          overflow: "hidden",
+          whiteSpace: "wrap",
+          textOverflow: "unset",
+        }}
+      >
+        {row.points}
+      </div>
+    ),
+    minWidth: "200px",
+  },
+  {
     name: "ACCIONES",
     cell: (row) => (
       <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
         <Tooltip id={`tt-delete`} />
         <button
+          onClick={() => handleDeleteUser(row.id)}
           className="ican-button act-ccl"
           data-tooltip-id="tt-delete"
           data-tooltip-content="Eliminar usuario"
@@ -73,6 +91,7 @@ const columns = [
 const CustomNoDataComponent = () => (
   <div className="text-center">¡No hay registros para mostrar!</div>
 );
+
 export function Users() {
   const [datum, setDatum] = useState([]);
   const [search, setSearch] = useState("");
@@ -109,18 +128,45 @@ export function Users() {
       );
 
       if (!response.ok) {
+        toast.error("Ups!; Algo salio mal");
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const apiData = await response.json();
-      setDatum(apiData.data);
-      setFilter(apiData.data);
+
+      const apiDatum = apiData.data.filter((datu) => {
+        return datu.active !== false;
+      });
+      setDatum(apiDatum);
+      setFilter(apiDatum);
       setTotalRows(apiData.meta.itemsCount);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  const handleDeleteUser = async (userId) => {
+    try {
+      const response = await fetch(`${API_URL}/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+          "Access-Control-Allow-Origin": "*",
+          mode: "no-cors",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      toast.success("Eliminaste este usuario!");
+      fetchDataAsync();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const handlePerRowsChange = (newPerPage) => {
     setPerPage(newPerPage);
   };
@@ -139,8 +185,9 @@ export function Users() {
 
   return (
     <div>
+      <Toaster position="top-center" richColors />
       <DataTable
-        columns={columns}
+        columns={columns(handleDeleteUser)}
         data={filter}
         pagination
         paginationServer
