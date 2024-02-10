@@ -8,10 +8,11 @@ import { useSpring, animated } from "react-spring";
 import { Tooltip } from "react-tooltip";
 import "./Header.css";
 import { format } from "date-fns";
+import { UserNumber } from "../../context/point";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
-function UserNumber({ n }) {
+function UserNumb({ n }) {
   const { animatedNumber } = useSpring({
     from: { animatedNumber: 0 },
     animatedNumber: Number(n),
@@ -192,7 +193,7 @@ export const Header = () => {
               data-tooltip-float={false}
               data-tooltip-class-name="custom-tooltip"
             >
-              <div className="nav-link">
+              <Link className="nav-link" to="/canjear">
                 <img
                   src={process.env.PUBLIC_URL + "/dist/img/puntos_azules.png"}
                   alt="Número resaltado"
@@ -218,7 +219,7 @@ export const Header = () => {
                   {auth.isAuthenticated &&
                     convertDateFormat(userObject.resetpointsat)}
                 </span>
-              </div>
+              </Link>
 
               <Tooltip id="tt-puntos" />
             </li>
@@ -235,7 +236,7 @@ export const Header = () => {
               <Tooltip id="tt-user-registered" />
               <i className="fas fa-users" />
               <span className="badge badge-success navbar-badge">
-                <UserNumber n={datum} />
+                <UserNumb n={datum} />
               </span>
             </div>
           </li>

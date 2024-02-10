@@ -5,8 +5,10 @@ import { useCart } from "../../hooks/useCarts";
 import { useAuth } from "../../auth/AuthProvider";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
+import { useCanje } from "../../hooks/useCanje";
+import { usePoints } from "../../context/point";
 
-export function Products({ products }) {
+export function Products({ products, from }) {
   useEffect(() => {
     AOS.init({
       once: false, // La animación solo ocurrirá una vez
@@ -22,18 +24,39 @@ export function Products({ products }) {
 
   const { addToCart, removeFromCart, cart } = useCart();
 
+  const { addToCanje, removeFromCanje, canje } = useCanje();
+
+  const { handleAddPoints, handleRemovePoints } = usePoints();
+
   const checkProductInCart = (product) => {
     return cart.some((item) => item.id === product.id);
+  };
+
+  const checkProductInCanje = (product) => {
+    return canje.some((item) => item.id === product.id);
   };
 
   function handleEditProduct(prod) {
     localStorage.setItem("editProduct", JSON.stringify(prod));
   }
 
+  function handleAddCanje(prod) {
+    addToCanje(prod);
+    handleRemovePoints(prod.points);
+    window.location.reload();
+  }
+
+  function handleRemoveCanje(prod) {
+    removeFromCanje(prod);
+    handleAddPoints(prod.points);
+    window.location.reload();
+  }
+
   return (
     <ul style={{ marginTop: "5rem" }}>
       {products.map((product) => {
         const isProductInCart = checkProductInCart(product);
+        const isProductInCanje = checkProductInCanje(product);
         return (
           <li key={product.id} className="card" data-aos="fade-up">
             {product.stock <= 0 && <div className="agotado">AGOTADO</div>}
@@ -72,29 +95,61 @@ export function Products({ products }) {
                 overflow: "visible",
               }}
             >
-              <button
-                className="icon-button"
-                style={{
-                  backgroundColor: isProductInCart ? "goldenrod" : "burlywood",
-                  display: !isClient && auth.isAuthenticated ? "none" : "block",
-                }}
-                onClick={() => {
-                  isProductInCart
-                    ? removeFromCart(product)
-                    : addToCart(product);
-                }}
-                disabled={!isClient || product.stock < 0}
-                data-tooltip-id={"tt-add-basket" + product.id}
-                data-tooltip-content="Agregar a la cesta"
-                data-tooltip-float={false}
-                data-tooltip-place="top"
-              >
-                <i className="fas fa-shopping-basket" />
-                <Tooltip id={"tt-add-basket" + product.id} />
-                <sup>
-                  <i className="fas fa-plus nav-icon" />
-                </sup>
-              </button>
+              {from !== "redimir" ? (
+                <button
+                  className="icon-button"
+                  style={{
+                    backgroundColor: isProductInCart
+                      ? "goldenrod"
+                      : "burlywood",
+                    display:
+                      !isClient && auth.isAuthenticated ? "none" : "block",
+                  }}
+                  onClick={() => {
+                    isProductInCart
+                      ? removeFromCart(product)
+                      : addToCart(product);
+                  }}
+                  disabled={!isClient || product.stock < 0}
+                  data-tooltip-id={"tt-add-basket" + product.id}
+                  data-tooltip-content="Agregar a la cesta"
+                  data-tooltip-float={false}
+                  data-tooltip-place="top"
+                >
+                  <i className="fas fa-shopping-basket" />
+                  <Tooltip id={"tt-add-basket" + product.id} />
+                  <sup>
+                    <i className="fas fa-plus nav-icon" />
+                  </sup>
+                </button>
+              ) : (
+                <button
+                  className="icon-button"
+                  style={{
+                    backgroundColor: isProductInCanje
+                      ? "goldenrod"
+                      : "burlywood",
+                    display:
+                      !isClient && auth.isAuthenticated ? "none" : "block",
+                  }}
+                  onClick={() => {
+                    isProductInCanje
+                      ? handleRemoveCanje(product)
+                      : handleAddCanje(product);
+                  }}
+                  disabled={!isClient || product.stock < 0}
+                  data-tooltip-id={"tt-add-basket" + product.id}
+                  data-tooltip-content="Agregar a la cesta"
+                  data-tooltip-float={false}
+                  data-tooltip-place="top"
+                >
+                  <i className="fas fa-shopping-basket" />
+                  <Tooltip id={"tt-add-basket" + product.id} />
+                  <sup>
+                    <i className="fas fa-plus nav-icon" />
+                  </sup>
+                </button>
+              )}
 
               <Link to={`/editar-producto`}>
                 <button

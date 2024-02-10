@@ -5,6 +5,7 @@ import { useCart } from "../../hooks/useCarts";
 import { API_URL } from "../../auth/constants";
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useCanje } from "./../../hooks/useCanje";
 
 function CartItem({
   image,
@@ -41,10 +42,31 @@ function CartItem({
   );
 }
 
+function CanjeItem({ image, name, quantity, points }) {
+  return (
+    <li>
+      <img src={image} alt={name} />
+
+      <div>{name}</div>
+
+      <div>
+        <small>Cantidad: </small>
+        <strong>
+          <small> {quantity} </small>
+        </strong>
+        <div>
+          <strong> {points} Puntos azules</strong>
+        </div>
+      </div>
+    </li>
+  );
+}
+
 export function Cart() {
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
   const emptyCart = JSON.parse(localStorage.getItem("cart"));
+  const emptyCanje = JSON.parse(localStorage.getItem("canje"));
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isClient =
@@ -56,6 +78,7 @@ export function Cart() {
   };
 
   const [cartCounter, setCartCounter] = useState(0);
+  const [canjeCounter, setCanjeCounter] = useState(0);
 
   const [payment, setPayment] = useState("EFECTIVO");
   const handlePayment = () => {
@@ -72,6 +95,7 @@ export function Cart() {
     try {
       const token = JSON.parse(localStorage.getItem("token"));
       const cartDetails = JSON.parse(localStorage.getItem("cart"));
+      const canjeDetails = JSON.parse(localStorage.getItem("canje"));
       const domicilio = {
         id: "0e230b3f-34d2-4b6a-b0f4-a646bca3d893",
         quantity: 1,
@@ -110,6 +134,26 @@ export function Cart() {
         setSuccessResponse(json.message);
         localStorage.setItem("purchase", JSON.stringify(json.data.id));
         setErrorResponse(null);
+        const puntales = JSON.parse(localStorage.getItem("points"));
+        const redimidos = JSON.parse(localStorage.getItem("userInfo"));
+        const pointers = await fetch(
+          `${API_URL}/users/add/${buyerId.id}/points/${
+            redimidos.points - puntales
+          }`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/json",
+              "Cache-Control": "no-store",
+              "Access-Control-Allow-Origin": "*",
+              mode: "no-cors",
+            },
+          }
+        );
+        if (!pointers.ok) {
+          throw new Error(`HTTP error! Status: ${pointers.status}`);
+        }
 
         await Promise.all(
           cartDetails.map(async (e) => {
@@ -138,10 +182,38 @@ export function Cart() {
               setSuccessResponse(null);
             }
             return responseDetail;
+          }),
+          canjeDetails.map(async (e) => {
+            const responseDetail = await fetch(`${API_URL}/purchaseDetails`, {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json",
+                "Cache-Control": "no-store",
+              },
+              body: JSON.stringify({
+                subtotal: numericTotal,
+                cost: numericTotal,
+                quantity: parseInt(e.quantity, 10),
+                product: e.id,
+                seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
+                detail: json.data.id,
+                active: false,
+              }),
+            });
+
+            if (!responseDetail.ok) {
+              // Manejar el caso en que la creación de un Purchase Detail falle
+              const jsonDetail = await responseDetail.json();
+              toast.error(jsonDetail.message);
+              setSuccessResponse(null);
+            }
+            return responseDetail;
           })
         );
 
         clearCart();
+        clearCanje();
         setTimeout(async () => {
           goTo("/pedidos");
           window.location.reload();
@@ -164,6 +236,9 @@ export function Cart() {
     // Actualizar el contador cada vez que cambie el carrito
     setCartCounter(cart.length);
   }, [cart]);
+
+  const { canje, clearCanje, addToCanje, decrementQuantityCanje } = useCanje();
+
   return (
     <div>
       <Toaster position="top-center" richColors />
@@ -197,7 +272,10 @@ export function Cart() {
 
           <button
             className="iconio-button"
-            onClick={clearCart}
+            onClick={() => {
+              clearCart();
+              clearCanje();
+            }}
             style={{ maxWidth: "37px" }}
           >
             <i className="fas fa-eraser nav-icon" />
@@ -214,6 +292,14 @@ export function Cart() {
               key={product.id}
               addToCart={() => addToCart(product)}
               decrementQuantity={() => decrementQuantity(product)}
+              {...product}
+            />
+          ))}
+          {canje.map((product) => (
+            <CanjeItem
+              key={product.id}
+              addToCanje={() => addToCanje(product)}
+              decrementQuantityCanje={() => decrementQuantityCanje(product)}
               {...product}
             />
           ))}

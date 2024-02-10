@@ -156,7 +156,9 @@ const ExpandedComponent = (props) => {
           .EscribirTexto(`____________________\n`)
           .EscribirTexto(`${purchase.quantity} ${purchase.product.name}\n`)
           .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-          .EscribirTexto(`$${purchase.subtotal.toFixed(1)}\n`);
+          .EscribirTexto(
+            `$${purchase.active ? purchase.subtotal.toFixed(1) : 0.0}\n`
+          );
       }); // Continuar con las operaciones comunes
       conector
         .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
@@ -271,18 +273,40 @@ const ExpandedComponent = (props) => {
                       <td
                         style={{ whiteSpace: "normal", wordWrap: "break-word" }}
                       >
-                        {purchase.product.name}
+                        {purchase.product.name !== "DOMICILIO"
+                          ? purchase.product.name
+                          : ""}
                       </td>
                       <td className="text-rigth" style={{ width: "10px" }}>
-                        {purchase.quantity}
+                        {purchase.product.name !== "DOMICILIO"
+                          ? purchase.quantity
+                          : ""}
                       </td>
                       <td
-                        style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                        style={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          visibility:
+                            purchase.product.name === "DOMICILIO"
+                              ? "hidden"
+                              : "visible",
+                        }}
                       >
-                        ${purchase.product.price.toFixed(1)}
+                        $
+                        {purchase.active
+                          ? purchase.product.price.toFixed(1)
+                          : 0.0}
                       </td>
-                      <td className="text-right">
-                        ${purchase.subtotal.toFixed(1)}
+                      <td
+                        className="text-right"
+                        style={{
+                          display:
+                            purchase.product.name === "DOMICILIO"
+                              ? "none"
+                              : "block",
+                        }}
+                      >
+                        ${purchase.active ? purchase.subtotal.toFixed(1) : 0}
                       </td>
                     </tr>
                   ))}
@@ -433,13 +457,12 @@ export function Pedido() {
   const [statum, setStatum] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-
+  const userData = JSON.parse(localStorage.getItem("userInfo"));
   const fetchDataAsync = async () => {
     try {
-      console.log(userObject.id);
       const response = await fetch(
         `${API_URL}/purchases?status=${statum}&buyerId=${
-          isAdmin ? "" : userObject.id
+          isAdmin ? "" : userData.id
         }&startDate=${
           startDate ? format(startDate, "yyyy-MM-dd") : ""
         }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,

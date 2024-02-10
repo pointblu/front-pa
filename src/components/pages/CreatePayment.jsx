@@ -5,6 +5,7 @@ import { Toaster, toast } from "sonner";
 import { UploadImage } from "./UploadImage";
 import { Tooltip } from "react-tooltip";
 
+const userData = JSON.parse(localStorage.getItem("userInfo"));
 export const CreatePayment = () => {
   const editPayment = JSON.parse(localStorage.getItem("editPayment"));
   const [total, setTotal] = useState(editPayment.total);
@@ -34,9 +35,7 @@ export const CreatePayment = () => {
     const calculatedChange = numericCash - (numericTotal + 1000);
 
     // Actualizar el estado de paymentChange
-    setPaymentChange(
-      isNaN(calculatedChange) ? "" : calculatedChange.toString()
-    );
+    setPaymentChange(isNaN(calculatedChange) ? 0 : calculatedChange);
   };
 
   function handleCancel(e) {
@@ -66,7 +65,6 @@ export const CreatePayment = () => {
           status,
           active,
           paymentCash: numericCash,
-          paymentChange: numericChange,
           paymented: true,
           paymentType: paymentType,
           paymentImage: imageUrl,
@@ -75,6 +73,8 @@ export const CreatePayment = () => {
 
       if (response.ok) {
         console.log("User register successfully");
+        userData.points = Number(userData.points) + Math.ceil(total / 1000);
+        localStorage.setItem("userInfo", JSON.stringify(userData));
         const json = await response.json();
         setSuccessResponse(json.message);
         toast.success(json.message);
@@ -89,6 +89,7 @@ export const CreatePayment = () => {
         localStorage.removeItem("urlImage");
         localStorage.removeItem("editPayment");
         goTo("/pedidos");
+        window.location.reload();
       } else {
         console.log("Something went wrong");
         const json = await response.json();

@@ -16,3 +16,4 @@ export * from "./CreatePayment";
 export * from "./CreateAdvertisement";
 export * from "./EditAdvertisement";
 export * from "./Recover";
+export * from "./Redimir";

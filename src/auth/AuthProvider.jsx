@@ -42,6 +42,7 @@ export function AuthProvider({ children }) {
       setAccessToken(userData.accessToken);
       localStorage.setItem("token", JSON.stringify(userData.accessToken));
       localStorage.setItem("userInfo", JSON.stringify(userData.payload));
+      localStorage.setItem("points", JSON.stringify(userData.payload.points));
       localStorage.setItem("isAuth", JSON.stringify(true));
       setIsAuthenticated(true);
     },
@@ -57,6 +58,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("isAuth");
     localStorage.removeItem("cart");
+    localStorage.removeItem("canje");
     setAccessToken("");
     setUser(undefined);
     setIsAuthenticated(false);
