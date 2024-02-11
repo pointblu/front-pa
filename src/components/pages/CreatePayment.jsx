@@ -6,11 +6,14 @@ import { UploadImage } from "./UploadImage";
 import { Tooltip } from "react-tooltip";
 
 const userData = JSON.parse(localStorage.getItem("userInfo"));
+const token = JSON.parse(localStorage.getItem("token"));
+
 export const CreatePayment = () => {
   const editPayment = JSON.parse(localStorage.getItem("editPayment"));
   const [total, setTotal] = useState(editPayment.total);
   const [status, setStatus] = useState(editPayment.status);
   const [active, setActive] = useState(editPayment.active);
+  const [banks, setBanks] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [paymentType, setPaymentType] = useState(editPayment.paymentType);
   const [paymentCash, setPaymentCash] = useState("");
@@ -23,7 +26,31 @@ export const CreatePayment = () => {
   const isTrans = editPayment.paymentType === "TRANSFERENCIA";
   const goTo = useNavigate();
 
+  const fetchDataAsync = async () => {
+    try {
+      const response = await fetch(`${API_URL}/banks`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+          "Access-Control-Allow-Origin": "*",
+          mode: "no-cors",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const apiData = await response.json();
+      setBanks(apiData.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchDataAsync();
     setIsButtonDisabled(!imageUrl);
   }, [imageUrl]);
 
@@ -49,7 +76,6 @@ export const CreatePayment = () => {
     e.preventDefault();
 
     try {
-      const token = JSON.parse(localStorage.getItem("token"));
       const numericCash = isTrans ? 0 : parseFloat(paymentCash);
       const numericChange = isTrans ? 0 : parseFloat(paymentChange);
 
@@ -149,10 +175,30 @@ export const CreatePayment = () => {
                     }}
                   >
                     {isTrans && (
-                      <UploadImage
-                        setIsButtonDisabled={setIsButtonDisabled}
-                        fromPayment={true}
-                      />
+                      <div>
+                        <p style={{ color: "white", fontSize: "1rem" }}>
+                          Puedes hacer tu transferencia a:{" "}
+                        </p>
+                        <ul style={{ color: "white", fontSize: "0.8rem" }}>
+                          {banks.map((bank) => {
+                            return (
+                              <li key={bank.id}>
+                                <div className="row">
+                                  CUENTA {bank.type} {bank.name} N°:{" "}
+                                  <strong>{bank.account}</strong>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        <p style={{ color: "white", fontSize: "1rem" }}>
+                          y pasa la imagen
+                        </p>
+                        <UploadImage
+                          setIsButtonDisabled={setIsButtonDisabled}
+                          fromPayment={true}
+                        />
+                      </div>
                     )}
 
                     <form action="/" method="post" onSubmit={handleSubmit}>

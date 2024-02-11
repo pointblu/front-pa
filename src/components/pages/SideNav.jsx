@@ -112,6 +112,19 @@ export const SideNav = () => {
                   </NavLink>
                 </li>
               )}
+
+              {isAdmin && (
+                <li className="nav-item text-left">
+                  <NavLink
+                    to="/cuentas"
+                    className="nav-link"
+                    style={{ backgroundColor: "#3279fd" }}
+                  >
+                    <i className="fas fa-university nav-icon" />
+                    <p>CUENTAS</p>
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </nav>
           {/* /.sidebar-menu */}

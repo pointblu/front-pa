@@ -6,6 +6,7 @@
   --color-e: #c3a873;
   --color-f: rgb(23, 162, 184);
   --color-g: #803b3b;
+  --color-h: #3279fd;
 }
 
 .sidebar-expand {
@@ -74,6 +75,16 @@
     var(--color-a) 100%
   );
 }
+
+.alphi-7 {
+  background: linear-gradient(
+    90deg,
+    var(--color-a) 0%,
+    var(--color-h) 54%,
+    var(--color-a) 100%
+  );
+}
+
 .cont-a {
   height: 50vh;
   display: flex;

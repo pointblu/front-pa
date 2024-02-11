@@ -19,6 +19,9 @@ import {
   EditAdvertisement,
   Recover,
   Redimir,
+  CreateBank,
+  Cuentas,
+  EditBank,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -48,6 +51,9 @@ export const AppRouter = () => {
               <Route path="/pago" element={<CreatePayment />} />
               <Route path="/crear-anuncio" element={<CreateAdvertisement />} />
               <Route path="/editar-anuncio" element={<EditAdvertisement />} />
+              <Route path="/cuentas" element={<Cuentas />} />
+              <Route path="/crear-cuenta" element={<CreateBank />} />
+              <Route path="/editar-cuenta" element={<EditBank />} />
               <Route
                 path="/reposicion/:productId/:pCost/:pStock/:pName"
                 element={<Replenish />}

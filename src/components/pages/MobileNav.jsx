@@ -161,6 +161,30 @@ export const MobileNav = () => {
                   </NavLink>
                 </li>
               )}
+
+              {isAdmin && (
+                <li
+                  className="nav-item mx-2"
+                  style={{
+                    minWidth: "45px",
+                    position: "relative",
+                    zIndex: 9999,
+                  }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Cuentas"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
+                >
+                  <NavLink
+                    to="/cuentas"
+                    className="nav-link"
+                    style={{ backgroundColor: "#3279fd" }}
+                  >
+                    <i className="fas fa-university nav-icon" />
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </nav>
           {/* /.sidebar-menu */}

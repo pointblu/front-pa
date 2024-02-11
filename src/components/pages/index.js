@@ -17,3 +17,6 @@ export * from "./CreateAdvertisement";
 export * from "./EditAdvertisement";
 export * from "./Recover";
 export * from "./Redimir";
+export * from "./Cuentas";
+export * from "./CreateBank";
+export * from "./EditBank";
