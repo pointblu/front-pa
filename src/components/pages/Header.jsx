@@ -33,6 +33,9 @@ export const Header = () => {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
 
+  const isClient =
+    auth.isAuthenticated && userObject && userObject.role === "CLIENT";
+
   useEffect(() => {
     fetchDataAsync();
     fetchCategoriesAsync();
@@ -177,6 +180,22 @@ export const Header = () => {
                 <i className="fas fa-user-plus" />
               </Link>
               <Tooltip id="tt-register" />
+            </li>
+          )}
+
+          {isClient && (
+            <li
+              className="nav-item"
+              data-tooltip-id="tt-pass"
+              data-tooltip-content="Actualizar celular"
+              data-tooltip-float={false}
+              data-tooltip-offset={-10}
+              data-tooltip-class-name="custom-tooltip"
+            >
+              <Link className="nav-link" to="/actualizar-celular">
+                <Tooltip id="tt-pass" />
+                <i className="fas fa-mobile" />
+              </Link>
             </li>
           )}
         </ul>

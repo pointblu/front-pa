@@ -22,6 +22,7 @@ import {
   CreateBank,
   Cuentas,
   EditBank,
+  ChangePass,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -65,6 +66,7 @@ export const AppRouter = () => {
             <Route path="/ingreso" element={<Login />} />
             <Route path="/recuperar" element={<Recover />} />
             <Route path="/canjear" element={<Redimir />} />
+            <Route path="/actualizar-celular" element={<ChangePass />} />
           </Routes>
           <SideNav />
           <MobileNav />

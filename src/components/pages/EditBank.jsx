@@ -227,14 +227,16 @@ export const EditBank = () => {
                         </div>
                       </div>
                       <div className="input-group mb-3">
-                        <input
-                          type="text"
+                        <select
                           value={type}
                           onChange={(e) => setType(e.target.value)}
                           className="form-control"
-                          placeholder="Tipo de cuenta"
                           name="type"
-                        />
+                        >
+                          <option value="">Tipo de cuenta</option>
+                          <option value={"AHORRO"}>AHORRO</option>
+                          <option value={"CORRIENTE"}>CORRIENTE</option>
+                        </select>
                         <div className="input-group-append">
                           <div className="input-group-text">
                             <span className="fas fa-piggy-bank text-white" />

@@ -20,3 +20,4 @@ export * from "./Redimir";
 export * from "./Cuentas";
 export * from "./CreateBank";
 export * from "./EditBank";
+export * from "./ChangePass";
