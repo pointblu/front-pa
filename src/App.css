@@ -7,6 +7,7 @@
   --color-f: rgb(23, 162, 184);
   --color-g: #803b3b;
   --color-h: #3279fd;
+  --color-i: #000;
 }
 
 .sidebar-expand {
@@ -81,6 +82,15 @@
     90deg,
     var(--color-a) 0%,
     var(--color-h) 54%,
+    var(--color-a) 100%
+  );
+}
+
+.alphi-8 {
+  background: linear-gradient(
+    90deg,
+    var(--color-a) 0%,
+    var(--color-i) 54%,
     var(--color-a) 100%
   );
 }

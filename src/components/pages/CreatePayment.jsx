@@ -17,7 +17,9 @@ export const CreatePayment = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [paymentType, setPaymentType] = useState(editPayment.paymentType);
   const [paymentCash, setPaymentCash] = useState("");
-  const [paymentChange, setPaymentChange] = useState(editPayment.paymentChange);
+  const [paymentChange, setPaymentChange] = useState(
+    editPayment.paymentChange > 0 ? editPayment.paymentChange : ""
+  );
   const [paymented, setPaymented] = useState(editPayment.paymented);
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
@@ -233,7 +235,7 @@ export const CreatePayment = () => {
                               calculatePaymentChange(e.target.value);
                             }}
                             className="form-control"
-                            placeholder="Monto neto a pagar"
+                            placeholder="¿Qué billetiene tienes?"
                             name="paymentCash"
                             autoComplete="off"
                           />
@@ -259,7 +261,7 @@ export const CreatePayment = () => {
                             </span>
                           </div>
                           <input
-                            type="number"
+                            type="text"
                             value={paymentChange}
                             onChange={(e) => setPaymentChange(e.target.value)}
                             className="form-control"

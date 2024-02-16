@@ -6,6 +6,7 @@ import { API_URL } from "../../auth/constants";
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useCanje } from "./../../hooks/useCanje";
+import { Tooltip } from "react-tooltip";
 
 function CartItem({
   image,
@@ -81,6 +82,8 @@ export function Cart() {
   const [canjeCounter, setCanjeCounter] = useState(0);
 
   const [payment, setPayment] = useState("EFECTIVO");
+
+  const [note, setNote] = useState("");
   const handlePayment = () => {
     if (payment === "EFECTIVO") {
       setPayment("TRANSFERENCIA");
@@ -125,6 +128,7 @@ export function Cart() {
           paymentType: payment,
           paymentCash: 0,
           paymentChange: 0,
+          note: note,
         }),
       });
 
@@ -262,28 +266,68 @@ export function Cart() {
       {/* Control Sidebar */}
       <aside className="control-sidebar control-sidebar-dark basket">
         <div className="button-containeri">
-          <button className="iconio-button" onClick={handlePayment}>
+          <Tooltip id="tt-cart" />
+          <button
+            className="iconio-button"
+            onClick={handlePayment}
+            data-tooltip-id="tt-cart"
+            data-tooltip-content="Forma de pago"
+            data-tooltip-place="left"
+            data-tooltip-float={false}
+            data-tooltip-class-name="custom-tooltip"
+          >
             <i
               className="fas fa-money-bill-wave nav-icon"
-              style={{ marginRight: "5px" }}
+              style={{ marginRight: "5px", maxWidth: "60px" }}
             />{" "}
             {payment}
           </button>
 
-          <button
-            className="iconio-button"
-            onClick={() => {
-              clearCart();
-              clearCanje();
-            }}
-            style={{ maxWidth: "37px" }}
-          >
-            <i className="fas fa-eraser nav-icon" />
-          </button>
           <form action="/" method="post" onSubmit={handleSubmit}>
-            <button className="iconio-button" disabled={!emptyCart?.length > 0}>
-              <i className="fas fa-check nav-icon" />
-            </button>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div
+                className="input-group mb-1 ml-1"
+                style={{ maxWidth: "160px" }}
+              >
+                <input
+                  type="text"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  className="form-control"
+                  placeholder="Comentarios"
+                  name="note"
+                  autoComplete="off"
+                />
+              </div>
+              <button
+                className="iconio-button"
+                onClick={() => {
+                  clearCart();
+                  clearCanje();
+                }}
+                style={{ maxWidth: "37px" }}
+                data-tooltip-id="tt-cart"
+                data-tooltip-content="Vaciar cesta"
+                data-tooltip-place="left"
+                data-tooltip-float={false}
+                data-tooltip-class-name="custom-tooltip"
+              >
+                <i className="fas fa-eraser nav-icon" />
+              </button>
+
+              <button
+                className="iconio-button"
+                disabled={!emptyCart?.length > 0}
+                style={{ maxWidth: "37px" }}
+                data-tooltip-id="tt-cart"
+                data-tooltip-content="Confirmar pedido"
+                data-tooltip-place="left"
+                data-tooltip-float={false}
+                data-tooltip-class-name="custom-tooltip"
+              >
+                <i className="fas fa-check nav-icon" />
+              </button>
+            </div>
           </form>
         </div>
         <ul className="sub-basket">

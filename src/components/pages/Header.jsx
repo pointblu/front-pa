@@ -94,6 +94,10 @@ export const Header = () => {
     return format(fechaOriginal, "dd/MM/yyyy");
   };
 
+  const handleButtonClick = () => {
+    goTo("/pqr");
+  };
+
   async function handleSignOut(e) {
     e.preventDefault();
     toast.success("¡Hasta la vista!", {
@@ -293,8 +297,31 @@ export const Header = () => {
             </li>
           )}
         </ul>
+        {auth.isAuthenticated && (
+          <div
+            className="button-containero"
+            style={{
+              display: "flex",
+              overflow: "visible",
+              zIndex: 99999,
+            }}
+          >
+            <Tooltip id="tt-chat" style={{ position: "relative", zIndex: 2 }} />
+            <button
+              className="flyerin"
+              data-tooltip-id="tt-chat"
+              data-tooltip-content="PQR"
+              onClick={handleButtonClick}
+              data-tooltip-float={false}
+              data-tooltip-place="left"
+              data-tooltip-offset={10}
+              data-tooltip-class-name="custom-tooltip"
+            >
+              <i className="fas fa-headset nav-icon" />
+            </button>
+          </div>
+        )}
       </nav>
-      {/* /.navbar */}
     </div>
   );
 };

@@ -23,6 +23,7 @@ import {
   Cuentas,
   EditBank,
   ChangePass,
+  Chat,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -67,6 +68,7 @@ export const AppRouter = () => {
             <Route path="/recuperar" element={<Recover />} />
             <Route path="/canjear" element={<Redimir />} />
             <Route path="/actualizar-celular" element={<ChangePass />} />
+            <Route path="/pqr" element={<Chat />} />
           </Routes>
           <SideNav />
           <MobileNav />
