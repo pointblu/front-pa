@@ -158,7 +158,6 @@ export function Cart() {
         if (!pointers.ok) {
           throw new Error(`HTTP error! Status: ${pointers.status}`);
         }
-
         await Promise.all(
           cartDetails.map(async (e) => {
             const responseDetail = await fetch(`${API_URL}/purchaseDetails`, {
@@ -186,39 +185,43 @@ export function Cart() {
               setSuccessResponse(null);
             }
             return responseDetail;
-          }),
-          canjeDetails.map(async (e) => {
-            const responseDetail = await fetch(`${API_URL}/purchaseDetails`, {
-              method: "POST",
-              headers: {
-                Authorization: "Bearer " + token,
-                "Content-Type": "application/json",
-                "Cache-Control": "no-store",
-              },
-              body: JSON.stringify({
-                subtotal: numericTotal,
-                cost: numericTotal,
-                quantity: parseInt(e.quantity, 10),
-                product: e.id,
-                seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
-                detail: json.data.id,
-                active: false,
-              }),
-            });
-
-            if (!responseDetail.ok) {
-              // Manejar el caso en que la creación de un Purchase Detail falle
-              const jsonDetail = await responseDetail.json();
-              toast.error(jsonDetail.message);
-              setSuccessResponse(null);
-            }
-            return responseDetail;
           })
         );
+        if (canjeDetails?.length > 0) {
+          await Promise.all(
+            canjeDetails.map(async (e) => {
+              const responseDetail = await fetch(`${API_URL}/purchaseDetails`, {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + token,
+                  "Content-Type": "application/json",
+                  "Cache-Control": "no-store",
+                },
+                body: JSON.stringify({
+                  subtotal: numericTotal,
+                  cost: numericTotal,
+                  quantity: parseInt(e.quantity, 10),
+                  product: e.id,
+                  seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
+                  detail: json.data.id,
+                  active: false,
+                }),
+              });
+
+              if (!responseDetail.ok) {
+                // Manejar el caso en que la creación de un Purchase Detail falle
+                const jsonDetail = await responseDetail.json();
+                toast.error(jsonDetail.message);
+                setSuccessResponse(null);
+              }
+              return responseDetail;
+            })
+          );
+        }
 
         clearCart();
         clearCanje();
-        setTimeout(async () => {
+        setTimeout(() => {
           goTo("/pedidos");
           window.location.reload();
         }, 3000);

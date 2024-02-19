@@ -142,6 +142,11 @@ const ExpandedComponent = (props) => {
         .Iniciar()
         .DeshabilitarElModoDeCaracteresChinos()
         .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
+        .DescargarImagenDeInternetEImprimir(
+          "https://res.cloudinary.com/diitm4dx7/image/upload/v1706493543/logo_punto_azul_zldts2.png",
+          0,
+          216
+        )
         .Feed(1)
         .EscribirTexto("PANADERIA PUNTO AZUL\n")
         .EscribirTexto("El Manantial, Soledad-AT\n")
@@ -193,6 +198,10 @@ const ExpandedComponent = (props) => {
         .TextoSegunPaginaDeCodigos(2, "cp850", `Teléfono: \n`)
         .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
         .EscribirTexto(`${data.buyer.phone} \n`)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
+        .TextoSegunPaginaDeCodigos(2, "cp850", `NOTA: \n`)
+        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
+        .EscribirTexto(`${data.note} \n`)
         .Feed(2)
         .EscribirTexto(".............................\n")
         .Feed(3)
@@ -243,6 +252,11 @@ const ExpandedComponent = (props) => {
         )}
         <pre style={{ maxWidth: "250px" }}>
           <header className="text-center">
+            <img
+              src="https://res.cloudinary.com/diitm4dx7/image/upload/v1706493543/logo_punto_azul_zldts2.png"
+              alt="logo"
+              style={{ width: "180px", filter: "grayscale(100%)" }}
+            />
             <h3 className="company-name">PANADERIA PUNTO AZUL</h3>
             <p> El Manantial, Soledad-AT </p>
             <p>TEL: 322 9560143</p>
@@ -366,6 +380,12 @@ const ExpandedComponent = (props) => {
                     <td style={{ width: "45px" }}>Telefono: </td>
                     <td>
                       <strong>{data.buyer.phone}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "45px" }}>NOTA: </td>
+                    <td>
+                      <strong>{data.nota}</strong>
                     </td>
                   </tr>
                   <tr>
@@ -536,7 +556,10 @@ export function Pedido() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      fetchDataAsync();
+
+      toast.success("Se estan actualizando los cambios", {
+        duration: 10000,
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -555,7 +578,7 @@ export function Pedido() {
   };
   return (
     <div>
-      <Toaster position="top-center" richColors />
+      <Toaster position="top-center" richColors closeButton="true" />
       <DataTable
         columns={columns(isAdmin, handleUpdateStatus, handleCreatePayment)}
         data={datum.data}
