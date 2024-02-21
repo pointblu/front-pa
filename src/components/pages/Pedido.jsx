@@ -385,7 +385,7 @@ const ExpandedComponent = (props) => {
                   <tr>
                     <td style={{ width: "45px" }}>NOTA: </td>
                     <td>
-                      <strong>{data.nota}</strong>
+                      <strong>{data.note}</strong>
                     </td>
                   </tr>
                   <tr>
@@ -556,7 +556,13 @@ export function Pedido() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      if (status === "CANCELED") {
+        const posible = Number(userData.points) - Math.ceil(total / 1000);
+        userData.points = posible < 0 ? 0 : posible;
 
+        localStorage.setItem("userInfo", JSON.stringify(userData));
+        window.location.reload();
+      }
       toast.success("Se estan actualizando los cambios", {
         duration: 10000,
       });
