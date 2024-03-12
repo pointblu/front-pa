@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useCart } from "../../hooks/useCarts";
@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { useCanje } from "../../hooks/useCanje";
 import { usePoints } from "../../context/point";
+import { useSpring, animated } from "react-spring";
 
 export function Products({ products, from }) {
   useEffect(() => {
@@ -16,6 +17,15 @@ export function Products({ products, from }) {
       easing: "ease-out",
     });
   }, []);
+
+  const [showNumber, setShowNumber] = useState(false);
+  const [animatedProduct, setAnimatedProduct] = useState(null);
+  const fadeInOutProps = useSpring({
+    opacity: showNumber ? 1 : 0,
+    transform: showNumber ? "translateY(-30)" : "translateY(10px)",
+    config: { duration: 300 },
+    onRest: () => setShowNumber(false),
+  });
 
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
@@ -52,11 +62,25 @@ export function Products({ products, from }) {
     window.location.reload();
   }
 
+  const handleButtonClick = (product, action) => {
+    setAnimatedProduct(product);
+
+    // Ejecutar la acción correspondiente (addToCart o handleRemoveCanje)
+    action(product);
+
+    // Después de un breve intervalo, resetear el producto animado
+    setTimeout(() => {
+      setAnimatedProduct(null);
+    }, 500); // Ajusta según la duración de tu animación
+  };
+
   return (
     <ul style={{ marginTop: "5rem" }}>
       {products.map((product) => {
         const isProductInCart = checkProductInCart(product);
         const isProductInCanje = checkProductInCanje(product);
+        const isProductAnimated =
+          animatedProduct && animatedProduct.id === product.id;
         return (
           <li key={product.id} className="card" data-aos="fade-up">
             {product.stock <= 0 && <div className="agotado">AGOTADO</div>}
@@ -106,7 +130,8 @@ export function Products({ products, from }) {
                       !isClient && auth.isAuthenticated ? "none" : "block",
                   }}
                   onClick={() => {
-                    addToCart(product);
+                    handleButtonClick(product, addToCart);
+                    setShowNumber(true);
                   }}
                   disabled={!isClient || product.stock < 0}
                   data-tooltip-id={"tt-add-basket" + product.id}
@@ -118,6 +143,19 @@ export function Products({ products, from }) {
                   <Tooltip id={"tt-add-basket" + product.id} />
                   <sup>
                     <i className="fas fa-plus nav-icon" />
+                    {isProductAnimated && (
+                      <animated.div style={fadeInOutProps}>
+                        <p
+                          style={{
+                            color: "white",
+                            zIndex: 2,
+                            fontSize: "1rem",
+                          }}
+                        >
+                          +1
+                        </p>
+                      </animated.div>
+                    )}
                   </sup>
                 </button>
               ) : (

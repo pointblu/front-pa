@@ -123,7 +123,7 @@ export function Cart() {
           "Cache-Control": "no-store",
         },
         body: JSON.stringify({
-          total: parseFloat(calculatedTotal),
+          total: parseFloat(calculatedTotal).toFixed(2),
           status: "REQUESTED",
           buyer: buyerId.id,
           paymentImage:

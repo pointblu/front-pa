@@ -95,11 +95,36 @@ export const Header = () => {
     return format(fechaOriginal, "dd/MM/yyyy");
   };
 
+  const fetchPostionAsync = async (userId, lat, lon) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/users/position/${userId}/lat/${lat}/lon/${lon}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+            "Cache-Control": "no-store",
+            "Access-Control-Allow-Origin": "*",
+            mode: "no-cors",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      await response.json();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleButtonClick = () => {
     const obtenerUbicacion = async () => {
       const usuarioTelegram = "+573023234804";
       try {
         const data = await getUserLocation();
+        fetchPostionAsync(userObject.id, data[0], data[1]);
         window.open(`tg://resolve?domain=${usuarioTelegram}`, "_blank");
       } catch (error) {
         toast.error("Para usae el chat debes activar tu localización...", {
