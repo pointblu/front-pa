@@ -54,6 +54,22 @@ const columns = (handleDeleteUser) => [
     minWidth: "200px",
   },
   {
+    name: "ÚLTIMA UBICACIÓN",
+    selector: (row) => (
+      <div
+        Ñ
+        style={{
+          overflow: "hidden",
+          whiteSpace: "wrap",
+          textOverflow: "unset",
+        }}
+      >
+        {row.latitude},{row.longitude}
+      </div>
+    ),
+    minWidth: "200px",
+  },
+  {
     name: "PUNTOS AZULES",
     selector: (row) => (
       <div

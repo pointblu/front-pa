@@ -113,6 +113,7 @@ export function Cart() {
         (acc, details) => acc + details.price * details.quantity,
         0
       );
+      const formattedTotal = calculatedTotal.toFixed(2);
       const numericTotal = parseFloat(0);
       const buyerId = JSON.parse(localStorage.getItem("userInfo"));
       const response = await fetch(`${API_URL}/purchases`, {
@@ -123,7 +124,7 @@ export function Cart() {
           "Cache-Control": "no-store",
         },
         body: JSON.stringify({
-          total: parseFloat(calculatedTotal).toFixed(2),
+          total: parseFloat(formattedTotal),
           status: "REQUESTED",
           buyer: buyerId.id,
           paymentImage:
