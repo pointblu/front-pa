@@ -117,7 +117,7 @@
   cursor: pointer;
   font-size: 16px;
   position: fixed; /* Hace que el botón sea fijo */
-  bottom: 3rem; /* Coloca el botón en la mitad superior */
+  bottom: 1rem; /* Coloca el botón en la mitad superior */
   right: 2rem; /* Alinea el botón a la derecha */
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada para un efecto de elevación */
   transition: box-shadow 0.3s ease, transform 0.1s ease !important; /* Transiciones suaves de la sombra y la transformación */

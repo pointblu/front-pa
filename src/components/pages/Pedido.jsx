@@ -15,6 +15,21 @@ registerLocale("es", es);
 const token = JSON.parse(localStorage.getItem("token"));
 const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
   {
+    name: "FECHA",
+    selector: (row) =>
+      Intl.DateTimeFormat("es-ES", {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }).format(new Date(row.createdAt)),
+
+    minWidth: "120px",
+    sortable: true,
+  },
+  {
     name: "CLIENTE",
     selector: (row) => row.buyer.name,
     minWidth: "120px",

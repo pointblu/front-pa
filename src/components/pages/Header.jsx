@@ -9,6 +9,7 @@ import { Tooltip } from "react-tooltip";
 import "./Header.css";
 import { format } from "date-fns";
 import { UserNumber } from "../../context/point";
+import { getUserLocation } from "../helpers/getUserLocation";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
@@ -95,7 +96,18 @@ export const Header = () => {
   };
 
   const handleButtonClick = () => {
-    goTo("/pqr");
+    const obtenerUbicacion = async () => {
+      const usuarioTelegram = "+573023234804";
+      try {
+        const data = await getUserLocation();
+        window.open(`tg://resolve?domain=${usuarioTelegram}`, "_blank");
+      } catch (error) {
+        toast.error("Para usae el chat debes activar tu localización...", {
+          description: "...y tener instalado Telegram",
+        });
+      }
+    };
+    obtenerUbicacion();
   };
 
   async function handleSignOut(e) {

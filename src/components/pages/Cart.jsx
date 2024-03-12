@@ -15,6 +15,7 @@ function CartItem({
   quantity,
   addToCart,
   decrementQuantity,
+  removeFromCart,
 }) {
   return (
     <li>
@@ -24,7 +25,10 @@ function CartItem({
 
       <div>
         <small>Cantidad: </small>
-        <button className="iconio-button" onClick={decrementQuantity}>
+        <button
+          className="iconio-button"
+          onClick={quantity <= 1 ? removeFromCart : decrementQuantity}
+        >
           <i className="fas fa-minus" style={{ fontSize: "0.6rem" }} />
         </button>
 
@@ -92,7 +96,7 @@ export function Cart() {
     }
   };
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e, action) {
     e.preventDefault();
 
     try {
@@ -238,7 +242,8 @@ export function Cart() {
     }
   }
 
-  const { cart, clearCart, addToCart, decrementQuantity } = useCart();
+  const { cart, clearCart, addToCart, decrementQuantity, removeFromCart } =
+    useCart();
   useEffect(() => {
     // Actualizar el contador cada vez que cambie el carrito
     setCartCounter(cart.length);
@@ -302,23 +307,9 @@ export function Cart() {
                   autoComplete="off"
                 />
               </div>
-              <button
-                className="iconio-button"
-                onClick={() => {
-                  clearCart();
-                  clearCanje();
-                }}
-                style={{ maxWidth: "37px" }}
-                data-tooltip-id="tt-cart"
-                data-tooltip-content="Vaciar cesta"
-                data-tooltip-place="left"
-                data-tooltip-float={false}
-                data-tooltip-class-name="custom-tooltip"
-              >
-                <i className="fas fa-eraser nav-icon" />
-              </button>
 
               <button
+                type="submit"
                 className="iconio-button"
                 disabled={!emptyCart?.length > 0}
                 style={{ maxWidth: "37px" }}
@@ -332,6 +323,23 @@ export function Cart() {
               </button>
             </div>
           </form>
+          <div>
+            <button
+              className="iconio-button"
+              onClick={() => {
+                clearCart();
+                clearCanje();
+              }}
+              style={{ maxWidth: "37px" }}
+              data-tooltip-id="tt-cart"
+              data-tooltip-content="Vaciar cesta"
+              data-tooltip-place="left"
+              data-tooltip-float={false}
+              data-tooltip-class-name="custom-tooltip"
+            >
+              <i className="fas fa-eraser nav-icon" />
+            </button>
+          </div>
         </div>
         <ul className="sub-basket">
           {cart.map((product) => (
@@ -339,6 +347,7 @@ export function Cart() {
               key={product.id}
               addToCart={() => addToCart(product)}
               decrementQuantity={() => decrementQuantity(product)}
+              removeFromCart={() => removeFromCart(product)}
               {...product}
             />
           ))}

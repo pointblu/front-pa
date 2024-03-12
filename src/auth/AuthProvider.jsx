@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 const AuthContext = createContext({
   isAuthenticated: false,
   getAccessToken: () => "",
-  saveUser: (userData) => {},
+  saveUser: () => {},
   getUser: () => {},
   signout: () => {},
 });
@@ -38,86 +38,6 @@ export function AuthProvider({ children }) {
 
   const saveUser = useCallback(
     (userData) => {
-      const fetchChatDelete = async (uid) => {
-        try {
-          const response = await fetch(
-            `https://141d92ac517848f8b435c8ae7b6b2059.weavy.io/api/conversations`,
-            {
-              method: "GET",
-              headers: {
-                "content-type": "application/json",
-                Authorization: `Bearer ${uid}`,
-              },
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const datum = await response.json();
-
-          localStorage.setItem("chatInfo", JSON.stringify(datum));
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      const fetchChatAsync = async (uid) => {
-        try {
-          const response = await fetch(
-            `https://141d92ac517848f8b435c8ae7b6b2059.weavy.io/api/users/${uid}`,
-            {
-              method: "PUT",
-              headers: {
-                "content-type": "application/json",
-                Authorization: `Bearer wys_N5dltymzi3Cni2mxDGs8D7xOn7LKy32iW48Q`,
-              },
-              body: JSON.stringify(userData.payload),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const datum = await response.json();
-
-          localStorage.setItem("chatInfo", JSON.stringify(datum));
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-
-      const fetchChatToken = async (uid) => {
-        try {
-          const response = await fetch(
-            `https://141d92ac517848f8b435c8ae7b6b2059.weavy.io/api/users/${uid}/tokens`,
-            {
-              method: "POST",
-              headers: {
-                "content-type": "application/json",
-                Authorization: `Bearer wys_N5dltymzi3Cni2mxDGs8D7xOn7LKy32iW48Q`,
-              },
-              body: "{ 'expires_in': 3456000 }",
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const dates = await response.json();
-
-          localStorage.setItem("chatToken", JSON.stringify(dates));
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-
-      fetchChatAsync(userData.payload.userName);
-      fetchChatToken(userData.payload.userName);
-      const chatToken = localStorage.getItem("chatToken");
-      fetchChatDelete(chatToken.access_token);
       setAccessToken(userData.accessToken);
       localStorage.setItem("token", JSON.stringify(userData.accessToken));
       localStorage.setItem("userInfo", JSON.stringify(userData.payload));
@@ -126,7 +46,7 @@ export function AuthProvider({ children }) {
 
       setIsAuthenticated(true);
     },
-    [setAccessToken, accessToken]
+    [setAccessToken]
   );
 
   const getUser = useCallback(() => {

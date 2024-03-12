@@ -106,9 +106,7 @@ export function Products({ products, from }) {
                       !isClient && auth.isAuthenticated ? "none" : "block",
                   }}
                   onClick={() => {
-                    isProductInCart
-                      ? removeFromCart(product)
-                      : addToCart(product);
+                    addToCart(product);
                   }}
                   disabled={!isClient || product.stock < 0}
                   data-tooltip-id={"tt-add-basket" + product.id}

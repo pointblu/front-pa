@@ -1,5 +1,15 @@
-import React from "react";
-import { WeavyComponent } from "../chats/chat";
+import React, { useEffect } from "react";
+import {
+  Box,
+  Button,
+  Flex,
+  Input,
+  Skeleton,
+  SkeletonCircle,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 
 export const Chat = () => {
   return (
@@ -25,7 +35,54 @@ export const Chat = () => {
 
         <section className="content products">
           <div className="container-fluid">
-            <WeavyComponent />
+            <Box
+              position={"absolute"}
+              left={"50%"}
+              w={{
+                base: "100%",
+                md: "80%",
+                lg: "750px",
+              }}
+              p={4}
+              transform={"translateX(-50%)"}
+            >
+              <Flex
+                gap={4}
+                flexDirection={{
+                  base: "column",
+                  md: "row",
+                }}
+                maxW={{
+                  sm: "400px",
+                  md: "full",
+                }}
+                mx={"auto"}
+              >
+                <Flex
+                  flex={30}
+                  gap={2}
+                  flexDirection={"column"}
+                  maxW={{ sm: "250px", md: "full" }}
+                  mx={"auto"}
+                >
+                  <Text
+                    fontWeight={700}
+                    color={useColorModeValue("gray.600", "gray.400")}
+                  >
+                    Tus conversaciones
+                  </Text>
+                  <form>
+                    <Flex alignItems={"center"} gap={2}>
+                      <Input placeholder="Search for a use" />
+                      <Button size={"sm"}>
+                        <SearchIcon />
+                      </Button>
+                    </Flex>
+                  </form>
+                </Flex>
+                <Flex flex={70}>Mensajes</Flex>
+              </Flex>
+            </Box>
           </div>
         </section>
       </div>
