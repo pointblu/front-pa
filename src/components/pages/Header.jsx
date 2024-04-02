@@ -121,14 +121,14 @@ export const Header = () => {
 
   const handleButtonClick = () => {
     const obtenerUbicacion = async () => {
-      const usuarioTelegram = "+573023234804";
       try {
         const data = await getUserLocation();
         fetchPostionAsync(userObject.id, data[0], data[1]);
-        window.open(`tg://resolve?domain=${usuarioTelegram}`, "_blank");
+        const whatsappURL = `https://wa.me/message/76HIJOVYGKBKO1`;
+        window.open(whatsappURL, "_blank");
       } catch (error) {
         toast.error("Para usae el chat debes activar tu localización...", {
-          description: "...y tener instalado Telegram",
+          description: "...y tener instalado whatsapp",
         });
       }
     };
@@ -347,14 +347,17 @@ export const Header = () => {
             <button
               className="flyerin"
               data-tooltip-id="tt-chat"
-              data-tooltip-content="PQR"
+              data-tooltip-content="Chat"
               onClick={handleButtonClick}
               data-tooltip-float={false}
               data-tooltip-place="left"
               data-tooltip-offset={10}
               data-tooltip-class-name="custom-tooltip"
             >
-              <i className="fas fa-headset nav-icon" />
+              <i
+                className="fab fa-whatsapp nav-icon"
+                style={{ fontSize: "1.5rem" }}
+              />
             </button>
           </div>
         )}

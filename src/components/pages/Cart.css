@@ -20,7 +20,7 @@
   border-radius: 8px;
   aspect-ratio: 16/9;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   background: #fff;
   box-shadow: 0 4px 8px #fcfbfb33;
   width: 50%;

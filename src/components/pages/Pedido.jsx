@@ -45,7 +45,7 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
     selector: (row) => row.status,
     cell: (row) => {
       const statusMap = {
-        REQUESTED: ["Enviado", "fas fa-share nav-icon", "goldenrod"],
+        REQUESTED: ["En proceso", "fas fa-share nav-icon", "goldenrod"],
         ROUTED: ["En ruta", "fas fa-shipping-fast nav-icon", "cadetblue"],
         DELIVERED: ["Entregado", "fas fa-check nav-icon", "green"],
         CANCELED: ["Cancelado", "fas fa-times nav-icon", "red"],
@@ -473,7 +473,7 @@ const ExpandedComponent = (props) => {
 
 const dataFilter = [
   { id: 1, value: "", name: "Todos" },
-  { id: 2, value: "REQUESTED", name: "Enviado" },
+  { id: 2, value: "REQUESTED", name: "En proceso" },
   { id: 3, value: "ROUTED", name: "En ruta" },
   { id: 4, value: "DELIVERED", name: "Entregado" },
   { id: 5, value: "CANCELED", name: "Cancelado" },

@@ -101,6 +101,7 @@ export function Products({ products, from }) {
                     top: ".2rem",
                     right: "-2rem",
                     zIndex: 1,
+                    objectFit: "cover",
                   }}
                 />
               </div>
