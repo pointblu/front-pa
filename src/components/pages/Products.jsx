@@ -8,6 +8,10 @@ import { Tooltip } from "react-tooltip";
 import { useCanje } from "../../hooks/useCanje";
 import { usePoints } from "../../context/point";
 import { useSpring, animated } from "react-spring";
+import { API_URL } from "../../auth/constants";
+import { Toaster, toast } from "sonner";
+
+const token = JSON.parse(localStorage.getItem("token"));
 
 export function Products({ products, from }) {
   useEffect(() => {
@@ -44,6 +48,28 @@ export function Products({ products, from }) {
 
   const checkProductInCanje = (product) => {
     return canje.some((item) => item.id === product.id);
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    console.log(productId);
+    try {
+      const response = await fetch(`${API_URL}/products/${productId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+          "Access-Control-Allow-Origin": "*",
+          mode: "no-cors",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      toast.success("Eliminaste este producto!");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   function handleEditProduct(prod) {
@@ -223,6 +249,21 @@ export function Products({ products, from }) {
                 </button>
                 <Tooltip id={"tt-replenish" + product.id} />
               </Link>
+
+              <button
+                className="icon-button"
+                onClick={() => handleDeleteProduct(product.id)}
+                style={{
+                  display: isClient || !auth.isAuthenticated ? "none" : "block",
+                }}
+                data-tooltip-id={"tt-delete-product" + product.id}
+                data-tooltip-content="Quitar producto"
+                data-tooltip-float={false}
+                data-tooltip-place="top"
+              >
+                <i className="fas fa-times" />
+              </button>
+              <Tooltip id={"tt-delete-product" + product.id} />
 
               <div
                 style={{

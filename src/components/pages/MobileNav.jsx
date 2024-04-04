@@ -54,7 +54,24 @@ export const MobileNav = () => {
               <Tooltip id="tt-menu-m" />
               {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
-
+              <li
+                className="nav-item mx-2"
+                style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
+                data-tooltip-id="tt-menu-m"
+                data-tooltip-content="Ir al Inicio"
+                data-tooltip-place="top"
+                data-tooltip-float={false}
+                data-tooltip-class-name="custom-tooltip"
+              >
+                <NavLink
+                  to="/"
+                  className="nav-link"
+                  style={{ backgroundColor: "#C3a873" }}
+                  onClick={!auth.isAuthenticated && handleNoAuth}
+                >
+                  <i className="fas fa-home nav-icon" />
+                </NavLink>
+              </li>
               {isAdmin && (
                 <li
                   className="nav-item mx-2"
@@ -97,24 +114,6 @@ export const MobileNav = () => {
                 </NavLink>
               </li>
 
-              <li
-                className="nav-item mx-2"
-                style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
-                data-tooltip-id="tt-menu-m"
-                data-tooltip-content="Pedidos"
-                data-tooltip-place="top"
-                data-tooltip-float={false}
-                data-tooltip-class-name="custom-tooltip"
-              >
-                <NavLink
-                  to="/pedidos"
-                  className="nav-link"
-                  style={{ backgroundColor: "#C3a873" }}
-                  onClick={!auth.isAuthenticated && handleNoAuth}
-                >
-                  <i className="fas fa-shopping-basket nav-icon" />
-                </NavLink>
-              </li>
               {isAdmin && (
                 <li
                   className="nav-item mx-2"

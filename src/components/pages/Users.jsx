@@ -57,7 +57,6 @@ const columns = (handleDeleteUser) => [
     name: "ÚLTIMA UBICACIÓN",
     selector: (row) => (
       <div
-        Ñ
         style={{
           overflow: "hidden",
           whiteSpace: "wrap",
