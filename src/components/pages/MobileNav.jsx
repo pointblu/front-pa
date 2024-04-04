@@ -66,8 +66,7 @@ export const MobileNav = () => {
                 <NavLink
                   to="/"
                   className="nav-link"
-                  style={{ backgroundColor: "#C3a873" }}
-                  onClick={!auth.isAuthenticated && handleNoAuth}
+                  style={{ backgroundColor: "#C3a873" }}                  
                 >
                   <i className="fas fa-home nav-icon" />
                 </NavLink>
