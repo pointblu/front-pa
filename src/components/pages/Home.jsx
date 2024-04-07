@@ -144,7 +144,7 @@ export const Home = () => {
           <Tooltip id={`tt-edit-advertisement`} />
           <Carousel {...params}>
             {datum.map((advertisement) => (
-              <div key={advertisement.id}>
+              <div key={advertisement.id} className="advertisement">
                 <Link to={`/editar-anuncio`}>
                   <button
                     className="icon-button"
@@ -174,7 +174,7 @@ export const Home = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <button className="icon-buttoni">
+                    <button className="icon-buttoni unique">
                       <i className="fab fa-whatsapp" />
                     </button>
                   </a>
@@ -186,7 +186,7 @@ export const Home = () => {
                       rel="noopener noreferrer"
                     >
                       <button
-                        className="icon-buttoni"
+                        className="icon-buttoni unique"
                         style={{ marginLeft: "0.5rem" }}
                       >
                         <i className="fas fa-link" />
@@ -194,7 +194,7 @@ export const Home = () => {
                     </a>
                   ) : (
                     <button
-                      className="icon-buttoni"
+                      className="icon-buttoni unique"
                       style={{ marginLeft: "0.5rem", cursor: "not-allowed" }}
                       disabled
                     >

@@ -313,7 +313,6 @@ export const Header = () => {
               <Link className="nav-link" to="/pedidos">
                 <Tooltip id="tt-purchases" />
                 <i className="fas fa-shopping-basket" />
-                <span className="badge badge-warning navbar-badge">15</span>
               </Link>
             </li>
           )}

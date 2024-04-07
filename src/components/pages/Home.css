@@ -155,30 +155,45 @@
 }
 
 @media (max-width: 767px) {
+  .container-advertisement {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centrar verticalmente */
+    align-items: center; /* Centrar horizontalmente */
+  }
+
   .container-advertisement img {
-    width: 250%;
+    width: 100%; /* Ajustar el ancho de la imagen */
     object-fit: cover;
   }
 
+  .advertisement {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centrar verticalmente */
+    align-items: center; /* Centrar horizontalmente */
+  }
+
   .container-advertisement .info {
-    margin-top: -140%;
-    margin-left: 7%;
+    margin-top: 20px;
+    text-align: left; /* Centrar el texto */
   }
 
   .container-advertisement .info p {
-    font-size: 0.8rem;
+    font-size: 1rem; /* Ajustar el tamaño de la fuente */
   }
+
   .container-advertisement .info h1 {
-    font-size: medium;
-  }
-}
-
-@media (min-width: 768px) {
-  .next-button {
-    margin-right: 3rem;
+    font-size: 1rem; /* Ajustar el tamaño de la fuente */
   }
 
-  .prev-button {
-    margin-left: 3rem;
+  .unique {
+    border: 2px solid #ffffff; /* Establecer un borde sólido */
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.15); /* Aplicar sombra a los botones */
+    background-color: black; /* Fondo transparente */
+  }
+
+  .unique i {
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2); /* Aplicar sombra a los iconos dentro de los botones */
   }
 }
