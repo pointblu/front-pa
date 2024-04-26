@@ -40,6 +40,7 @@ export const Login = () => {
           toast.success("¡Conexión establecida!", {
             description: "Tu inicio de sesión fue exitoso.",
           });
+
           setSuccessResponse("");
           setErrorResponse(null);
           setUserName("");

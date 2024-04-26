@@ -1,17 +1,38 @@
 import React, { useEffect } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Input,
-  Skeleton,
-  SkeletonCircle,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth as authi } from "../../firebase";
+import Sidebar from "./chatComponents/Sidebar";
+import "./Chat.css";
+import Chato from "./chatComponents/Chato";
 export const Chat = () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const userDataRaw = localStorage.getItem("userInfo");
+      if (userDataRaw) {
+        const userData = JSON.parse(userDataRaw);
+        console.log(userData);
+
+        try {
+          // Intentar iniciar sesión con Firebase
+          await signInWithEmailAndPassword(
+            authi,
+            userData.email,
+            userData.phone
+          ); // Asegúrate de que 'password' sea la clave correcta
+          console.log("Logged in with Firebase successfully");
+        } catch (error) {
+          console.error("Error logging in with Firebase", error);
+        }
+      } else {
+        console.log("No user data found in localStorage");
+      }
+    };
+
+    // Llamar a la función asíncrona
+    fetchData();
+  }, []); // El array vacío asegura que esto solo se ejecute una vez después del montaje inicial
+
+  // Resto del componente
   return (
     <div>
       {/* Content Wrapper. Contains page content */}
@@ -33,58 +54,12 @@ export const Chat = () => {
           </div>
         </div>
 
-        <section className="content products">
-          <div className="container-fluid">
-            <Box
-              position={"absolute"}
-              left={"50%"}
-              w={{
-                base: "100%",
-                md: "80%",
-                lg: "750px",
-              }}
-              p={4}
-              transform={"translateX(-50%)"}
-            >
-              <Flex
-                gap={4}
-                flexDirection={{
-                  base: "column",
-                  md: "row",
-                }}
-                maxW={{
-                  sm: "400px",
-                  md: "full",
-                }}
-                mx={"auto"}
-              >
-                <Flex
-                  flex={30}
-                  gap={2}
-                  flexDirection={"column"}
-                  maxW={{ sm: "250px", md: "full" }}
-                  mx={"auto"}
-                >
-                  <Text
-                    fontWeight={700}
-                    color={useColorModeValue("gray.600", "gray.400")}
-                  >
-                    Tus conversaciones
-                  </Text>
-                  <form>
-                    <Flex alignItems={"center"} gap={2}>
-                      <Input placeholder="Search for a use" />
-                      <Button size={"sm"}>
-                        <SearchIcon />
-                      </Button>
-                    </Flex>
-                  </form>
-                </Flex>
-                <Flex flex={70}>Mensajes</Flex>
-              </Flex>
-            </Box>
+        <div classname="c-home">
+          <div className="c-container">
+            <Sidebar />
+            <Chato />
           </div>
-        </section>
+        </div>
       </div>
     </div>
   );

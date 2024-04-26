@@ -10,6 +10,8 @@ import "./Header.css";
 import { format } from "date-fns";
 import { UserNumber } from "../../context/point";
 import { getUserLocation } from "../helpers/getUserLocation";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
@@ -31,11 +33,11 @@ export const Header = () => {
   const categories = apiData;
   localStorage.setItem("categorias", JSON.stringify(categories));
 
-  const auth = useAuth();
-  const userObject = JSON.parse(auth.getUser() || "{}");
+  const authi = useAuth();
+  const userObject = JSON.parse(authi.getUser() || "{}");
 
   const isClient =
-    auth.isAuthenticated && userObject && userObject.role === "CLIENT";
+    authi.isAuthenticated && userObject && userObject.role === "CLIENT";
 
   useEffect(() => {
     fetchDataAsync();
@@ -124,12 +126,15 @@ export const Header = () => {
       try {
         const data = await getUserLocation();
         fetchPostionAsync(userObject.id, data[0], data[1]);
-        const whatsappURL = `https://wa.me/message/76HIJOVYGKBKO1`;
-        window.open(whatsappURL, "_blank");
+        /* const whatsappURL = `https://wa.me/message/76HIJOVYGKBKO1`;
+        window.open(whatsappURL, "_blank");*/
+        goTo("/pqr");
       } catch (error) {
-        toast.error("Para usae el chat debes activar tu localización...", {
+        toast.error(
+          "Para usar el chat debes activar tu localización..." /*, {
           description: "...y tener instalado whatsapp",
-        });
+        }*/
+        );
       }
     };
     obtenerUbicacion();
@@ -142,7 +147,8 @@ export const Header = () => {
       duration: 3000,
     });
     goTo("/catalogo");
-    auth.signout();
+    signOut(auth);
+    authi.signout();
   }
   return (
     <div>
@@ -188,7 +194,7 @@ export const Header = () => {
             </Link>
             <Tooltip id="tt-home" />
           </li>
-          {!auth.isAuthenticated && (
+          {!authi.isAuthenticated && (
             <li className="nav-item">
               <Link
                 className="nav-link"
@@ -206,7 +212,7 @@ export const Header = () => {
             </li>
           )}
 
-          {!auth.isAuthenticated && (
+          {!authi.isAuthenticated && (
             <li className="nav-item">
               <Link
                 className="nav-link"
@@ -245,7 +251,7 @@ export const Header = () => {
           className="navbar-nav ml-auto"
           style={{ display: "flex", overflow: "visible" }}
         >
-          {auth.isAuthenticated && (
+          {authi.isAuthenticated && (
             <li
               className="nav-item"
               data-tooltip-id="tt-puntos"
@@ -276,7 +282,7 @@ export const Header = () => {
                   style={{ left: "-0.5rem", top: "2rem" }}
                 >
                   Validos hasta el:{" "}
-                  {auth.isAuthenticated &&
+                  {authi.isAuthenticated &&
                     convertDateFormat(userObject.resetpointsat)}
                 </span>
               </Link>
@@ -301,7 +307,7 @@ export const Header = () => {
             </div>
           </li>
           {/* cesta de compras */}
-          {auth.isAuthenticated && (
+          {authi.isAuthenticated && (
             <li
               className="nav-item"
               data-tooltip-id="tt-purchases"
@@ -317,7 +323,7 @@ export const Header = () => {
             </li>
           )}
 
-          {auth.isAuthenticated && (
+          {authi.isAuthenticated && (
             <li
               className="nav-item"
               data-tooltip-id="tt-logout"
@@ -333,7 +339,7 @@ export const Header = () => {
             </li>
           )}
         </ul>
-        {auth.isAuthenticated && (
+        {authi.isAuthenticated && (
           <div
             className="button-containero"
             style={{
