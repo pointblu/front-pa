@@ -14,7 +14,7 @@ import { db } from "../../../firebase";
 import { AuthContext } from "../../../context/AuthContext";
 import { useAuth } from "../../../auth/AuthProvider";
 
-const predefinedUsername = "Lisandro Admin";
+const predefinedUsername = "Punto Azul";
 
 const Search = () => {
   const [username, setUsername] = useState("");

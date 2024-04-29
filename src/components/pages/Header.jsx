@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { Toaster, toast } from "sonner";
@@ -11,7 +11,20 @@ import { format } from "date-fns";
 import { UserNumber } from "../../context/point";
 import { getUserLocation } from "../helpers/getUserLocation";
 import { signOut } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { NotificationComponent } from "./Notification";
+import { AuthContext } from "../../context/AuthContext";
+import { ChatContext } from "../../context/ChatContext";
+import { useMessage } from "../../context/MessageContext";
+import {
+  collection,
+  doc,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 
 const token = JSON.parse(localStorage.getItem("token"));
 
@@ -27,6 +40,49 @@ function UserNumb({ n }) {
 }
 
 export const Header = () => {
+  const [lastMessages, setLastMessages] = useState([]);
+  const { currentUser } = useContext(AuthContext);
+  const { handleMessageReceived } = useMessage();
+
+  useEffect(() => {
+    if (!currentUser) {
+      console.log("No user ID available");
+      return;
+    }
+
+    // Asumimos que cada documento de chat tiene una estructura con un array de mensajes
+    const chatsRef = collection(db, "chats");
+    const q = query(chatsRef, orderBy("messages", "desc"), limit(50)); // Limitamos a los últimos 50 chats modificados
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const messagesFromOthers = [];
+      querySnapshot.forEach((doc) => {
+        const messages = doc.data().messages || [];
+        if (messages.length > 0) {
+          const lastMessage = messages[messages.length - 1]; // Último mensaje
+          if (
+            lastMessage.senderId !== currentUser.uid &&
+            !lastMessage?.readed
+          ) {
+            messagesFromOthers.push({
+              ...lastMessage,
+              chatId: doc.id,
+            });
+          }
+        }
+      });
+      setLastMessages(messagesFromOthers);
+    });
+    if (lastMessages.length > 0) {
+      handleMessageReceived(true);
+    } else {
+      handleMessageReceived(false);
+    }
+    return () => {
+      unsubscribe();
+    };
+  }, [currentUser, handleMessageReceived, lastMessages]);
+
   const [datum, setDatum] = useState([]);
   const [apiData, setApiData] = useState([]);
   const goTo = useNavigate();
@@ -93,7 +149,14 @@ export const Header = () => {
   };
 
   const convertDateFormat = (fecha) => {
+    if (!fecha) return "Fecha no disponible"; // Asegúrate de que la fecha existe
+
     const fechaOriginal = new Date(fecha);
+    if (isNaN(fechaOriginal.getTime())) {
+      console.error("Fecha no válida:", fecha);
+      return "Fecha no válida"; // Manejo del caso en que la fecha no sea válida
+    }
+
     return format(fechaOriginal, "dd/MM/yyyy");
   };
 
@@ -360,9 +423,10 @@ export const Header = () => {
               data-tooltip-class-name="custom-tooltip"
             >
               <i
-                className="fab fa-whatsapp nav-icon"
+                className="fab fa-rocketchat nav-icon"
                 style={{ fontSize: "1.5rem" }}
               />
+              <NotificationComponent />
             </button>
           </div>
         )}

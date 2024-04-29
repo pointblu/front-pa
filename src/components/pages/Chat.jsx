@@ -1,38 +1,47 @@
-import React, { useEffect } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth as authi } from "../../firebase";
+import React, { useContext, useEffect } from "react";
 import Sidebar from "./chatComponents/Sidebar";
 import "./Chat.css";
 import Chato from "./chatComponents/Chato";
+import { AuthContext } from "../../context/AuthContext";
+import { ChatContext } from "../../context/ChatContext";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import { useMessage } from "../../context/MessageContext";
+
 export const Chat = () => {
+  const { currentUser } = useContext(AuthContext);
+  const { data } = useContext(ChatContext);
+  const { handleMessageReceived } = useMessage();
+
   useEffect(() => {
-    const fetchData = async () => {
-      const userDataRaw = localStorage.getItem("userInfo");
-      if (userDataRaw) {
-        const userData = JSON.parse(userDataRaw);
-        console.log(userData);
+    if (data.chatId && currentUser?.uid) {
+      const chatDocRef = doc(db, "chats", data.chatId);
 
-        try {
-          // Intentar iniciar sesión con Firebase
-          await signInWithEmailAndPassword(
-            authi,
-            userData.email,
-            userData.phone
-          ); // Asegúrate de que 'password' sea la clave correcta
-          console.log("Logged in with Firebase successfully");
-        } catch (error) {
-          console.error("Error logging in with Firebase", error);
+      const unsubscribe = onSnapshot(chatDocRef, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const messages = docSnapshot.data().messages || [];
+          if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            // Verificar si el último mensaje no ha sido leído y no es del usuario actual
+            if (
+              !lastMessage.readed &&
+              lastMessage.senderId !== currentUser.uid
+            ) {
+              // Marcar como leído
+              const updatedMessages = [...messages];
+              updatedMessages[updatedMessages.length - 1] = {
+                ...lastMessage,
+                readed: true,
+              };
+              updateDoc(chatDocRef, { messages: updatedMessages });
+            }
+          }
         }
-      } else {
-        console.log("No user data found in localStorage");
-      }
-    };
+      });
 
-    // Llamar a la función asíncrona
-    fetchData();
-  }, []); // El array vacío asegura que esto solo se ejecute una vez después del montaje inicial
-
-  // Resto del componente
+      return () => unsubscribe();
+    }
+  }, [data.chatId, currentUser?.uid]);
   return (
     <div>
       {/* Content Wrapper. Contains page content */}
@@ -47,14 +56,14 @@ export const Chat = () => {
                   className="m-0 App-header focus-in-contract alphi-8"
                   style={{ backgroundColor: "black" }}
                 >
-                  PQR CHAT
+                  CHAT
                 </h1>
               </div>
             </div>
           </div>
         </div>
 
-        <div classname="c-home">
+        <div className="c-home">
           <div className="c-container">
             <Sidebar />
             <Chato />

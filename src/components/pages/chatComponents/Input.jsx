@@ -86,10 +86,11 @@ const Input = () => {
           text,
           senderId: currentUser.uid,
           date: Timestamp.now(),
+          readed: false,
         }),
       });
     }
-    console.log(currentUser, data.user);
+
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [data.chatId + ".lastMessage"]: {
         text,

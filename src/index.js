@@ -7,6 +7,7 @@ import { FiltersProvider } from "./context/filters";
 import { AuthProvider } from "./auth/AuthProvider";
 import { ChatContextProvider } from "./context/ChatContext";
 import { AuthContextProvider } from "./context/AuthContext";
+import { MessageProvider } from "./context/MessageContext";
 
 if (!navigator.geolocation) {
   alert("Tu navegador no tiene opción de Geolocalización");
@@ -18,7 +19,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <HashRouter basename={process.env.PUBLIC_URL}>
         <AuthContextProvider>
           <ChatContextProvider>
-            <App />
+            <MessageProvider>
+              <App />
+            </MessageProvider>
           </ChatContextProvider>
         </AuthContextProvider>
       </HashRouter>

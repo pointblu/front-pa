@@ -12,6 +12,19 @@ const Message = ({ message }) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
 
+  const formatDate = (date) => {
+    if (!date) return "";
+    const dateObj = new Date(date.seconds * 1000);
+    return new Intl.DateTimeFormat("es-ES", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true, // Para formato AM/PM
+    }).format(dateObj);
+  };
+
   return (
     <div
       ref={ref}
@@ -26,7 +39,7 @@ const Message = ({ message }) => {
           }
           alt=""
         />
-        <span>ahora</span>
+        <span className="c-date">{formatDate(message.date)}</span>
       </div>
       <div className="c-messageContent">
         <p>{message.text}</p>

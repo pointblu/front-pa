@@ -255,6 +255,10 @@
   border-radius: 50%;
 }
 
+.c-date {
+  font-size: 10px;
+}
+
 @media (max-width: 768px) {
   .c-container {
     flex-direction: column; /* Cambia a disposición vertical */

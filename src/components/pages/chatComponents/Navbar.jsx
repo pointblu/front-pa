@@ -3,7 +3,6 @@ import { AuthContext } from "../../../context/AuthContext";
 
 const Navbar = () => {
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser);
 
   if (!currentUser) {
     // Renderiza algo diferente o nada si no hay usuario
