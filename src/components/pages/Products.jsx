@@ -36,6 +36,8 @@ export function Products({ products, from }) {
   const isClient =
     auth.isAuthenticated && userObject && userObject.role === "CLIENT";
 
+  const isSeller =
+    auth.isAuthenticated && userObject && userObject.role === "SELLER";
   const { addToCart, removeFromCart, cart } = useCart();
 
   const { addToCanje, removeFromCanje, canje } = useCanje();
@@ -220,7 +222,9 @@ export function Products({ products, from }) {
                   onClick={() => handleEditProduct(product)}
                   style={{
                     display:
-                      isClient || !auth.isAuthenticated ? "none" : "block",
+                      isClient || !auth.isAuthenticated || isSeller
+                        ? "none"
+                        : "block",
                   }}
                   data-tooltip-id={"tt-edit-product" + product.id}
                   data-tooltip-content="Editar producto"
@@ -254,7 +258,10 @@ export function Products({ products, from }) {
                 className="icon-button"
                 onClick={() => handleDeleteProduct(product.id)}
                 style={{
-                  display: isClient || !auth.isAuthenticated ? "none" : "block",
+                  display:
+                    isClient || !auth.isAuthenticated || isSeller
+                      ? "none"
+                      : "block",
                 }}
                 data-tooltip-id={"tt-delete-product" + product.id}
                 data-tooltip-content="Quitar producto"

@@ -487,7 +487,9 @@ export function Pedido() {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
-    auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+    auth.isAuthenticated &&
+    userObject &&
+    (userObject.role === "ADMIN" || userObject.role === "SELLER");
   const [datum, setDatum] = useState([]);
   const [statum, setStatum] = useState("");
   const [startDate, setStartDate] = useState(null);
