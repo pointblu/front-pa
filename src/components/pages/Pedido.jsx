@@ -13,7 +13,12 @@ import { Tooltip } from "react-tooltip";
 
 registerLocale("es", es);
 const token = JSON.parse(localStorage.getItem("token"));
-const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
+const columns = (
+  isAdmin,
+  isSeller,
+  handleUpdateStatus,
+  handleCreatePayment
+) => [
   {
     name: "FECHA",
     selector: (row) =>
@@ -37,7 +42,8 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
   },
   {
     name: "TOTAL",
-    selector: (row) => `$ ${(row.total + 1000).toFixed(2)}`,
+    selector: (row) =>
+      `$ ${isSeller ? row.total.toFixed(2) : (row.total + 1000).toFixed(2)}`,
     minWidth: "120px",
   },
   {
@@ -78,7 +84,7 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
     cell: (row) => (
       <div style={{ display: "flex", gap: "5px", flexDirection: "row" }}>
         <Tooltip id="tt-action" />
-        {isAdmin && row.status === "REQUESTED" ? (
+        {(isAdmin || isSeller) && row.status === "REQUESTED" ? (
           <button
             className="ican-button act-rut"
             onClick={() =>
@@ -128,7 +134,9 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
             <i className="fas fa-times nav-icon" />
           </button>
         ) : null}
-        {row.status === "REQUESTED" && row.paymented === false && !isAdmin ? (
+        {row.status === "REQUESTED" &&
+        row.paymented === false &&
+        (!isAdmin || !isSeller) ? (
           <Link to={`/pago`}>
             <button
               className="ican-button"
@@ -149,11 +157,12 @@ const columns = (isAdmin, handleUpdateStatus, handleCreatePayment) => [
 ];
 
 const ExpandedComponent = (props) => {
-  const { isAdmin, data } = props;
+  const { isAdmin, isSeller, data } = props;
+  console.log("Esta es la data", data);
   const handlePrintPos = async () => {
     try {
       const conector = new ConectorPluginV3();
-      const respuesta = await conector
+      const respuesta = conector
         .Iniciar()
         .DeshabilitarElModoDeCaracteresChinos()
         .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
@@ -185,9 +194,13 @@ const ExpandedComponent = (props) => {
         .EscribirTexto(`____________________\n`)
         .EscribirTexto(`Domicilio: \n`)
         .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-        .EscribirTexto(`$ 1000.0 \n`)
+        .EscribirTexto(`$ ${isSeller ? 0.0 : 1000.0} \n`)
         .EscribirTexto(`____________________\n`)
-        .EscribirTexto(`TOTAL: $${(data.total + 1000).toFixed(1)} \n`)
+        .EscribirTexto(
+          `TOTAL: $${
+            isSeller ? data.total.toFixed(1) : (data.total + 1000).toFixed(1)
+          } \n`
+        )
         .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
         .EscribirTexto("____________________\n")
         .Feed(1)
@@ -249,7 +262,7 @@ const ExpandedComponent = (props) => {
   return (
     <div className="row">
       <div className="section col-md-6">
-        {isAdmin && (
+        {(isAdmin || isSeller) && (
           <div>
             <Tooltip id="tt-print" />
             <button
@@ -359,14 +372,19 @@ const ExpandedComponent = (props) => {
                     <td
                       style={{ whiteSpace: "normal", wordWrap: "break-word" }}
                     >
-                      $1000.0
+                      {isSeller ? "$0.00" : "$1000.0"}
                     </td>
-                    <td className="text-right">$1000.0</td>
+                    <td className="text-right">
+                      {isSeller ? "$0.00" : "$1000.0"}
+                    </td>
                   </tr>
                   <tr className="total">
                     <td>TOTAL A PAGAR</td>
                     <td colSpan={3} className="info-total-price text-right">
-                      $ {(data.total + 1000).toFixed(1)}
+                      ${" "}
+                      {isSeller
+                        ? data.total.toFixed(1)
+                        : (data.total + 1000).toFixed(1)}
                     </td>
                   </tr>
                 </tbody>
@@ -444,7 +462,10 @@ const ExpandedComponent = (props) => {
               <p>
                 Vuelto:{" "}
                 <strong>
-                  $ {(data.paymentCash - data.total - 1000).toFixed(1)}
+                  ${" "}
+                  {isSeller
+                    ? (data.paymentCash - data.total).toFixed(1)
+                    : data.paymentCash - data.total - 1000}
                 </strong>
               </p>
             </div>
@@ -487,9 +508,10 @@ export function Pedido() {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
-    auth.isAuthenticated &&
-    userObject &&
-    (userObject.role === "ADMIN" || userObject.role === "SELLER");
+    auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+
+  const isSeller =
+    auth.isAuthenticated && userObject && userObject.role === "SELLER";
   const [datum, setDatum] = useState([]);
   const [statum, setStatum] = useState("");
   const [startDate, setStartDate] = useState(null);
@@ -603,14 +625,23 @@ export function Pedido() {
     <div>
       <Toaster position="top-center" richColors closeButton="true" />
       <DataTable
-        columns={columns(isAdmin, handleUpdateStatus, handleCreatePayment)}
+        columns={columns(
+          isAdmin,
+          isSeller,
+          handleUpdateStatus,
+          handleCreatePayment
+        )}
         data={datum.data}
         pagination
         customStyles={tableHeaderstyle}
         highlightOnHover="true"
         expandableRows
         expandableRowsComponent={(datum) => (
-          <ExpandedComponent data={datum.data} isAdmin={isAdmin} />
+          <ExpandedComponent
+            isAdmin={isAdmin}
+            isSeller={isSeller}
+            data={datum.data}
+          />
         )}
         paginationComponentOptions={{
           rowsPerPageText: "Registros por página:",

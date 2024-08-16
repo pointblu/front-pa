@@ -38,6 +38,9 @@ export function Products({ products, from }) {
 
   const isSeller =
     auth.isAuthenticated && userObject && userObject.role === "SELLER";
+
+  const isAdmin =
+    auth.isAuthenticated && userObject && userObject.role === "ADMIN";
   const { addToCart, removeFromCart, cart } = useCart();
 
   const { addToCanje, removeFromCanje, canje } = useCanje();
@@ -156,13 +159,15 @@ export function Products({ products, from }) {
                       ? "goldenrod"
                       : "burlywood",
                     display:
-                      !isClient && auth.isAuthenticated ? "none" : "block",
+                      (isAdmin && auth.isAuthenticated) || !auth.isAuthenticated
+                        ? "none"
+                        : "block",
                   }}
                   onClick={() => {
                     handleButtonClick(product, addToCart);
                     setShowNumber(true);
                   }}
-                  disabled={!isClient || product.stock < 0}
+                  disabled={isAdmin || product.stock < 0}
                   data-tooltip-id={"tt-add-basket" + product.id}
                   data-tooltip-content="Agregar a la cesta"
                   data-tooltip-float={false}
@@ -195,14 +200,16 @@ export function Products({ products, from }) {
                       ? "goldenrod"
                       : "burlywood",
                     display:
-                      !isClient && auth.isAuthenticated ? "none" : "block",
+                      (isAdmin && auth.isAuthenticated) || !auth.isAuthenticated
+                        ? "none"
+                        : "block",
                   }}
                   onClick={() => {
                     isProductInCanje
                       ? handleRemoveCanje(product)
                       : handleAddCanje(product);
                   }}
-                  disabled={!isClient || product.stock < 0}
+                  disabled={isAdmin || product.stock < 0}
                   data-tooltip-id={"tt-add-basket" + product.id}
                   data-tooltip-content="Agregar a la cesta"
                   data-tooltip-float={false}

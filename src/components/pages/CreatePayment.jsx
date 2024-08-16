@@ -4,6 +4,7 @@ import { API_URL } from "../../auth/constants";
 import { Toaster, toast } from "sonner";
 import { UploadImage } from "./UploadImage";
 import { Tooltip } from "react-tooltip";
+import { useAuth } from "../../auth/AuthProvider";
 
 const userData = JSON.parse(localStorage.getItem("userInfo"));
 const token = JSON.parse(localStorage.getItem("token"));
@@ -24,6 +25,11 @@ export const CreatePayment = () => {
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
   const imageUrl = JSON.parse(localStorage.getItem("urlImage"));
+
+  const auth = useAuth();
+  const userObject = JSON.parse(auth.getUser() || "{}");
+  const isSeller =
+    auth.isAuthenticated && userObject && userObject.role === "SELLER";
 
   const isTrans = editPayment.paymentType === "TRANSFERENCIA";
   const goTo = useNavigate();
@@ -61,7 +67,8 @@ export const CreatePayment = () => {
     const numericTotal = parseFloat(total);
 
     // Calcular el cambio
-    const calculatedChange = numericCash - (numericTotal + 1000);
+    const calculatedChange =
+      numericCash - (numericTotal + (isSeller ? 0 : 1000));
 
     // Actualizar el estado de paymentChange
     setPaymentChange(isNaN(calculatedChange) ? 0 : calculatedChange);

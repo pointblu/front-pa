@@ -76,6 +76,9 @@ export function Cart() {
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isClient =
     auth.isAuthenticated && userObject && userObject.role === "CLIENT";
+
+  const isSeller =
+    auth.isAuthenticated && userObject && userObject.role === "SELLER";
   const goTo = useNavigate();
 
   const scrollToTop = () => {
@@ -136,7 +139,7 @@ export function Cart() {
           note: note,
         }),
       });
-
+      console.log("respuesta al crar pruechase: ", response);
       if (response.ok) {
         console.log("Purchase register successfully");
         const json = await response.json();
@@ -160,9 +163,10 @@ export function Cart() {
             },
           }
         );
-        if (!pointers.ok) {
-          throw new Error(`HTTP error! Status: ${pointers.status}`);
-        }
+        console.log(pointers);
+        // if (!pointers.ok) {
+        //   throw new Error(`HTTP error! Status: ${pointers.status}`);
+        // }
         await Promise.all(
           cartDetails.map(async (e) => {
             const responseDetail = await fetch(`${API_URL}/purchaseDetails`, {
@@ -177,7 +181,7 @@ export function Cart() {
                 cost: numericTotal,
                 quantity: parseInt(e.quantity, 10),
                 product: e.id,
-                seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
+                seller: "210e8aec-2cc3-4547-877e-d38d61aaa4df", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
                 detail: json.data.id,
                 active: true,
               }),
@@ -207,7 +211,7 @@ export function Cart() {
                   cost: numericTotal,
                   quantity: parseInt(e.quantity, 10),
                   product: e.id,
-                  seller: "3d0a9e53-75ad-41f0-be59-bd50fe95513d", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
+                  seller: "210e8aec-2cc3-4547-877e-d38d61aaa4df", //crear manejo de vendedor cuando sea punto de venta, default el ADMIN
                   detail: json.data.id,
                   active: false,
                 }),
@@ -255,7 +259,7 @@ export function Cart() {
   return (
     <div>
       <Toaster position="top-center" richColors />
-      {isClient && (
+      {(isClient || isSeller) && (
         <div className="button-containeru">
           <button
             data-widget="control-sidebar"
