@@ -596,7 +596,7 @@ export function Pedido() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       if (status === "CANCELED") {
-        const posible = Number(userData.points) - Math.ceil(total / 1000);
+        const posible = Number(userData.points) - Math.ceil(total / 3000);
         userData.points = posible < 0 ? 0 : posible;
 
         localStorage.setItem("userInfo", JSON.stringify(userData));
