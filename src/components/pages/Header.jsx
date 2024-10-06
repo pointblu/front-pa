@@ -389,6 +389,27 @@ export const Header = () => {
           {authi.isAuthenticated && (
             <li
               className="nav-item"
+              data-tooltip-id="tt-unsuscribe"
+              data-tooltip-content="Cerrar mi cuenta"
+              data-tooltip-float={false}
+              data-tooltip-offset={-10}
+              data-tooltip-class-name="custom-tooltip"
+            >
+              <a
+                className="nav-link"
+                href="https://unsuscribe.puntoazulpanaderia.online/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Tooltip id="tt-unsuscribe" />
+                <i className="fas fa-user-slash" />
+              </a>
+            </li>
+          )}
+
+          {authi.isAuthenticated && (
+            <li
+              className="nav-item"
               data-tooltip-id="tt-logout"
               data-tooltip-content="Salir"
               data-tooltip-float={false}
