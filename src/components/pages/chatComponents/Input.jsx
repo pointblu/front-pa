@@ -54,6 +54,21 @@ const Input = () => {
       toast.error("Debes seleccionar un usuario para enviarle mensajes!");
       return; // Termina la ejecución si alguno de los UIDs es nulo o undefined
     }
+
+    // Verifica si el chat aún existe
+    const chatRef = doc(db, "chats", data.chatId);
+    const chatSnapshot = await getDoc(chatRef);
+    if (!chatSnapshot.exists()) {
+      console.error("El chat no existe. No se puede enviar el mensaje.");
+      toast.error(
+        "El chat ha sido eliminado. Selecciona un usuario disponible"
+      );
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      return;
+    }
+
     const currentUserBgColor = await getUserBgColor(currentUser.uid);
     const otherUserBgColor = await getUserBgColor(data.user.uid);
     if (img) {
