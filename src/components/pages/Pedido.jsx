@@ -32,13 +32,13 @@ const columns = (
       }).format(new Date(row.createdAt)),
 
     minWidth: "120px",
-    sortable: true,
+    sortable: false,
   },
   {
     name: "CLIENTE",
     selector: (row) => row.buyer.name,
     minWidth: "120px",
-    sortable: true,
+    sortable: false,
   },
   {
     name: "TOTAL",
@@ -76,7 +76,7 @@ const columns = (
       );
     },
     minWidth: "110px",
-    sortable: true,
+    sortable: false,
     filter: true,
   },
   {
@@ -596,7 +596,7 @@ export function Pedido() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       if (status === "CANCELED") {
-        const posible = Number(userData.points) - Math.ceil(total / 3000);
+        const posible = Number(userData.points) - Math.ceil(total / 6000);
         userData.points = posible < 0 ? 0 : posible;
 
         localStorage.setItem("userInfo", JSON.stringify(userData));
@@ -621,6 +621,9 @@ export function Pedido() {
       },
     },
   };
+  const sortedData = datum?.data
+    ? datum.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    : [];
   return (
     <div>
       <Toaster position="top-center" richColors closeButton="true" />
@@ -631,7 +634,7 @@ export function Pedido() {
           handleUpdateStatus,
           handleCreatePayment
         )}
-        data={datum.data}
+        data={sortedData}
         pagination
         customStyles={tableHeaderstyle}
         highlightOnHover="true"

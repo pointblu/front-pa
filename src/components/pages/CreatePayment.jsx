@@ -108,7 +108,7 @@ export const CreatePayment = () => {
 
       if (response.ok) {
         console.log("User register successfully");
-        userData.points = Number(userData.points) + Math.ceil(total / 3000);
+        userData.points = Number(userData.points) + Math.ceil(total / 6000);
         localStorage.setItem("userInfo", JSON.stringify(userData));
         const json = await response.json();
         setSuccessResponse(json.message);
