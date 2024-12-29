@@ -15,32 +15,25 @@ export const updateLocalStorage = (state) => {
 
 const UPDATE_STATE_BY_ACTION = {
   [CART_ACTION_TYPES.ADD_TO_CART]: (state, action) => {
-    const { id } = action.payload;
+    const { id, stock } = action.payload;
     const productInCartIndex = state.findIndex((item) => item.id === id);
 
     if (productInCartIndex >= 0) {
-      // 👀 una forma sería usando structuredClone
-      // const newState = structuredClone(state)
-      // newState[productInCartIndex].quantity += 1
+      // Si el producto ya está en el carrito
+      const currentQuantity = state[productInCartIndex].quantity;
 
-      // 👶 usando el map
-      // const newState = state.map(item => {
-      //   if (item.id === id) {
-      //     return {
-      //       ...item,
-      //       quantity: item.quantity + 1
-      //     }
-      //   }
+      // Verificar si hay suficiente stock
+      if (currentQuantity >= stock) {
+        // Si no hay stock suficiente, retornar el estado actual sin cambios
+        return state;
+      }
 
-      //   return item
-      // })
-
-      // ⚡ usando el spread operator y slice
+      // Actualizar la cantidad del producto en el carrito
       const newState = [
         ...state.slice(0, productInCartIndex),
         {
           ...state[productInCartIndex],
-          quantity: state[productInCartIndex].quantity + 1,
+          quantity: currentQuantity + 1,
         },
         ...state.slice(productInCartIndex + 1),
       ];
@@ -49,16 +42,22 @@ const UPDATE_STATE_BY_ACTION = {
       return newState;
     }
 
-    const newState = [
-      ...state,
-      {
-        ...action.payload, // product
-        quantity: 1,
-      },
-    ];
+    // Si el producto no está en el carrito, verificar el stock antes de agregar
+    if (stock > 0) {
+      const newState = [
+        ...state,
+        {
+          ...action.payload, // product
+          quantity: 1,
+        },
+      ];
 
-    updateLocalStorage(newState);
-    return newState;
+      updateLocalStorage(newState);
+      return newState;
+    }
+
+    // Si no hay stock disponible, retornar el estado actual sin cambios
+    return state;
   },
 
   [CART_ACTION_TYPES.DECREMENT_QUANTITY]: (state, action) => {

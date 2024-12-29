@@ -167,7 +167,7 @@ export function Products({ products, from }) {
                     handleButtonClick(product, addToCart);
                     setShowNumber(true);
                   }}
-                  disabled={isAdmin || product.stock < 0}
+                  disabled={isAdmin || product.stock <= 0}
                   data-tooltip-id={"tt-add-basket" + product.id}
                   data-tooltip-content="Agregar a la cesta"
                   data-tooltip-float={false}
@@ -209,7 +209,7 @@ export function Products({ products, from }) {
                       ? handleRemoveCanje(product)
                       : handleAddCanje(product);
                   }}
-                  disabled={isAdmin || product.stock < 0}
+                  disabled={isAdmin || product.stock <= 0}
                   data-tooltip-id={"tt-add-basket" + product.id}
                   data-tooltip-content="Agregar a la cesta"
                   data-tooltip-float={false}
