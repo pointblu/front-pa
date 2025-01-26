@@ -218,7 +218,7 @@ export const Header = () => {
       <Toaster position="top-center" richColors />
       {/* Navbar */}
       <nav
-        className="main-header navbar navbar-expand navbar-cyan navbar-dark"
+        className="main-header navbar navbar-expand navbar-yellow navbar-light"
         style={{ zIndex: 9999 }}
       >
         {/* Left navbar links */}

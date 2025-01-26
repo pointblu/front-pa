@@ -81,10 +81,10 @@ export const Home = () => {
         fill: "white",
       },
       nextButtonStyle: {
-        backgroundColor: "rgba(173, 216, 230, 0.85)",
+        backgroundColor: "rgba(250, 235, 98, 0.85)",
       },
       prevButtonStyle: {
-        backgroundColor: "rgba(173, 216, 230, 0.85)",
+        backgroundColor: "rgba(250, 235, 98, 0.85)",
       },
     },
   };
@@ -109,6 +109,7 @@ export const Home = () => {
                       backgroundColor: "#17a2b8",
                       position: "relative",
                       zIndex: 0,
+                      color: "GrayText",
                     }}
                   >
                     Inicio {userObject.name}

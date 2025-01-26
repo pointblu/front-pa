@@ -6,7 +6,7 @@ export const Footer = () => {
       <div>
         <footer className="main-footer App">
           <strong>
-            Copyright © 2023 <a href="#">Panaderia Punto Azul. </a>
+            Copyright © 2025 <a href="#">Panaderia y Reposteria Monsalve. </a>
           </strong>
           Todos los derechos reservados.
           <div className="float-right d-none d-sm-inline-block">

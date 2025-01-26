@@ -104,13 +104,20 @@ export const Login = () => {
             </video>
             <div className="container-fluid ctry video-header">
               <div className="register-box">
-                <div className="register-logo">
+                <div
+                  className="register-logo"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <Link to="/">
                     <img
                       src={
                         process.env.PUBLIC_URL + "/dist/img/logo_punto_azul.png"
                       }
-                      alt="Punto Azul Logo"
+                      alt="MonsalveLogo"
                       className="brand-image-xl img-circle elevation-3"
                       style={{ opacity: ".8", maxHeight: "140px" }}
                     />

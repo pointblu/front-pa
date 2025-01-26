@@ -8,14 +8,14 @@ const Navbar = () => {
     // Renderiza algo diferente o nada si no hay usuario
     return (
       <div className="c-navbar">
-        <span className="c-logo">Punto Azul</span>
+        <span className="c-logo">Monsalve</span>
         <div className="c-user">No tienes acceso a este chat...</div>
       </div>
     );
   }
   return (
     <div className="c-navbar">
-      <span className="c-logo">Punto Azul</span>
+      <span className="c-logo">Monsalve</span>
       <div className="c-user">
         <span>{currentUser.displayName}</span>
         <img src={currentUser.photoURL} alt="" />

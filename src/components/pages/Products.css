@@ -69,8 +69,14 @@ body::-webkit-scrollbar-track {
   border: 1px solid #ccc;
   overflow: hidden;
   transform-style: preserve-3d;
-  transition: transform all 0.5s ease-in-out;
-  background: linear-gradient(45deg, #4891ad, #fff);
+  transition: transform 0.5s ease-in-out, box-shadow 0.3s ease-in-out;
+  background: linear-gradient(
+    45deg,
+    #d0dadd,
+    #fcc107
+  ); /* Degradado azul y amarillo */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra inicial suave */
+  border-radius: 12px; /* Bordes redondeados para suavidad */
 }
 
 .products .card:hover {

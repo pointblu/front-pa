@@ -102,7 +102,7 @@ export const ChangePass = () => {
                       src={
                         process.env.PUBLIC_URL + "/dist/img/logo_punto_azul.png"
                       }
-                      alt="Punto Azul Logo"
+                      alt="Monsalve Logo"
                       className="brand-image-xl img-circle elevation-3"
                       style={{ opacity: ".8", maxHeight: "140px" }}
                     />

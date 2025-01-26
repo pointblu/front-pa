@@ -13,7 +13,7 @@ export const MobileNav = () => {
   const goTo = useNavigate();
   function handleNoAuth(e) {
     e.preventDefault();
-    toast.info("¡Bienvenido a Punto Azul!", {
+    toast.info("¡Bienvenido a P & R Monsalve!", {
       description:
         "Regístrate para disfrutar de nuestras delicias recién horneadas. ¡Tus pedidos te esperan!",
     });
@@ -28,12 +28,12 @@ export const MobileNav = () => {
         <Link to="/" className="brand-link">
           <img
             src={process.env.PUBLIC_URL + "/dist/img/logo_punto_azul_pq.png"}
-            alt="Punto Azul Logo"
+            alt="Monsalve Logo"
             className="brand-image img-circle elevation-3"
             style={{ opacity: ".8" }}
           />
           <span className="brand-text font-weight-light text-md">
-            Panaderia <b>Punto Azul</b>
+            P & R <b>Monsalve</b>
           </span>
         </Link>
         {/* Sidebar */}
@@ -66,7 +66,7 @@ export const MobileNav = () => {
                 <NavLink
                   to="/"
                   className="nav-link"
-                  style={{ backgroundColor: "#C3a873" }}                  
+                  style={{ backgroundColor: "#C3a873" }}
                 >
                   <i className="fas fa-home nav-icon" />
                 </NavLink>
