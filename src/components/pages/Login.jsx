@@ -141,13 +141,13 @@ export const Login = () => {
                           value={userName}
                           onChange={(e) => setUserName(e.target.value)}
                           className="form-control"
-                          placeholder="usuario de ingreso"
+                          placeholder="Correo electrónico"
                           name="userName"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
-                            <span className="fas fa-user-secret" />
+                            <span className="fas fa-envelope" />
                           </div>
                         </div>
                       </div>

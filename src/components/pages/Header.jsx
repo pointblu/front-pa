@@ -189,9 +189,11 @@ export const Header = () => {
       try {
         const data = await getUserLocation();
         fetchPostionAsync(userObject.id, data[0], data[1]);
-        /* const whatsappURL = `https://wa.me/message/76HIJOVYGKBKO1`;
-        window.open(whatsappURL, "_blank");*/
-        goTo("/pqr");
+
+        const phoneNumber = "573152798597";
+        const whatsappURL = `https://wa.me/${phoneNumber}`;
+        window.open(whatsappURL, "_blank");
+        // goTo("/pqr");
       } catch (error) {
         toast.error(
           "Para usar el chat debes activar tu localización..." /*, {
@@ -443,10 +445,7 @@ export const Header = () => {
               data-tooltip-offset={10}
               data-tooltip-class-name="custom-tooltip"
             >
-              <i
-                className="fab fa-rocketchat nav-icon"
-                style={{ fontSize: "1.5rem" }}
-              />
+              <i className="fab fa-whatsapp" style={{ fontSize: "1.5rem" }} />
               <NotificationComponent />
             </button>
           </div>

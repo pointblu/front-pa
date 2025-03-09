@@ -9,7 +9,6 @@ import { Toaster, toast } from "sonner";
 
 export const Register = () => {
   const [name, setName] = useState("");
-  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -34,6 +33,21 @@ export const Register = () => {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];
   }
+
+  function generateDateBasedNumber() {
+    const now = new Date();
+
+    // Formato: AñoMesDiaHoraMinutoSegundo (ejemplo: 20231004123045)
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Meses van de 0 a 11
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
+    return String(`${year}${month}${day}${hours}${minutes}${seconds}`);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -45,10 +59,11 @@ export const Register = () => {
         },
         body: JSON.stringify({
           name,
-          userName,
+          userName: generateDateBasedNumber(),
           email,
           phone,
           address,
+          active: true,
         }),
       });
       if (response.ok) {
@@ -96,7 +111,6 @@ export const Register = () => {
         setErrorResponse(null);
         // Limpiar los campos del formulario
         setName(""); // Agrega estas líneas
-        setUserName(""); // Agrega estas líneas
         setEmail(""); // Agrega estas líneas
         setPhone(""); // Agrega estas líneas
         setAddress(""); // Agrega estas líneas
@@ -209,22 +223,7 @@ export const Register = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="input-group mb-3">
-                        <input
-                          type="text"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
-                          className="form-control"
-                          placeholder="usuario de ingreso"
-                          name="userName"
-                          autoComplete="off"
-                        />
-                        <div className="input-group-append">
-                          <div className="input-group-text">
-                            <span className="fas fa-user-secret" />
-                          </div>
-                        </div>
-                      </div>
+
                       <div className="input-group mb-3">
                         <input
                           type="email"
