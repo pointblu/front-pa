@@ -63,12 +63,24 @@ export function Filters() {
               <i className="fas fa-chevron-left text-white" />
             </div>
             <nav className="mt-2">
-              <ul className="nav nav-pills navbar-nav d-flex flex-row flex-nowrap ">
+              <ul
+                className="nav nav-pills navbar-nav d-flex flex-row flex-nowrap "
+                style={{
+                  whiteSpace: "nowrap", // Evita el salto de línea
+                  overflowX: "auto", // Permite scroll horizontal
+                  flexWrap: "nowrap", // Asegura que no haya wrap
+                }}
+              >
                 <li
                   className={`mx-2 text-white ${
                     activeCategory === "all" ? "active" : ""
                   }`}
-                  style={{ fontSize: "0.8rem", cursor: "pointer" }}
+                  style={{
+                    fontSize: "0.8rem",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    display: "inline-block",
+                  }}
                   onClick={() => handleCategoryClick("all")}
                 >
                   TODAS
@@ -80,7 +92,12 @@ export function Filters() {
                         categ.id === activeCategory ? "active" : ""
                       }`}
                       key={categ.id}
-                      style={{ fontSize: "0.8rem", cursor: "pointer" }}
+                      style={{
+                        fontSize: "0.8rem",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                        display: "inline-block",
+                      }}
                       onClick={() => handleCategoryClick(categ.id, categ.name)}
                     >
                       {categ.name.toUpperCase()}
