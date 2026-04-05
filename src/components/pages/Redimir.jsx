@@ -10,17 +10,18 @@ import { Cart } from "./Cart.jsx";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Tooltip } from "react-tooltip";
 
-const userData = JSON.parse(localStorage.getItem("userInfo"));
 export const Redimir = () => {
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+  const userData = JSON.parse(localStorage.getItem("userInfo"));
   const [datum, setDatum] = useState([]);
   const products = datum;
   const { filterProducts } = useFilters();
   const [page, setPage] = useState(1);
-  const [infoPage, setInfoPage] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchDataAsync();
@@ -30,13 +31,18 @@ export const Redimir = () => {
 
   const fetchDataAsync = async () => {
     try {
-      const { data: apiData } = await api.get(`/products?pag=${page}&take=50`);
+      const { data: apiData } = await api.get(`/products?page=${page}&take=50`);
+      const userPoints = userData?.points ?? 0;
       const apiDatum = apiData.data.filter(
-        (datu) => datu.active !== false && datu.points < userData.points
+        (datu) => datu.active !== false && datu.points <= userPoints
       );
       setDatum((prev) => prev.concat(!isAdmin || !auth.isAuthenticated ? apiDatum : apiData.data));
-      setInfoPage(apiData.meta.hasNextPage);
-    } catch (_) {}
+      setHasMore(apiData.meta.hasNextPage);
+    } catch (_) {
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const goTo = useNavigate();
@@ -98,16 +104,24 @@ export const Redimir = () => {
               className="col-sm-12 infinite-scroll-container"
               id="infiniteScroll"
             >
-              <InfiniteScroll
-                dataLength={datum.length}
-                next={() => {
-                  setPage(page + 1);
-                }}
-                hasMore={infoPage}
-                loader={infoPage ? <h4>Cargando... {infoPage}</h4> : null}
-              >
-                <Products products={filteredProducts} from="redimir" />
-              </InfiniteScroll>
+              {loading ? (
+                <h4>Cargando...</h4>
+              ) : filteredProducts.length === 0 ? (
+                <p style={{ textAlign: "center", marginTop: "2rem", color: "#888" }}>
+                  No hay productos disponibles para canjear con tus puntos actuales.
+                </p>
+              ) : (
+                <InfiniteScroll
+                  dataLength={datum.length}
+                  next={() => {
+                    setPage(page + 1);
+                  }}
+                  hasMore={hasMore}
+                  loader={<h4>Cargando...</h4>}
+                >
+                  <Products products={filteredProducts} from="redimir" />
+                </InfiniteScroll>
+              )}
             </div>
             {/* /.row (main row) */}
           </div>

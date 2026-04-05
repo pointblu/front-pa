@@ -43,7 +43,9 @@ export function AuthProvider({ children }) {
       localStorage.setItem("userInfo", JSON.stringify(userData.payload));
       localStorage.setItem("points", JSON.stringify(userData.payload.points));
       localStorage.setItem("isAuth", JSON.stringify(true));
-
+      if (userData.refreshToken) {
+        localStorage.setItem("refreshToken", userData.refreshToken);
+      }
       setIsAuthenticated(true);
     },
     [setAccessToken]
@@ -53,8 +55,24 @@ export function AuthProvider({ children }) {
     return user;
   }, [user]);
 
-  const signout = useCallback(() => {
+  const signout = useCallback(async () => {
+    try {
+      const token = JSON.parse(localStorage.getItem("token") || "null");
+      if (token) {
+        await fetch(
+          `${process.env.REACT_APP_API_URL || "https://backend.panaderiamonsalve.com/api"}/Auth/logout`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
+    } catch (_) {}
     localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("userInfo");
     localStorage.removeItem("isAuth");
     localStorage.removeItem("cart");

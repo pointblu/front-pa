@@ -10,6 +10,7 @@ import { usePoints } from "../../context/point";
 import { useSpring, animated } from "react-spring";
 import api from "../../services/api";
 import { Toaster, toast } from "sonner";
+import { useFilters } from "../../hooks/useFilters";
 
 export function Products({ products, from }) {
   useEffect(() => {
@@ -41,9 +42,8 @@ export function Products({ products, from }) {
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
   const { addToCart, removeFromCart, cart } = useCart();
-
   const { addToCanje, removeFromCanje, canje } = useCanje();
-
+  const { favorites, setFavorites } = useFilters();
   const { handleAddPoints, handleRemovePoints } = usePoints();
 
   const checkProductInCart = (product) => {
@@ -58,6 +58,19 @@ export function Products({ products, from }) {
     try {
       await api.delete(`/products/${productId}`);
       toast.success("Eliminaste este producto!");
+    } catch (_) {}
+  };
+
+  const handleToggleFavorite = async (product) => {
+    try {
+      const userId = userObject.id;
+      const { data } = await api.post(`/users/${userId}/favorites/${product.id}`);
+      const newFavs = data.data || [];
+      setFavorites(newFavs);
+      // Update localStorage so favorites survive page refresh
+      const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      info.favorites = newFavs;
+      localStorage.setItem("userInfo", JSON.stringify(info));
     } catch (_) {}
   };
 
@@ -313,6 +326,24 @@ export function Products({ products, from }) {
                 <i className="fas fa-times" />
               </button>
               <Tooltip id={"tt-delete-product" + product.id} />
+
+              {isClient && (
+                <button
+                  className="icon-button"
+                  onClick={() => handleToggleFavorite(product)}
+                  style={{ background: "none", border: "none", padding: "0.2rem", cursor: "pointer" }}
+                  data-tooltip-id={"tt-fav-" + product.id}
+                  data-tooltip-content={favorites.includes(product.id) ? "Quitar de favoritos" : "Agregar a favoritos"}
+                  data-tooltip-float={false}
+                  data-tooltip-place="top"
+                >
+                  <i
+                    className={favorites.includes(product.id) ? "fas fa-heart" : "far fa-heart"}
+                    style={{ color: favorites.includes(product.id) ? "#e74c3c" : "#999", fontSize: "1rem" }}
+                  />
+                  <Tooltip id={"tt-fav-" + product.id} />
+                </button>
+              )}
 
               <div
                 style={{

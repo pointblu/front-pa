@@ -17,7 +17,7 @@ export const EditProduct = () => {
   const [errorResponse, setErrorResponse] = useState("");
   const [successResponse, setSuccessResponse] = useState("");
   const imageUrl = JSON.parse(localStorage.getItem("urlImage"));
-  const categories = JSON.parse(localStorage.getItem("categorias"));
+  const categories = JSON.parse(localStorage.getItem("categorias")) ?? [];
 
   const goTo = useNavigate();
 
@@ -209,7 +209,7 @@ export const EditProduct = () => {
                           name="category"
                         >
                           <option value="">Categoría</option>
-                          {categories.data.map((cat) => (
+                          {(Array.isArray(categories) ? categories : []).map((cat) => (
                             <option key={cat.id} value={cat.id}>
                               {cat.name}
                             </option>

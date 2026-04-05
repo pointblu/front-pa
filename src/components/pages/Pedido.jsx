@@ -518,32 +518,34 @@ export function Pedido() {
   const [statum, setStatum] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const userData = JSON.parse(localStorage.getItem("userInfo"));
-  const fetchDataAsync = async () => {
-    try {
-      const { data: apiData } = await api.get(
-        `/purchases?status=${statum}&buyerId=${
-          isAdmin ? "" : userData.id
-        }&startDate=${
-          startDate ? format(startDate, "yyyy-MM-dd") : ""
-        }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`
-      );
-      setDatum(apiData);
-    } catch (_) {}
-  };
-
   useEffect(() => {
-    // Hacer la primera llamada
+    if (!isAdmin && !isSeller && !userData?.id) return;
+
+    let cancelled = false;
+
+    const fetchDataAsync = async () => {
+      try {
+        const { data: apiData } = await api.get(
+          `/purchases?status=${statum}&buyerId=${
+            isAdmin || isSeller ? "" : userData.id
+          }&startDate=${
+            startDate ? format(startDate, "yyyy-MM-dd") : ""
+          }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`
+        );
+        if (!cancelled) setDatum(apiData);
+      } catch (_) {}
+    };
+
     fetchDataAsync();
+    const intervalId = setInterval(fetchDataAsync, 30000);
 
-    // Configurar un intervalo para llamar cada minuto
-    const intervalId = setInterval(() => {
-      fetchDataAsync();
-    }, 30000); // 60000 milisegundos = 1 minuto
-
-    // Limpiar el intervalo al desmontar el componente
-    return () => clearInterval(intervalId);
-  }, [statum, startDate, endDate]);
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+    };
+  }, [statum, startDate, endDate, isAdmin, isSeller, refreshKey]);
 
   const handleChangeStatus = (event) => {
     setStatum(event.target.value);
@@ -568,7 +570,8 @@ export function Pedido() {
         localStorage.setItem("userInfo", JSON.stringify(userData));
         window.location.reload();
       }
-      toast.success("Se estan actualizando los cambios", { duration: 10000 });
+      toast.success("Estado actualizado", { duration: 3000 });
+      setRefreshKey((k) => k + 1);
     } catch (_) {}
   };
 

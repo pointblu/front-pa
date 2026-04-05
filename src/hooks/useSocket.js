@@ -16,7 +16,7 @@ export function useSocket(userInfo, role) {
     if (!userInfo) return;
 
     const wsUrl = (process.env.REACT_APP_API_URL || "").replace("/api", "");
-    const socket = io(wsUrl, { transports: ["websocket"], reconnectionDelay: 3000 });
+    const socket = io(wsUrl, { transports: ["websocket"], reconnectionDelay: 5000, reconnectionAttempts: 5 });
     socketRef.current = socket;
 
     const isStaff = role === "ADMIN" || role === "SELLER";

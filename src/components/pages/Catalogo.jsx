@@ -19,7 +19,7 @@ export const Catalogo = () => {
   const products = datum;
   const { filterProducts } = useFilters();
   const [page, setPage] = useState(1);
-  const [infoPage, setInfoPage] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     fetchDataAsync();
@@ -29,10 +29,10 @@ export const Catalogo = () => {
 
   const fetchDataAsync = async () => {
     try {
-      const { data: apiData } = await api.get(`/products?pag=${page}&take=50`);
+      const { data: apiData } = await api.get(`/products?page=${page}&take=50`);
       const apiDatum = apiData.data.filter((datu) => datu.active !== false);
       setDatum((prev) => prev.concat(!isAdmin || !auth.isAuthenticated ? apiDatum : apiData.data));
-      setInfoPage(apiData.meta.hasNextPage);
+      setHasMore(apiData.meta.hasNextPage);
     } catch (_) {}
   };
 
@@ -100,8 +100,8 @@ export const Catalogo = () => {
                 next={() => {
                   setPage(page + 1);
                 }}
-                hasMore={infoPage}
-                loader={infoPage ? <h4>Cargando... {infoPage}</h4> : null}
+                hasMore={hasMore}
+                loader={<h4>Cargando...</h4>}
               >
                 <Products products={filteredProducts} />
               </InfiniteScroll>

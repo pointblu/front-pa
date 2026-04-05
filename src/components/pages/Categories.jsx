@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
+import api from "../../services/api";
 
 const columns = (handleEditCategory) => [
   { name: "NOMBRE", selector: (row) => row.name, maxWidth: "120px" },
@@ -55,9 +56,12 @@ export function Categories() {
   }, [search, datum]);
 
   const fetchDataAsync = async () => {
-    const apiData = JSON.parse(localStorage.getItem("categorias"));
-    setDatum(apiData.data);
-    setFilter(apiData.data);
+    try {
+      const { data } = await api.get("/categories");
+      const apiData = Array.isArray(data) ? data : (data.data ?? []);
+      setDatum(apiData);
+      setFilter(apiData);
+    } catch (_) {}
   };
 
   function handleEditCategory(categ) {

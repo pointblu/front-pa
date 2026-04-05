@@ -241,6 +241,63 @@ function Step3({ cart, canje, payment, note, subtotal, domicilio }) {
   );
 }
 
+const WHATSAPP_STORE = process.env.REACT_APP_WHATSAPP_STORE || "";
+
+/* ── Step "done": success + WhatsApp CTA ─────────────────────────────────── */
+function StepDone({ orderId, total, payment, onGoToOrders }) {
+  const shortId = orderId ? orderId.slice(0, 8).toUpperCase() : "";
+  const formattedTotal = Number(total || 0).toLocaleString("es-CO");
+
+  const waText = encodeURIComponent(
+    `Hola Punto Azul 🍞 Acabo de crear mi pedido #${shortId} por $${formattedTotal} (${payment}). ¡Por favor confírmenme! 😊`
+  );
+  const waUrl = WHATSAPP_STORE
+    ? `https://wa.me/${WHATSAPP_STORE}?text=${waText}`
+    : null;
+
+  return (
+    <div className="checkout-card" style={{ textAlign: "center", padding: "2rem 1.5rem" }}>
+      <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>✅</div>
+      <h4 style={{ marginBottom: "0.25rem" }}>¡Pedido creado con éxito!</h4>
+      <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
+        Pedido <strong>#{shortId}</strong> · Total{" "}
+        <strong>${formattedTotal}</strong>
+      </p>
+
+      {waUrl && (
+        <a
+          href={waUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-success btn-block"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            fontSize: "1rem",
+            padding: "0.65rem",
+            borderRadius: "0.5rem",
+            marginBottom: "0.75rem",
+            textDecoration: "none",
+          }}
+        >
+          <i className="fab fa-whatsapp" style={{ fontSize: "1.2rem" }} />
+          Confirmar por WhatsApp
+        </a>
+      )}
+
+      <button
+        className="btn btn-outline-secondary btn-block"
+        style={{ borderRadius: "0.5rem" }}
+        onClick={onGoToOrders}
+      >
+        Ver mis pedidos
+      </button>
+    </div>
+  );
+}
+
 /* ── Main Checkout component ──────────────────────────────────────────────── */
 export function Checkout() {
   const [step, setStep] = useState(0);
@@ -249,6 +306,7 @@ export function Checkout() {
   const [banks, setBanks] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [deliveryLocation, setDeliveryLocation] = useState(null);
+  const [doneOrder, setDoneOrder] = useState(null); // { id, total }
 
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
@@ -352,14 +410,37 @@ export function Checkout() {
 
       clearCart();
       clearCanje();
-      toast.success("¡Pedido creado con éxito!");
-      setTimeout(() => {
-        goTo("/pedidos");
-        window.location.reload();
-      }, 2500);
+      setDoneOrder({ id: json.data.id, total: calculatedTotal });
     } catch (_) {
+      toast.error("Hubo un error al crear el pedido. Intenta de nuevo.");
       setSubmitting(false);
     }
+  }
+
+  if (doneOrder) {
+    return (
+      <div>
+        <div className="content-wrapper">
+          <section className="content" style={{ paddingTop: "2rem" }}>
+            <div className="container-fluid">
+              <div className="row justify-content-center">
+                <div className="col-md-5 col-lg-4">
+                  <StepDone
+                    orderId={doneOrder.id}
+                    total={doneOrder.total}
+                    payment={payment}
+                    onGoToOrders={() => {
+                      goTo("/pedidos");
+                      window.location.reload();
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    );
   }
 
   return (

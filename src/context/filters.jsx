@@ -9,6 +9,14 @@ export function FiltersProvider({ children }) {
     search: "",
   });
   const [categories, setCategories] = useState([]);
+  const [favorites, setFavorites] = useState(() => {
+    try {
+      const info = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      return Array.isArray(info.favorites) ? info.favorites : [];
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -22,7 +30,7 @@ export function FiltersProvider({ children }) {
   }, []);
 
   return (
-    <FiltersContext.Provider value={{ filters, setFilters, categories }}>
+    <FiltersContext.Provider value={{ filters, setFilters, categories, favorites, setFavorites }}>
       {children}
     </FiltersContext.Provider>
   );

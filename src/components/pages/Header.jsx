@@ -43,7 +43,8 @@ export const Header = () => {
   const fetchCategoriesAsync = async () => {
     try {
       const { data } = await api.get("/categories");
-      setApiData(data);
+      const list = Array.isArray(data) ? data : (data.data ?? []);
+      setApiData(list);
     } catch (_) {}
   };
 

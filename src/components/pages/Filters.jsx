@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useFilters } from "../../hooks/useFilters.jsx";
+import { useAuth } from "../../auth/AuthProvider";
 
 function useSidebarWidth() {
   const [left, setLeft] = useState("4.6rem");
@@ -42,6 +43,9 @@ function useSidebarWidth() {
 export function Filters() {
   const { setFilters, categories } = useFilters();
   const [activeCategory, setActiveCategory] = useState(null);
+  const auth = useAuth();
+  const userObject = JSON.parse(auth.getUser() || "{}");
+  const isClient = auth.isAuthenticated && userObject?.role === "CLIENT";
   const listRef = useRef(null);
   const sidebarLeft = useSidebarWidth();
 
@@ -49,7 +53,7 @@ export function Filters() {
     setActiveCategory(categId);
     setFilters((prev) => ({
       ...prev,
-      category: categId !== "all" ? categName : "all",
+      category: categId === "all" ? "all" : (categId === "__favorites__" ? "__favorites__" : categName),
     }));
   };
 
@@ -147,6 +151,18 @@ export function Filters() {
           >
             TODAS
           </li>
+          {isClient && (
+            <li
+              onClick={() => handleCategoryClick("__favorites__")}
+              style={{
+                ...itemStyle(activeCategory === "__favorites__"),
+                color: activeCategory === "__favorites__" ? "#ff6b6b" : "#ffb3b3",
+              }}
+            >
+              <i className="fas fa-heart" style={{ marginRight: "0.3rem" }} />
+              FAVORITOS
+            </li>
+          )}
           {categories.map((categ) => (
             <li
               key={categ.id}
