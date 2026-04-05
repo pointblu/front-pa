@@ -57,7 +57,7 @@ export const SideNav = () => {
                   <NavLink
                     to="/usuarios"
                     className="nav-link"
-                    style={{ backgroundColor: "grey" }}
+                    style={{ backgroundColor: "#6B3A00" }}
                   >
                     <i className="fas fa-users nav-icon" />
                     <p>USUARIOS</p>
@@ -69,7 +69,7 @@ export const SideNav = () => {
                 <NavLink
                   to="/catalogo"
                   className="nav-link"
-                  style={{ backgroundColor: "cadetblue" }}
+                  style={{ backgroundColor: "#D4A017" }}
                 >
                   <i className="fas fa-boxes nav-icon" />
                   <p>CATÁLOGO</p>
@@ -80,7 +80,7 @@ export const SideNav = () => {
                 <NavLink
                   to="/pedidos"
                   className="nav-link"
-                  style={{ backgroundColor: "#C3a873" }}
+                  style={{ backgroundColor: "#C3A873" }}
                   onClick={!auth.isAuthenticated && handleNoAuth}
                 >
                   <i className="fas fa-shopping-basket nav-icon" />
@@ -92,7 +92,7 @@ export const SideNav = () => {
                   <NavLink
                     to="/ventas"
                     className="nav-link"
-                    style={{ backgroundColor: "#91b77d" }}
+                    style={{ backgroundColor: "#8B5E3C" }}
                   >
                     <i className="fas fa-cash-register nav-icon" />
                     <p>VENTAS</p>
@@ -105,7 +105,7 @@ export const SideNav = () => {
                   <NavLink
                     to="/categorias"
                     className="nav-link"
-                    style={{ backgroundColor: "#803b3b" }}
+                    style={{ backgroundColor: "#C0392B" }}
                   >
                     <i className="fas fa-tag nav-icon" />
                     <p>CATEGORÍAS</p>
@@ -118,7 +118,7 @@ export const SideNav = () => {
                   <NavLink
                     to="/cuentas"
                     className="nav-link"
-                    style={{ backgroundColor: "#3279fd" }}
+                    style={{ backgroundColor: "#2E1A00" }}
                   >
                     <i className="fas fa-university nav-icon" />
                     <p>CUENTAS</p>

@@ -16,7 +16,7 @@ body.dark-mode .navbar-yellow .navbar-badge {
 
 /* ── Tarjetas de producto ─────────────────────────────────────────────────── */
 body.dark-mode .products .card {
-  background: linear-gradient(45deg, #1e2a2e, #3a2e00) !important;
+  background: linear-gradient(45deg, #1e1a0e, #3a2e00) !important;
   border-color: #444 !important;
   color: #e8e8e8 !important;
 }

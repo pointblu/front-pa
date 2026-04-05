@@ -80,14 +80,9 @@ export const Home = () => {
                 <div style={{ position: "relative" }}>
                   <h1
                     className="m-0 App-header focus-in-contract alphi-5"
-                    style={{
-                      backgroundColor: "#17a2b8",
-                      position: "relative",
-                      zIndex: 0,
-                      color: "GrayText",
-                    }}
+                    style={{ position: "relative", zIndex: 0 }}
                   >
-                    Inicio {userObject.name}
+                    Panadería & Repostería Monsalve
                   </h1>
                 </div>
               </div>

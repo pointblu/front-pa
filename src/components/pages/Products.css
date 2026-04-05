@@ -74,9 +74,9 @@ body::-webkit-scrollbar-track {
   transition: transform 0.5s ease-in-out, box-shadow 0.3s ease-in-out;
   background: linear-gradient(
     45deg,
-    #d0dadd,
-    #fcc107
-  ); /* Degradado azul y amarillo */
+    #f5e6c8,
+    #F1D100
+  ); /* Degradado crema artesanal y amarillo dorado */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra inicial suave */
   border-radius: 12px; /* Bordes redondeados para suavidad */
 }

@@ -1,12 +1,22 @@
 :root {
-  --color-a: rgb(255, 255, 255);
-  --color-b: cadetblue;
-  --color-c: grey;
-  --color-d: #91b77d;
-  --color-e: #c3a873;
-  --color-f: #fcc107;
-  --color-g: #803b3b;
-  --color-h: #3279fd;
+  /* ── Panadería & Repostería Monsalve — paleta artesanal ── */
+  --pm-yellow:     #F1D100;   /* amarillo dorado del logo   */
+  --pm-brown-dark: #2E1A00;   /* marrón oscuro (texto logo) */
+  --pm-brown-mid:  #6B3A00;   /* marrón medio (corteza)     */
+  --pm-red:        #C0392B;   /* rojo corbata (acento)      */
+  --pm-honey:      #D4A017;   /* miel / trigo               */
+  --pm-wheat:      #C3A873;   /* trigo claro                */
+  --pm-cream:      #FFF8E7;   /* crema papel artesanal      */
+
+  /* Alias para los gradientes alphi-* */
+  --color-a: #ffffff;
+  --color-b: var(--pm-brown-mid);    /* marrón medio  (era cadetblue) */
+  --color-c: #8B6914;                /* dorado oscuro (era grey)      */
+  --color-d: var(--pm-honey);        /* miel          (era verde)     */
+  --color-e: var(--pm-wheat);        /* trigo claro   (sin cambio)    */
+  --color-f: var(--pm-yellow);       /* amarillo logo (era #fcc107)   */
+  --color-g: var(--pm-red);          /* rojo corbata  (era #803b3b)   */
+  --color-h: var(--pm-brown-dark);   /* marrón oscuro (era azul)      */
   --color-i: #000;
 }
 
@@ -149,7 +159,10 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--pm-brown-dark);
+  font-family: "Handlee", cursive;
+  letter-spacing: 0.03em;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.08);
 }
 
 .App-link {
