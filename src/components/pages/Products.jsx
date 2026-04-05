@@ -136,7 +136,7 @@ export function Products({ products, from }) {
         </div>
       </div>
     )}
-    <ul style={{ marginTop: "7.5rem" }}>
+    <ul style={{ marginTop: "5rem" }}>
       {products.map((product) => {
         const isProductInCart = checkProductInCart(product);
         const isProductInCanje = checkProductInCanje(product);
