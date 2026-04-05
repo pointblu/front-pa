@@ -141,7 +141,7 @@ export const CreateBank = () => {
                     className="card-body register-card-body"
                     style={{
                       borderRadius: "0.6rem",
-                      background: "#3279fd",
+                      background: "#2E1A00",
                     }}
                   >
                     <form action="/" method="post" onSubmit={handleSubmit}>

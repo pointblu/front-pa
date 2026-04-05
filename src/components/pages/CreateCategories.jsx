@@ -68,7 +68,7 @@ export const CreateCategories = () => {
                     className="card-body register-card-body"
                     style={{
                       borderRadius: "0.6rem",
-                      background: "#803b3b",
+                      background: "#C0392B",
                     }}
                   >
                     <form action="/" method="post" onSubmit={handleSubmit}>

@@ -91,7 +91,7 @@ export const CreateProduct = () => {
                     className="card-body register-card-body"
                     style={{
                       borderRadius: "0.6rem",
-                      background: "cadetblue",
+                      background: "#6B3A00",
                     }}
                   >
                     <UploadImage
