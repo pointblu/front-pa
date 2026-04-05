@@ -9,6 +9,7 @@ import { Tooltip } from "react-tooltip";
 import "./Header.css";
 import { format } from "date-fns";
 import { UserNumber } from "../../context/point";
+import { useTheme } from "../../context/theme";
 
 
 function UserNumb({ n }) {
@@ -31,6 +32,7 @@ export const Header = () => {
 
   const authi = useAuth();
   const userObject = JSON.parse(authi.getUser() || "{}");
+  const { darkMode, toggleDark } = useTheme();
 
   const isClient =
     authi.isAuthenticated && userObject && userObject.role === "CLIENT";
@@ -283,6 +285,21 @@ export const Header = () => {
               </a>
             </li>
           )}
+
+          <li
+            className="nav-item"
+            data-tooltip-id="tt-darkmode"
+            data-tooltip-content={darkMode ? "Modo claro" : "Modo oscuro"}
+            data-tooltip-place="bottom"
+            data-tooltip-float={false}
+            data-tooltip-offset={-10}
+            data-tooltip-class-name="custom-tooltip"
+          >
+            <a className="nav-link" onClick={toggleDark} style={{ cursor: "pointer" }}>
+              <Tooltip id="tt-darkmode" />
+              <i className={darkMode ? "fas fa-sun" : "fas fa-moon"} />
+            </a>
+          </li>
 
           {authi.isAuthenticated && (
             <li

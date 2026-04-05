@@ -1,0 +1,125 @@
+/* ─── Punto Azul — Dark Mode overrides ──────────────────────────────────────
+   AdminLTE añade dark-mode a <body> automáticamente. Este archivo cubre
+   los elementos personalizados que AdminLTE no maneja por defecto.
+──────────────────────────────────────────────────────────────────────────── */
+
+/* ── Navbar amarilla ─────────────────────────────────────────────────────── */
+body.dark-mode .navbar-yellow {
+  background-color: #1c1c1e !important;
+  border-bottom: 1px solid #333 !important;
+}
+body.dark-mode .navbar-yellow .nav-link,
+body.dark-mode .navbar-yellow .nav-link i,
+body.dark-mode .navbar-yellow .navbar-badge {
+  color: #e0c040 !important;
+}
+
+/* ── Tarjetas de producto ─────────────────────────────────────────────────── */
+body.dark-mode .products .card {
+  background: linear-gradient(45deg, #1e2a2e, #3a2e00) !important;
+  border-color: #444 !important;
+  color: #e8e8e8 !important;
+}
+body.dark-mode .products .card strong,
+body.dark-mode .products .card .description {
+  color: #e8e8e8 !important;
+}
+body.dark-mode .products img {
+  background: #2a2a2a !important;
+}
+
+/* ── Checkout ─────────────────────────────────────────────────────────────── */
+body.dark-mode .checkout-card {
+  background: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border-color: #333 !important;
+}
+body.dark-mode .checkout-total-row,
+body.dark-mode .checkout-item-name,
+body.dark-mode .checkout-item-qty,
+body.dark-mode .checkout-item-price {
+  color: #e0e0e0 !important;
+}
+body.dark-mode .bank-info-box {
+  background: #2a2a1a !important;
+  color: #d8c860 !important;
+  border-color: #555 !important;
+}
+body.dark-mode .payment-option {
+  background: #2a2a2a !important;
+  color: #ccc !important;
+  border-color: #555 !important;
+}
+body.dark-mode .payment-option.selected {
+  background: #3a3000 !important;
+  color: #f1d100 !important;
+  border-color: #f1d100 !important;
+}
+body.dark-mode .btn-back {
+  background: #2a2a2a !important;
+  color: #ccc !important;
+  border-color: #555 !important;
+}
+
+/* ── Formularios e inputs ─────────────────────────────────────────────────── */
+body.dark-mode .form-control,
+body.dark-mode .custom-input-form,
+body.dark-mode textarea {
+  background-color: #2a2a2a !important;
+  color: #e0e0e0 !important;
+  border-color: #555 !important;
+}
+body.dark-mode .form-control::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #888 !important;
+}
+
+/* ── Tablas (DataTable) ───────────────────────────────────────────────────── */
+body.dark-mode .rdt_Table,
+body.dark-mode .rdt_TableHead,
+body.dark-mode .rdt_TableRow,
+body.dark-mode .rdt_TableCol,
+body.dark-mode .rdt_TableCell,
+body.dark-mode .rdt_Pagination {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border-color: #333 !important;
+}
+body.dark-mode .rdt_TableRow:hover {
+  background-color: #2a2a2a !important;
+}
+
+/* ── Cards genéricas (Pedidos, Mis puntos, etc.) ─────────────────────────── */
+body.dark-mode .card,
+body.dark-mode .card-body,
+body.dark-mode .card-header {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border-color: #333 !important;
+}
+
+/* ── Filtros de categoría ─────────────────────────────────────────────────── */
+body.dark-mode .cat-list button {
+  background-color: #2a2a2a !important;
+  color: #ccc !important;
+  border-color: #555 !important;
+}
+body.dark-mode .cat-list button.active,
+body.dark-mode .cat-list button:hover {
+  background-color: #3a3000 !important;
+  color: #f1d100 !important;
+}
+
+/* ── App-header (títulos de página) ──────────────────────────────────────── */
+body.dark-mode .App-header {
+  background-color: #2a2600 !important;
+  color: #f1d100 !important;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+body.dark-mode::-webkit-scrollbar-thumb {
+  background-color: #555;
+}
+body.dark-mode::-webkit-scrollbar-track {
+  background-color: #1a1a1a;
+}
