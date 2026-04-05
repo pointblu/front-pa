@@ -185,6 +185,7 @@ export const Header = () => {
           {authi.isAuthenticated && (
             <li
               className="nav-item"
+              style={{ display: "flex", alignItems: "center" }}
               data-tooltip-id="tt-puntos"
               data-tooltip-content="Puntos Azules"
               data-tooltip-float={false}
@@ -220,12 +221,11 @@ export const Header = () => {
               <Link
                 className="nav-link"
                 to="/mis-puntos"
-                style={{ fontSize: "0.65rem", padding: "0 0.5rem", color: "#c9ae00" }}
+                style={{ padding: "0 0.4rem", color: "#c9ae00", fontSize: "0.8rem" }}
                 title="Ver historial de puntos"
               >
                 <i className="fas fa-history" />
               </Link>
-
               <Tooltip id="tt-puntos" />
             </li>
           )}
