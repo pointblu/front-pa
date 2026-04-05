@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useFilters } from "../../hooks/useFilters.jsx";
+import api from "../../services/api";
 
-const categories = JSON.parse(localStorage.getItem("categorias"));
 export function Filters() {
   const { setFilters } = useFilters();
   const [activeCategory, setActiveCategory] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    api.get("/categories")
+      .then(({ data }) => setCategories(data?.data ?? []))
+      .catch(() => {});
+  }, []);
+
   const handleCategoryClick = (categId, categName) => {
     setActiveCategory(categId);
     setFilters((prevState) => ({
@@ -104,7 +112,7 @@ export function Filters() {
                 >
                   TODAS
                 </li>
-                {categories.data.map((categ) => {
+                {categories.map((categ) => {
                   return (
                     <li
                       className={`mx-2 text-white ${
