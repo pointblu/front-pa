@@ -5,6 +5,7 @@ import { useAuth } from "../../auth/AuthProvider";
 import { useCart } from "../../hooks/useCarts";
 import { useCanje } from "../../hooks/useCanje";
 import api from "../../services/api";
+import { MapPicker } from "./MapPicker";
 import "./Checkout.css";
 
 const STEPS = [
@@ -109,8 +110,8 @@ function Step1({ cart, canje, subtotal, domicilio }) {
   );
 }
 
-/* ── Step 2: payment + note ───────────────────────────────────────────────── */
-function Step2({ payment, setPayment, note, setNote, banks }) {
+/* ── Step 2: payment + note + map ────────────────────────────────────────── */
+function Step2({ payment, setPayment, note, setNote, banks, onLocationSelect }) {
   return (
     <div className="checkout-card">
       <h5 style={{ marginBottom: "1rem" }}>Forma de pago</h5>
@@ -166,6 +167,8 @@ function Step2({ payment, setPayment, note, setNote, banks }) {
         style={{ resize: "none", borderRadius: "0.4rem" }}
       />
       <small className="text-muted">{note.length}/300</small>
+
+      <MapPicker onLocationSelect={onLocationSelect} />
     </div>
   );
 }
@@ -245,6 +248,7 @@ export function Checkout() {
   const [note, setNote] = useState("");
   const [banks, setBanks] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [deliveryLocation, setDeliveryLocation] = useState(null);
 
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
@@ -285,6 +289,15 @@ export function Checkout() {
       );
 
       const buyerId = JSON.parse(localStorage.getItem("userInfo"));
+
+      // Guardar ubicación de entrega en el perfil del usuario si fue seleccionada
+      if (deliveryLocation) {
+        await Promise.allSettled([
+          api.patch(`/users/${buyerId.id}`, { address: deliveryLocation.address }),
+          api.get(`/users/position/${buyerId.id}/lat/${deliveryLocation.lat}/lon/${deliveryLocation.lng}`),
+        ]);
+      }
+
       const { data: json } = await api.post("/purchases", {
         total: parseFloat(calculatedTotal.toFixed(2)),
         status: "REQUESTED",
@@ -389,6 +402,7 @@ export function Checkout() {
                     note={note}
                     setNote={setNote}
                     banks={banks}
+                    onLocationSelect={setDeliveryLocation}
                   />
                 )}
                 {step === 2 && (
