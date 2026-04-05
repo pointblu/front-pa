@@ -3,27 +3,36 @@ import { useFilters } from "../../hooks/useFilters.jsx";
 
 function useSidebarWidth() {
   const [left, setLeft] = useState("4.6rem");
+  const pollRef = useRef(null);
 
   useEffect(() => {
     const measure = () => {
       const sidebar = document.querySelector(".main-sidebar");
-      if (sidebar) {
-        setLeft(sidebar.offsetWidth + "px");
-      }
+      if (sidebar) setLeft(sidebar.offsetWidth + "px");
     };
 
-    measure();
+    // Al detectar cambio de clase en body, hace polling durante la transición CSS (~300ms)
+    const startPolling = () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+      let ticks = 0;
+      pollRef.current = setInterval(() => {
+        measure();
+        ticks++;
+        if (ticks >= 8) {          // 8 × 50ms = 400ms (cubre la transición de AdminLTE)
+          clearInterval(pollRef.current);
+          pollRef.current = null;
+        }
+      }, 50);
+    };
 
-    // Detecta cambios de clase en body (AdminLTE alterna sidebar-collapse, sidebar-open, etc.)
-    const observer = new MutationObserver(measure);
+    measure(); // medición inicial
+
+    const observer = new MutationObserver(startPolling);
     observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-    // También detecta cambios de tamaño del sidebar (transición CSS)
-    const interval = setInterval(measure, 150);
-    setTimeout(() => clearInterval(interval), 800); // deja de polling después de 800ms
 
     return () => {
       observer.disconnect();
-      clearInterval(interval);
+      if (pollRef.current) clearInterval(pollRef.current);
     };
   }, []);
 
