@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 import { useAuth } from "../../auth/AuthProvider";
 
 export const ChangePass = () => {
-  const token = JSON.parse(localStorage.getItem("token"));
   const auth = useAuth();
   const [newPass, setNewPass] = useState("");
   const userObject = JSON.parse(auth.getUser() || "{}");
@@ -18,46 +17,13 @@ export const ChangePass = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        `${API_URL}/users/${userObject.id}/change-pass`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            newPass,
-          }),
-        }
-      );
-      if (response.ok) {
-        console.log("Login successfully");
-        const json = await response.json();
-        console.log(json);
-        toast.success("Celular/Contraseña actualizada!", {
-          description:
-            "En el siguiente inicio de sesión usa tu nueva contraseña",
-        });
-
-        setSuccessResponse("");
-        setErrorResponse(null);
-        setNewPass("");
-        setTimeout(() => {
-          goTo("/");
-        }, 3000);
-      } else {
-        console.log("Something went wrong");
-        await response.json();
-        toast.error("Oops, algo salio mal.", {
-          description:
-            "Verifica tu celular/contraseña actual e inténtalo nuevamente",
-        });
-        setErrorResponse();
-        setSuccessResponse(null);
-      }
-    } catch (error) {
-      console.log(error);
+      await api.post(`/users/${userObject.id}/change-pass`, { newPass });
+      toast.success("Celular/Contraseña actualizada!", {
+        description: "En el siguiente inicio de sesión usa tu nueva contraseña",
+      });
+      setNewPass("");
+      setTimeout(() => goTo("/"), 3000);
+    } catch (_) {
     }
   }
 

@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Tooltip } from "react-tooltip";
 import { Toaster, toast } from "sonner";
-
-const token = JSON.parse(localStorage.getItem("token"));
 
 const columns = (handleDeleteUser) => [
   {
@@ -128,59 +126,21 @@ export function Users() {
 
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/users?pag=${page}&take=${perPage}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store",
-            "Access-Control-Allow-Origin": "*",
-            mode: "no-cors",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        toast.error("Ups!; Algo salio mal");
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const apiData = await response.json();
-
-      const apiDatum = apiData.data.filter((datu) => {
-        return datu.active !== false;
-      });
+      const { data: apiData } = await api.get(`/users?pag=${page}&take=${perPage}`);
+      const apiDatum = apiData.data.filter((datu) => datu.active !== false);
       setDatum(apiDatum);
       setFilter(apiDatum);
       setTotalRows(apiData.meta.itemsCount);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (_) {}
   };
 
   const handleDeleteUser = async (userId) => {
     try {
-      const response = await fetch(`${API_URL}/users/${userId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      await api.delete(`/users/${userId}`);
       toast.success("Eliminaste este usuario!");
       fetchDataAsync();
       window.location.reload();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (_) {}
   };
   const handlePerRowsChange = (newPerPage) => {
     setPerPage(newPerPage);

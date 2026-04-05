@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 
 export const Login = () => {
@@ -22,44 +22,29 @@ export const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName,
-          password,
-        }),
+      const { data: json } = await api.post("/auth/login", {
+        userName,
+        password,
       });
-      if (response.ok) {
-        console.log("Login successfully");
-        const json = await response.json();
-        if (json.accessToken) {
-          auth.saveUser(json);
-          toast.success("¡Conexión establecida!", {
-            description: "Tu inicio de sesión fue exitoso.",
-          });
-
-          setSuccessResponse("");
-          setErrorResponse(null);
-          setUserName("");
-          setPassword("");
-          setTimeout(() => {
-            goTo("/pedidos");
-          }, 3000);
-        }
-      } else {
-        console.log("Something went wrong");
-        await response.json();
-        toast.error("Oops, algo salio mal.", {
-          description: "Verifica tus credenciales e inténtalo nuevamente",
+      if (json.accessToken) {
+        auth.saveUser(json);
+        toast.success("¡Conexión establecida!", {
+          description: "Tu inicio de sesión fue exitoso.",
         });
-        setErrorResponse();
-        setSuccessResponse(null);
+        setSuccessResponse("");
+        setErrorResponse(null);
+        setUserName("");
+        setPassword("");
+        setTimeout(() => {
+          goTo("/pedidos");
+        }, 3000);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (_) {
+      toast.error("Oops, algo salio mal.", {
+        description: "Verifica tus credenciales e inténtalo nuevamente",
+      });
+      setErrorResponse();
+      setSuccessResponse(null);
     }
   }
 

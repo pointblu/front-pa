@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 
 export const CreateCategories = () => {
@@ -20,48 +20,15 @@ export const CreateCategories = () => {
     e.preventDefault();
 
     try {
-      const token = JSON.parse(localStorage.getItem("token"));
-      const response = await fetch(`${API_URL}/categories`, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-        },
-        body: JSON.stringify({
-          name,
-          description,
-        }),
-      });
-
-      if (response.ok) {
-        console.log("User register successfully");
-        const json = await response.json();
-        setSuccessResponse(json.message);
-        toast.success(json.message);
-        setErrorResponse(null);
-        setName("");
-        setDescription("");
-        setTimeout(() => {
-          goTo("/categorias");
-          window.location.reload();
-        }, 2000);
-      } else {
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 422) {
-          toast.error("Oops, campos sin llenar.", {
-            description: " Completa tu información",
-          });
-        } else {
-          toast.error(json.message);
-        }
-        setErrorResponse("");
-        setSuccessResponse(null);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+      const { data } = await api.post("/categories", { name, description });
+      toast.success(data.message);
+      setName("");
+      setDescription("");
+      setTimeout(() => {
+        goTo("/categorias");
+        window.location.reload();
+      }, 2000);
+    } catch (_) {}
   }
 
   return (

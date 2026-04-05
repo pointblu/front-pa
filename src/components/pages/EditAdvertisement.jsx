@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 
 export const EditAdvertisement = () => {
@@ -90,8 +90,6 @@ export const EditAdvertisement = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const token = JSON.parse(localStorage.getItem("token"));
-
       const formData = new FormData();
       formData.append("file", image);
       formData.append("title", title);
@@ -99,50 +97,16 @@ export const EditAdvertisement = () => {
       formData.append("whatsapp", whatsapp);
       formData.append("active", active);
 
-      const requestOptions = {
-        method: "PUT",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Cache-Control": "no-store",
-        },
-        body: formData,
-        redirect: "follow",
-      };
-
-      const response = await fetch(
-        `${API_URL}/advertisements/${editAdvertisement.id}`,
-        requestOptions
+      const { data } = await api.put(
+        `/advertisements/${editAdvertisement.id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-
-      if (response.ok) {
-        console.log("User register successfully");
-        const json = await response.json();
-        setSuccessResponse(json.message);
-        toast.success(json.message);
-        setErrorResponse(null);
-        setTitle("");
-        setWhatsapp("");
-        setActive(false);
-        setDescription("");
-        goTo("/");
-
-        localStorage.removeItem("editAdvertisement");
-      } else {
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 422) {
-          toast.error("Oops, campos sin llenar.", {
-            description: " Completa tu información",
-          });
-        } else {
-          toast.error(json.message);
-        }
-        setErrorResponse("");
-        setSuccessResponse(null);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+      toast.success(data.message);
+      setTitle(""); setWhatsapp(""); setActive(false); setDescription("");
+      localStorage.removeItem("editAdvertisement");
+      goTo("/");
+    } catch (_) {}
   }
 
   //const response = await fetch(`${API_URL}/products/${editProd.id}`, {

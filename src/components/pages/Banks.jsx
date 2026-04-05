@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Tooltip } from "react-tooltip";
 import { Toaster, toast } from "sonner";
 import { Link } from "react-router-dom";
-
-const token = JSON.parse(localStorage.getItem("token"));
 
 const columns = (handleEditBank) => [
   {
@@ -75,28 +73,9 @@ export function Banks() {
 
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(`${API_URL}/banks`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-
-      if (!response.ok) {
-        toast.error("Ups!; Algo salio mal");
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const apiData = await response.json();
-
-      setDatum(apiData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      const { data } = await api.get("/banks");
+      setDatum(data);
+    } catch (_) {}
   };
 
   function handleEditBank(categ) {

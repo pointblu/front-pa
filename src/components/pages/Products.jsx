@@ -8,10 +8,8 @@ import { Tooltip } from "react-tooltip";
 import { useCanje } from "../../hooks/useCanje";
 import { usePoints } from "../../context/point";
 import { useSpring, animated } from "react-spring";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
-
-const token = JSON.parse(localStorage.getItem("token"));
 
 export function Products({ products, from }) {
   useEffect(() => {
@@ -56,25 +54,10 @@ export function Products({ products, from }) {
   };
 
   const handleDeleteProduct = async (productId) => {
-    console.log(productId);
     try {
-      const response = await fetch(`${API_URL}/products/${productId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      await api.delete(`/products/${productId}`);
       toast.success("Eliminaste este producto!");
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (_) {}
   };
 
   function handleEditProduct(prod) {

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 import { UploadImage } from "./UploadImage";
 import { Tooltip } from "react-tooltip";
 import { useAuth } from "../../auth/AuthProvider";
 
 const userData = JSON.parse(localStorage.getItem("userInfo"));
-const token = JSON.parse(localStorage.getItem("token"));
 
 export const CreatePayment = () => {
   const editPayment = JSON.parse(localStorage.getItem("editPayment"));
@@ -36,25 +35,9 @@ export const CreatePayment = () => {
 
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(`${API_URL}/banks`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const apiData = await response.json();
+      const { data: apiData } = await api.get("/banks");
       setBanks(apiData.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (_) {}
   };
 
   useEffect(() => {
@@ -86,61 +69,32 @@ export const CreatePayment = () => {
 
     try {
       const numericCash = isTrans ? 0 : parseFloat(paymentCash);
-      const numericChange = isTrans ? 0 : parseFloat(paymentChange);
-
-      const response = await fetch(`${API_URL}/purchases/${editPayment.id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-        },
-        body: JSON.stringify({
-          total,
-          status,
-          active,
-          paymentCash: numericCash,
-          paymented: true,
-          paymentType: paymentType,
-          paymentImage: imageUrl,
-        }),
+      const { data: json } = await api.put(`/purchases/${editPayment.id}`, {
+        total,
+        status,
+        active,
+        paymentCash: numericCash,
+        paymented: true,
+        paymentType,
+        paymentImage: imageUrl,
       });
-
-      if (response.ok) {
-        console.log("User register successfully");
-        userData.points = Number(userData.points) + Math.ceil(total / 6000);
-        localStorage.setItem("userInfo", JSON.stringify(userData));
-        const json = await response.json();
-        setSuccessResponse(json.message);
-        toast.success(json.message);
-        setErrorResponse(null);
-        setTotal("");
-        setStatus("");
-        setActive("");
-        setPaymentType("");
-        setPaymentCash("");
-        setPaymentChange("");
-        setPaymented("");
-        localStorage.removeItem("urlImage");
-        localStorage.removeItem("editPayment");
-        goTo("/pedidos");
-        window.location.reload();
-      } else {
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 422) {
-          toast.error("Oops, campos sin llenar.", {
-            description: " Completa tu información",
-          });
-        } else {
-          toast.error(json.message);
-        }
-        setErrorResponse("");
-        setSuccessResponse(null);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+      userData.points = Number(userData.points) + Math.ceil(total / 6000);
+      localStorage.setItem("userInfo", JSON.stringify(userData));
+      setSuccessResponse(json.message);
+      toast.success(json.message);
+      setErrorResponse(null);
+      setTotal("");
+      setStatus("");
+      setActive("");
+      setPaymentType("");
+      setPaymentCash("");
+      setPaymentChange("");
+      setPaymented("");
+      localStorage.removeItem("urlImage");
+      localStorage.removeItem("editPayment");
+      goTo("/pedidos");
+      window.location.reload();
+    } catch (_) {}
   }
 
   return (

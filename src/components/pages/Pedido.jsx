@@ -1,5 +1,6 @@
 import DataTable from "react-data-table-component";
-import { API_URL } from "../../auth/constants";
+import { OrderStepper } from "./OrderStepper";
+import api from "../../services/api";
 import { useAuth } from "../../auth/AuthProvider";
 import { useEffect, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -12,7 +13,6 @@ import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 
 registerLocale("es", es);
-const token = JSON.parse(localStorage.getItem("token"));
 const columns = (
   isAdmin,
   isSeller,
@@ -158,7 +158,6 @@ const columns = (
 
 const ExpandedComponent = (props) => {
   const { isAdmin, isSeller, data } = props;
-  console.log("Esta es la data", data);
   const handlePrintPos = async () => {
     try {
       const conector = new ConectorPluginV3();
@@ -260,7 +259,9 @@ const ExpandedComponent = (props) => {
   };
 
   return (
-    <div className="row">
+    <div>
+      <OrderStepper status={data.status} />
+      <div className="row">
       <div className="section col-md-6">
         {(isAdmin || isSeller) && (
           <div>
@@ -488,6 +489,7 @@ const ExpandedComponent = (props) => {
           ></footer>
         </div>
       </div>
+      </div>
     </div>
   );
 };
@@ -519,33 +521,15 @@ export function Pedido() {
   const userData = JSON.parse(localStorage.getItem("userInfo"));
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/purchases?status=${statum}&buyerId=${
+      const { data: apiData } = await api.get(
+        `/purchases?status=${statum}&buyerId=${
           isAdmin ? "" : userData.id
         }&startDate=${
           startDate ? format(startDate, "yyyy-MM-dd") : ""
-        }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store",
-            "Access-Control-Allow-Origin": "*",
-            mode: "no-cors",
-          },
-        }
+        }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`
       );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const apiData = await response.json();
-
       setDatum(apiData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (_) {}
   };
 
   useEffect(() => {
@@ -577,37 +561,15 @@ export function Pedido() {
 
   const handleUpdateStatus = async (status, id, total, paymentType) => {
     try {
-      const response = await fetch(`${API_URL}/purchases/${id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "no-cors",
-        },
-        body: JSON.stringify({
-          total: total,
-          status: status,
-          paymentType: paymentType,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      await api.put(`/purchases/${id}`, { total, status, paymentType });
       if (status === "CANCELED") {
         const posible = Number(userData.points) - Math.ceil(total / 6000);
         userData.points = posible < 0 ? 0 : posible;
-
         localStorage.setItem("userInfo", JSON.stringify(userData));
         window.location.reload();
       }
-      toast.success("Se estan actualizando los cambios", {
-        duration: 10000,
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      toast.success("Se estan actualizando los cambios", { duration: 10000 });
+    } catch (_) {}
   };
 
   function handleCreatePayment(payment) {

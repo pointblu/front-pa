@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 import "./UploadImage.css";
 
@@ -64,45 +64,16 @@ export const UploadImage = ({ setIsButtonDisabled, fromPayment }) => {
     setUploading(true); // Deshabilitar el botón de carga durante la carga
 
     try {
-      let myHeaders = new Headers();
-      const token = JSON.parse(localStorage.getItem("token"));
-      myHeaders.append("Authorization", `Bearer ${token}`);
-
-      let formdata = new FormData();
+      const formdata = new FormData();
       formdata.append("file", image);
 
-      let requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
-
-      const response = await fetch(`${API_URL}/files`, requestOptions);
-      if (response.ok) {
-        console.log("Image uploaded successfully");
-        const json = await response.json();
-        setSuccessResponse("");
-        setErrorResponse(null);
-        toast.success(json.message);
-        //setImage(json.data.fileUrl); // Assuming you want to set the image after successful upload
-        localStorage.setItem("urlImage", JSON.stringify(json.data.fileUrl));
-        setIsButtonDisabled(false);
-      } else {
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 413) {
-          toast.error("Oops, la imagen es muy grande.", {
-            description: "Intenta con un tamaño menor a 1 Mb",
-          });
-        } else {
-          toast.error(json.message);
-        }
-        setErrorResponse("");
-        setSuccessResponse(null);
-      }
-    } catch (error) {
-      console.error("Error during upload:", error);
+      const { data } = await api.post("/files", formdata, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success(data.message);
+      localStorage.setItem("urlImage", JSON.stringify(data.data.fileUrl));
+      setIsButtonDisabled(false);
+    } catch (_) {
     } finally {
       setUploading(false); // Habilitar el botón de carga después de la carga (éxito o error)
     }

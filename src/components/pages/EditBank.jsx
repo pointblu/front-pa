@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 
 export const EditBank = () => {
@@ -86,8 +86,6 @@ export const EditBank = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const token = JSON.parse(localStorage.getItem("token"));
-
       const formData = new FormData();
       formData.append("file", image);
       formData.append("name", name);
@@ -95,50 +93,14 @@ export const EditBank = () => {
       formData.append("account", account);
       formData.append("active", active);
 
-      const requestOptions = {
-        method: "PUT",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Cache-Control": "no-store",
-        },
-        body: formData,
-        redirect: "follow",
-      };
-
-      const response = await fetch(
-        `${API_URL}/banks/${editBank.id}`,
-        requestOptions
-      );
-
-      if (response.ok) {
-        console.log("User register successfully");
-        const json = await response.json();
-        setSuccessResponse(json.message);
-        toast.success(json.message);
-        setErrorResponse(null);
-        setName("");
-        setType("");
-        setActive(false);
-        setAccount("");
-        goTo("/cuentas");
-
-        localStorage.removeItem("editBank");
-      } else {
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 422) {
-          toast.error("Oops, campos sin llenar.", {
-            description: " Completa tu información",
-          });
-        } else {
-          toast.error(json.message);
-        }
-        setErrorResponse("");
-        setSuccessResponse(null);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+      const { data } = await api.put(`/banks/${editBank.id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success(data.message);
+      setName(""); setType(""); setActive(false); setAccount("");
+      localStorage.removeItem("editBank");
+      goTo("/cuentas");
+    } catch (_) {}
   }
 
   //const response = await fetch(`${API_URL}/products/${editProd.id}`, {

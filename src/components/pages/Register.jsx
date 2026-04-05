@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
-import { API_URL } from "../../auth/constants";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db } from "../../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 
 export const Register = () => {
@@ -17,22 +14,6 @@ export const Register = () => {
 
   const authi = useAuth();
   const goTo = useNavigate();
-
-  const getRandomColor = () => {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
-  function getRandomElement(array) {
-    if (!array || array.length === 0) {
-      return null; // Retorna null si el array está vacío o no definido
-    }
-    const randomIndex = Math.floor(Math.random() * array.length);
-    return array[randomIndex];
-  }
 
   function generateDateBasedNumber() {
     const now = new Date();
@@ -52,60 +33,15 @@ export const Register = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          userName: generateDateBasedNumber(),
-          email,
-          phone,
-          address,
-          active: true,
-        }),
+      const { data: json } = await api.post("/users", {
+        name,
+        userName: generateDateBasedNumber(),
+        email,
+        phone,
+        address,
+        active: true,
       });
-      if (response.ok) {
-        const avatar = [
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714068869/avatar-1-1714068867304.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714068908/avatar-2-1714068907683.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714068939/avatar-3-1714068938456.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714068968/avatar-4-1714068967839.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714069045/avatar-5-1714069044953.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714069087/avatar-6-1714069086825.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714069129/avatar-7-1714069128539.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714069162/avatar-8-1714069162362.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714069186/avatar-9-1714069185976.webp",
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1714069207/avatar-10-1714069207291.webp",
-        ];
-
-        const defaultPhotoUrl = await getRandomElement(avatar);
-        const password = phone;
-        const displayName = name;
-        const res = await createUserWithEmailAndPassword(auth, email, password);
-        const bgColor = getRandomColor();
-        console.log(res);
-        // Update profile with default photoURL
-        await updateProfile(res.user, {
-          displayName,
-          photoURL: defaultPhotoUrl, // Usar la URL predeterminada
-        });
-
-        // Create user on firestore with default photoURL
-        await setDoc(doc(db, "users", res.user.uid), {
-          uid: res.user.uid,
-          displayName,
-          email,
-          bgColor: bgColor,
-          photoURL: defaultPhotoUrl, // Usar la URL predeterminada
-        });
-
-        // Create empty user chats on firestore
-        await setDoc(doc(db, "userChats", res.user.uid), {});
-
-        console.log("User register successfully");
-        const json = await response.json();
+      if (json) {
         setSuccessResponse(json.message);
         toast.success(json.message);
         setErrorResponse(null);
@@ -118,22 +54,8 @@ export const Register = () => {
         setTimeout(() => {
           goTo("/ingreso");
         }, 3000);
-      } else {
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 422) {
-          toast.error("Oops, campos sin llenar.", {
-            description: " Completa tu información",
-          });
-        } else {
-          toast.error(json.message);
-        }
-        setErrorResponse();
-        setSuccessResponse(null);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (_) {}
   }
 
   if (authi.isAuthenticated) {

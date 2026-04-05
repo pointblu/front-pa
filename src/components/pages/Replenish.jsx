@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -25,46 +25,15 @@ export const Replenish = () => {
     e.preventDefault();
 
     try {
-      const token = JSON.parse(localStorage.getItem("token"));
-      const numericCost = parseFloat(cost);
-      const numericStock = parseInt(stock, 10);
-      const response = await fetch(
-        `${API_URL}/products/${productId}/replenish`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store",
-          },
-          body: JSON.stringify({
-            stock: numericStock,
-            cost: numericCost,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        console.log("Replenish register successfully");
-        const json = await response.json();
-        toast.success(json.message);
-        setStock("");
-        setCost("");
-        goTo("/catalogo");
-      } else {
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 422) {
-          toast.error("Oops, campos sin llenar.", {
-            description: " Completa tu información",
-          });
-        } else {
-          toast.error(json.message);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
+      const { data } = await api.post(`/products/${productId}/replenish`, {
+        stock: parseInt(stock, 10),
+        cost: parseFloat(cost),
+      });
+      toast.success(data.message);
+      setStock("");
+      setCost("");
+      goTo("/catalogo");
+    } catch (_) {}
   }
 
   return (

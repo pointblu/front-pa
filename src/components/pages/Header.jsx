@@ -1,32 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { Toaster, toast } from "sonner";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { useSpring, animated } from "react-spring";
 import { Tooltip } from "react-tooltip";
 import "./Header.css";
 import { format } from "date-fns";
 import { UserNumber } from "../../context/point";
-import { getUserLocation } from "../helpers/getUserLocation";
-import { signOut } from "firebase/auth";
-import { auth, db } from "../../firebase";
-import { NotificationComponent } from "./Notification";
-import { AuthContext } from "../../context/AuthContext";
-import { ChatContext } from "../../context/ChatContext";
-import { useMessage } from "../../context/MessageContext";
-import {
-  collection,
-  doc,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-  updateDoc,
-} from "firebase/firestore";
 
-const token = JSON.parse(localStorage.getItem("token"));
 
 function UserNumb({ n }) {
   const { animatedNumber } = useSpring({
@@ -40,49 +23,6 @@ function UserNumb({ n }) {
 }
 
 export const Header = () => {
-  const [lastMessages, setLastMessages] = useState([]);
-  const { currentUser } = useContext(AuthContext);
-  const { handleMessageReceived } = useMessage();
-
-  useEffect(() => {
-    if (!currentUser) {
-      console.log("No user ID available");
-      return;
-    }
-
-    // Asumimos que cada documento de chat tiene una estructura con un array de mensajes
-    const chatsRef = collection(db, "chats");
-    const q = query(chatsRef, orderBy("messages", "desc"), limit(50)); // Limitamos a los últimos 50 chats modificados
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const messagesFromOthers = [];
-      querySnapshot.forEach((doc) => {
-        const messages = doc.data().messages || [];
-        if (messages.length > 0) {
-          const lastMessage = messages[messages.length - 1]; // Último mensaje
-          if (
-            lastMessage.senderId !== currentUser.uid &&
-            !lastMessage?.readed
-          ) {
-            messagesFromOthers.push({
-              ...lastMessage,
-              chatId: doc.id,
-            });
-          }
-        }
-      });
-      setLastMessages(messagesFromOthers);
-    });
-    if (lastMessages.length > 0) {
-      handleMessageReceived(true);
-    } else {
-      handleMessageReceived(false);
-    }
-    return () => {
-      unsubscribe();
-    };
-  }, [currentUser, handleMessageReceived, lastMessages]);
-
   const [datum, setDatum] = useState([]);
   const [apiData, setApiData] = useState([]);
   const goTo = useNavigate();
@@ -102,50 +42,16 @@ export const Header = () => {
 
   const fetchCategoriesAsync = async () => {
     try {
-      const response = await fetch(`${API_URL}/categories`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const dates = await response.json();
-
-      setApiData(dates);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      const { data } = await api.get("/categories");
+      setApiData(data);
+    } catch (_) {}
   };
 
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(`${API_URL}/users/all/counter`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const datos = await response.json();
-
-      setDatum(datos);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      const { data } = await api.get("/users/all/counter");
+      setDatum(data);
+    } catch (_) {}
   };
 
   const convertDateFormat = (fecha) => {
@@ -162,47 +68,8 @@ export const Header = () => {
 
   const fetchPostionAsync = async (userId, lat, lon) => {
     try {
-      const response = await fetch(
-        `${API_URL}/users/position/${userId}/lat/${lat}/lon/${lon}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store",
-            "Access-Control-Allow-Origin": "*",
-            mode: "no-cors",
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      await response.json();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleButtonClick = () => {
-    const obtenerUbicacion = async () => {
-      try {
-        const data = await getUserLocation();
-        fetchPostionAsync(userObject.id, data[0], data[1]);
-
-        const phoneNumber = "573152798597";
-        const whatsappURL = `https://wa.me/${phoneNumber}`;
-        window.open(whatsappURL, "_blank");
-        // goTo("/pqr");
-      } catch (error) {
-        toast.error(
-          "Para usar el chat debes activar tu localización..." /*, {
-          description: "...y tener instalado whatsapp",
-        }*/
-        );
-      }
-    };
-    obtenerUbicacion();
+      await api.get(`/users/position/${userId}/lat/${lat}/lon/${lon}`);
+    } catch (_) {}
   };
 
   async function handleSignOut(e) {
@@ -212,7 +79,6 @@ export const Header = () => {
       duration: 3000,
     });
     goTo("/catalogo");
-    signOut(auth);
     authi.signout();
   }
   return (
@@ -351,6 +217,14 @@ export const Header = () => {
                     convertDateFormat(userObject.resetpointsat)}
                 </span>
               </Link>
+              <Link
+                className="nav-link"
+                to="/mis-puntos"
+                style={{ fontSize: "0.65rem", padding: "0 0.5rem", color: "#c9ae00" }}
+                title="Ver historial de puntos"
+              >
+                <i className="fas fa-history" />
+              </Link>
 
               <Tooltip id="tt-puntos" />
             </li>
@@ -425,31 +299,6 @@ export const Header = () => {
             </li>
           )}
         </ul>
-        {authi.isAuthenticated && (
-          <div
-            className="button-containero"
-            style={{
-              display: "flex",
-              overflow: "visible",
-              zIndex: 99999,
-            }}
-          >
-            <Tooltip id="tt-chat" style={{ position: "relative", zIndex: 2 }} />
-            <button
-              className="flyerin"
-              data-tooltip-id="tt-chat"
-              data-tooltip-content="Chat"
-              onClick={handleButtonClick}
-              data-tooltip-float={false}
-              data-tooltip-place="left"
-              data-tooltip-offset={10}
-              data-tooltip-class-name="custom-tooltip"
-            >
-              <i className="fab fa-whatsapp" style={{ fontSize: "1.5rem" }} />
-              <NotificationComponent />
-            </button>
-          </div>
-        )}
       </nav>
     </div>
   );

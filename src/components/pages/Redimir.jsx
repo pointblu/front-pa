@@ -3,14 +3,13 @@ import "./Products.css";
 import { Products } from "./Products.jsx";
 import { Filters } from "./Filters.jsx";
 import { useFilters } from "../../hooks/useFilters.jsx";
-import { API_URL } from "../../auth/constants.js";
+import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider.jsx";
 import { Cart } from "./Cart.jsx";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Tooltip } from "react-tooltip";
 
-const token = JSON.parse(localStorage.getItem("token"));
 const userData = JSON.parse(localStorage.getItem("userInfo"));
 export const Redimir = () => {
   const auth = useAuth();
@@ -31,33 +30,13 @@ export const Redimir = () => {
 
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(`${API_URL}/products?pag=${page}&take=50`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const apiData = await response.json();
-      const apiDatum = apiData.data.filter((datu) => {
-        return datu.active !== false && datu.points < userData.points;
-      });
-
-      let newDatum = datum.concat(
-        !isAdmin || !auth.isAuthenticated ? apiDatum : apiData.data
+      const { data: apiData } = await api.get(`/products?pag=${page}&take=50`);
+      const apiDatum = apiData.data.filter(
+        (datu) => datu.active !== false && datu.points < userData.points
       );
-      setDatum(newDatum);
+      setDatum((prev) => prev.concat(!isAdmin || !auth.isAuthenticated ? apiDatum : apiData.data));
       setInfoPage(apiData.meta.hasNextPage);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (_) {}
   };
 
   const goTo = useNavigate();

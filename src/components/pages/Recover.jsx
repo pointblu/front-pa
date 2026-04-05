@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 
 export const Recover = () => {
@@ -15,36 +15,13 @@ export const Recover = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/users/send/${email}/email`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
+      await api.get(`/users/send/${email}/email`);
+      toast.success("¡Solicitud enviada!", {
+        description: "Enviamos a tu correo electrónico los datos de ingreso.",
       });
-      if (response.ok) {
-        console.log("Login successfully");
-        const json = await response.json();
-        console.log(json);
-        toast.success("¡Solicitud enviada!", {
-          description: "Enviamos a tu correo electrónico los datos de ingreso.",
-        });
-
-        setSuccessResponse("");
-        setErrorResponse(null);
-        setEmail("");
-        setTimeout(() => {
-          goTo("/ingreso");
-        }, 3000);
-      } else {
-        console.log("Something went wrong");
-        await response.json();
-        toast.error("Oops, algo salio mal.", {
-          description: "Verifica tu correo electrónico e inténtalo nuevamente",
-        });
-        setErrorResponse();
-        setSuccessResponse(null);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+      setEmail("");
+      setTimeout(() => goTo("/ingreso"), 3000);
+    } catch (_) {}
   }
 
   return (

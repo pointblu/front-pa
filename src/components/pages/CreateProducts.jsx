@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 import { UploadImage } from "./UploadImage";
 
@@ -34,61 +34,21 @@ export const CreateProduct = () => {
     e.preventDefault();
 
     try {
-      const token = JSON.parse(localStorage.getItem("token"));
-      const numericCost = parseFloat(cost);
-      const numericPrice = parseFloat(price);
-      const numericStock = parseInt(stock, 10);
-
-      const response = await fetch(`${API_URL}/products`, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-        },
-        body: JSON.stringify({
-          name,
-          cost: numericCost,
-          price: numericPrice,
-          description,
-          stock: numericStock,
-          brand,
-          category,
-          image: imageUrl,
-        }),
+      const { data } = await api.post("/products", {
+        name,
+        cost: parseFloat(cost),
+        price: parseFloat(price),
+        description,
+        stock: parseInt(stock, 10),
+        brand,
+        category,
+        image: imageUrl,
       });
-
-      if (response.ok) {
-        console.log("User register successfully");
-        const json = await response.json();
-        setSuccessResponse(json.message);
-        toast.success(json.message);
-        setErrorResponse(null);
-        setName("");
-        setCost("");
-        setPrice("");
-        setDescription("");
-        setStock("");
-        setBrand("");
-        setCategory("");
-        localStorage.removeItem("urlImage");
-        setTimeout(() => {
-          goTo("/catalogo");
-          window.location.reload();
-        }, 2000);
-      } else {
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 422) {
-          toast.error("Oops, campos sin llenar.", {
-            description: " Completa tu información",
-          });
-        } else {
-          toast.error(json.message);
-        }
-        setErrorResponse("");
-        setSuccessResponse(null);
-      }
+      toast.success(data.message);
+      setName(""); setCost(""); setPrice(""); setDescription("");
+      setStock(""); setBrand(""); setCategory("");
+      localStorage.removeItem("urlImage");
+      setTimeout(() => { goTo("/catalogo"); window.location.reload(); }, 2000);
     } catch (error) {
       console.log(error);
     }

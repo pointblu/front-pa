@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 import "./Advertisement.css";
 
@@ -89,8 +89,6 @@ export const CreateAdvertisement = () => {
     e.preventDefault();
     console.log(image);
     try {
-      const token = JSON.parse(localStorage.getItem("token"));
-
       const formData = new FormData();
       formData.append("file", image);
       formData.append("title", title);
@@ -99,51 +97,13 @@ export const CreateAdvertisement = () => {
       formData.append("active", active);
       formData.append("link", link);
 
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-          // No establezcas el Content-Type, el navegador lo manejará automáticamente para FormData
-          "Cache-Control": "no-store",
-        },
-        body: formData,
-        redirect: "follow",
-      };
-
-      const response = await fetch(`${API_URL}/advertisements`, requestOptions);
-
-      if (response.ok) {
-        console.log("User register successfully");
-        const json = await response.json();
-        setSuccessResponse(json.message);
-        toast.success(json.message);
-        setErrorResponse(null);
-        setTitle("");
-        setWhatsapp("");
-        setLink("");
-        setActive(false);
-        setDescription("");
-        setTimeout(() => {
-          goTo("/");
-          window.location.reload();
-        }, 2000);
-      } else {
-        console.log(active);
-        console.log("Something went wrong");
-        const json = await response.json();
-        if (json.statusCode === 422) {
-          toast.error("Oops, campos sin llenar.", {
-            description: " Completa tu información",
-          });
-        } else {
-          toast.error(json.message);
-        }
-        setErrorResponse("");
-        setSuccessResponse(null);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+      const { data } = await api.post("/advertisements", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success(data.message);
+      setTitle(""); setWhatsapp(""); setLink(""); setActive(false); setDescription("");
+      setTimeout(() => { goTo("/"); window.location.reload(); }, 2000);
+    } catch (_) {}
   }
 
   return (

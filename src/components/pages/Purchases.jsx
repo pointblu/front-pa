@@ -1,5 +1,5 @@
 import DataTable from "react-data-table-component";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import { useEffect, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
@@ -7,7 +7,6 @@ import "react-datepicker/dist/react-datepicker.module.css";
 import { format } from "date-fns";
 
 registerLocale("es", es);
-const token = JSON.parse(localStorage.getItem("token"));
 const columns = [
   {
     name: "FECHA",
@@ -100,33 +99,15 @@ export function PurchaseDetails() {
 
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/purchaseDetails?active=true&startDate=${
-          startDate ? format(startDate, "yyyy-MM-dd") : ""
-        }&endDate=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store",
-            "Access-Control-Allow-Origin": "*",
-            mode: "no-cors",
-          },
-        }
+      const start = startDate ? format(startDate, "yyyy-MM-dd") : "";
+      const end = endDate ? format(endDate, "yyyy-MM-dd") : "";
+      const { data: apiData } = await api.get(
+        `/purchaseDetails?active=true&startDate=${start}&endDate=${end}`
       );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const apiData = await response.json();
       setDatum(apiData.data);
       setFilter(apiData.data);
       setTotalRows(apiData.meta.itemsCount);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (_) {}
   };
 
   const handleChangeDate = (date) => {

@@ -1,0 +1,252 @@
+/* ── Checkout stepper ─────────────────────────────────────────────────────── */
+.checkout-stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.5rem 1rem 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.co-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 90px;
+}
+
+.co-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  border: 2px solid #ccc;
+  background: #fff;
+  color: #aaa;
+}
+
+.co-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #aaa;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.co-connector {
+  flex: 1;
+  height: 2px;
+  background: #ccc;
+  margin-top: 20px;
+  min-width: 20px;
+}
+
+.co-connector.co-done {
+  background: #28a745;
+}
+
+.co-step.co-completed .co-circle {
+  background: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+.co-step.co-completed .co-label {
+  color: #28a745;
+}
+
+.co-step.co-active .co-circle {
+  background: #f1d100;
+  border-color: #c9ae00;
+  color: #333;
+}
+.co-step.co-active .co-label {
+  color: #333;
+  font-weight: 700;
+}
+
+/* ── Checkout card ────────────────────────────────────────────────────────── */
+.checkout-card {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.checkout-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.checkout-item-row:last-child {
+  border-bottom: none;
+}
+
+.checkout-item-img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.checkout-item-name {
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.checkout-item-qty {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.checkout-item-price {
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  min-width: 70px;
+  text-align: right;
+}
+
+.checkout-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+}
+
+.checkout-total-row.grand-total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-top: 2px solid #333;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+/* ── Payment toggle ───────────────────────────────────────────────────────── */
+.payment-toggle {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.payment-option {
+  flex: 1;
+  border: 2px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #555;
+  background: #fff;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.payment-option i {
+  font-size: 1.4rem;
+}
+
+.payment-option.selected {
+  border-color: #f1d100;
+  background: #fffae0;
+  color: #333;
+}
+
+/* ── Bank list ────────────────────────────────────────────────────────────── */
+.bank-info-box {
+  background: #f8fff8;
+  border: 1px solid #c3e6c3;
+  border-radius: 0.4rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+.bank-info-box li {
+  margin: 4px 0;
+  list-style: disc;
+  margin-left: 1rem;
+}
+
+/* ── Nav buttons ──────────────────────────────────────────────────────────── */
+.checkout-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.checkout-nav .btn-back {
+  background: transparent;
+  border: 2px solid #333;
+  border-radius: 0.4rem;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.checkout-nav .btn-next {
+  background: #f1d100;
+  border: 2px solid #c9ae00;
+  border-radius: 0.4rem;
+  padding: 0.5rem 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #333;
+}
+
+.checkout-nav .btn-next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.checkout-nav .btn-confirm {
+  background: #28a745;
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.6rem 2rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.checkout-nav .btn-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.co-canje-badge {
+  font-size: 0.7rem;
+  background: #6f42c1;
+  color: #fff;
+  border-radius: 10px;
+  padding: 1px 6px;
+  margin-left: 4px;
+}
+
+@media (max-width: 480px) {
+  .payment-toggle {
+    flex-direction: column;
+  }
+  .co-label {
+    font-size: 0.6rem;
+  }
+  .co-step {
+    min-width: 70px;
+  }
+}

@@ -3,12 +3,10 @@ import "./Home.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useAuth } from "../../auth/AuthProvider";
-import { API_URL } from "../../auth/constants";
+import api from "../../services/api";
 import Carousel from "nuka-carousel";
 import { Link, useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
-
-const token = JSON.parse(localStorage.getItem("token"));
 
 export const Home = () => {
   useEffect(() => {
@@ -38,32 +36,9 @@ export const Home = () => {
   };
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(`${API_URL}/advertisements`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const apiData = await response.json();
-      let filteredData = apiData.data;
-
-      if (!isAdmin) {
-        // Si no es ADMIN, aplicar el filtro para CLIENT o cuando no esté autenticado
-        filteredData = apiData.data.filter((item) => item.active === true);
-      }
-
-      setDatum(filteredData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      const { data: apiData } = await api.get("/advertisements");
+      setDatum(isAdmin ? apiData.data : apiData.data.filter((item) => item.active === true));
+    } catch (_) {}
   };
 
   const params = {

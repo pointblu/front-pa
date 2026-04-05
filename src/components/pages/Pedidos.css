@@ -197,6 +197,90 @@ td {
   border-radius: 10px; /* Bordes redondeados */
 }
 
+/* ── Order Stepper ────────────────────────────────────────────────────────── */
+.order-stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.2rem 1rem 0.4rem;
+  width: 100%;
+}
+
+.stepper-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+}
+
+.stepper-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  background: #fff;
+  color: #aaa;
+}
+
+.stepper-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.stepper-sublabel {
+  font-size: 0.62rem;
+  color: #dc3545;
+  font-weight: 700;
+  margin-top: -4px;
+}
+
+.stepper-connector {
+  flex: 1;
+  height: 2px;
+  background: #ccc;
+  margin-top: 19px;
+  min-width: 20px;
+}
+
+.stepper-connector.connector-done {
+  background: #28a745;
+}
+
+.step-completed .stepper-circle {
+  background: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+.step-completed .stepper-label {
+  color: #28a745;
+}
+
+.step-current .stepper-circle {
+  background: #f1d100;
+  border-color: #c9ae00;
+  color: #333;
+}
+.step-current .stepper-label {
+  color: #333;
+  font-weight: 700;
+}
+
+.step-canceled .stepper-circle {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+.step-canceled .stepper-label {
+  color: #dc3545;
+}
+
 @media print {
   @page {
     size: auto; /* Indica al navegador que ajuste automáticamente el tamaño del papel */

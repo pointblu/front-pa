@@ -3,14 +3,12 @@ import "./Products.css";
 import { Products } from "./Products.jsx";
 import { Filters } from "./Filters.jsx";
 import { useFilters } from "../../hooks/useFilters";
-import { API_URL } from "../../auth/constants";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 import { useAuth } from "../../auth/AuthProvider.jsx";
 import { Cart } from "./Cart.jsx";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Tooltip } from "react-tooltip";
-
-const token = JSON.parse(localStorage.getItem("token"));
 
 export const Catalogo = () => {
   const auth = useAuth();
@@ -31,33 +29,11 @@ export const Catalogo = () => {
 
   const fetchDataAsync = async () => {
     try {
-      const response = await fetch(`${API_URL}/products?pag=${page}&take=50`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "Access-Control-Allow-Origin": "*",
-          mode: "no-cors",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const apiData = await response.json();
-      const apiDatum = apiData.data.filter((datu) => {
-        return datu.active !== false;
-      });
-
-      let newDatum = datum.concat(
-        !isAdmin || !auth.isAuthenticated ? apiDatum : apiData.data
-      );
-      setDatum(newDatum);
+      const { data: apiData } = await api.get(`/products?pag=${page}&take=50`);
+      const apiDatum = apiData.data.filter((datu) => datu.active !== false);
+      setDatum((prev) => prev.concat(!isAdmin || !auth.isAuthenticated ? apiDatum : apiData.data));
       setInfoPage(apiData.meta.hasNextPage);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (_) {}
   };
 
   const goTo = useNavigate();
