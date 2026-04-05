@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "P&R Monsalve",
+  "name": "Panadería & Repostería Monsalve",
+  "description": "Pedidos en línea de pan artesanal y repostería fresca en Soledad, Atlántico.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +19,9 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#D4A017",
+  "background_color": "#fff8e7",
+  "lang": "es-CO"
 }

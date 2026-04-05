@@ -59,7 +59,7 @@ function CanjeItem({ image, name, quantity, points }) {
           <small> {quantity} </small>
         </strong>
         <div>
-          <strong> {points} Puntos azules</strong>
+          <strong> {points} Puntos Monsalve</strong>
         </div>
       </div>
     </li>

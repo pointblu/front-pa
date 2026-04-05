@@ -1,3 +1,8 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /usuarios
+Disallow: /ventas
+Disallow: /pedidos
+
+Sitemap: https://panaderiamonsalve.com/sitemap.xml

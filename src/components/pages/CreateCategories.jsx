@@ -1,85 +1,56 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import api from "../../services/api";
 import { Toaster, toast } from "sonner";
+import { categorySchema } from "../../schemas";
 
 export const CreateCategories = () => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [errorResponse, setErrorResponse] = useState("");
-  const [successResponse, setSuccessResponse] = useState("");
-
   const goTo = useNavigate();
 
-  function handleCancel(e) {
-    e.preventDefault();
-    goTo("/categorias");
-  }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: zodResolver(categorySchema) });
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-
+  async function onSubmit({ name, description }) {
     try {
       const { data } = await api.post("/categories", { name, description });
       toast.success(data.message);
-      setName("");
-      setDescription("");
-      setTimeout(() => {
-        goTo("/categorias");
-        window.location.reload();
-      }, 2000);
+      reset();
+      setTimeout(() => { goTo("/categorias"); window.location.reload(); }, 2000);
     } catch (_) {}
   }
 
   return (
     <div>
       <Toaster position="top-center" richColors />
-      {/* Content Wrapper. Contains page content */}
       <div className="content-wrapper">
-        {/* Content Header (Page header) */}
         <div className="content-header">
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-12">
-                <h1 className="m-0 App-header focus-in-contract alphi-6">
-                  Crear Categoría
-                </h1>
+                <h1 className="m-0 App-header focus-in-contract alphi-6">Crear Categoría</h1>
               </div>
             </div>
-            {/* /.row */}
           </div>
-          {/* /.container-fluid */}
         </div>
-        {/* /.content-header */}
-        {/* Main content */}
         <section className="content">
           <div className="content-wrapper" style={{ marginTop: "1rem" }}>
             <div className="container-fluid ctry">
               <div className="register-box">
-                {!!errorResponse && (
-                  <div className="errorMessage">{errorResponse}</div>
-                )}
-                {!!successResponse && (
-                  <div className="successMessage">{successResponse}</div>
-                )}
-
-                <div className="card ">
-                  <div
-                    className="card-body register-card-body"
-                    style={{
-                      borderRadius: "0.6rem",
-                      background: "#C0392B",
-                    }}
-                  >
-                    <form action="/" method="post" onSubmit={handleSubmit}>
-                      <div className="input-group mb-3">
+                <div className="card">
+                  <div className="card-body register-card-body" style={{ borderRadius: "0.6rem", background: "#C0392B" }}>
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                      <div className="input-group mb-1">
                         <input
                           type="text"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="form-control"
+                          {...register("name")}
+                          className={`form-control${errors.name ? " is-invalid" : ""}`}
                           placeholder="Nombre de la categoría"
-                          name="name"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -88,13 +59,13 @@ export const CreateCategories = () => {
                           </div>
                         </div>
                       </div>
+                      {errors.name && <div className="errorMessage mb-2">{errors.name.message}</div>}
+
                       <div className="input-group mb-3">
                         <textarea
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
+                          {...register("description")}
                           className="form-control"
                           placeholder="Descripción"
-                          name="description"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
@@ -102,38 +73,34 @@ export const CreateCategories = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="row ctry">
-                        {/* /.col */}
 
+                      <div className="row ctry">
                         <div className="col-4">
                           <button
                             type="submit"
                             className="btn btn-outline-light btn-block btn-sm"
+                            disabled={isSubmitting}
                           >
-                            Guardar
+                            {isSubmitting ? "Guardando..." : "Guardar"}
                           </button>
                         </div>
                         <div className="col-4">
                           <button
+                            type="button"
                             className="btn btn-outline-light btn-block btn-sm"
-                            onClick={handleCancel}
+                            onClick={() => goTo("/categorias")}
                           >
                             Cancelar
                           </button>
                         </div>
-                        {/* /.col */}
                       </div>
                     </form>
                   </div>
-                  {/* /.form-box */}
                 </div>
-                {/* /.card */}
               </div>
             </div>
           </div>
-          {/* /.container-fluid */}
         </section>
-        {/* /.content */}
       </div>
     </div>
   );

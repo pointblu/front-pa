@@ -70,7 +70,7 @@ export function PointsHistory() {
                   className="m-0 App-header focus-in-contract alphi-3"
                   style={{ backgroundColor: "#F1d100" }}
                 >
-                  Mis Puntos Azules
+                  Mis Puntos Monsalve
                 </h1>
               </div>
             </div>
@@ -101,7 +101,7 @@ export function PointsHistory() {
                     </div>
                     <p style={{ fontSize: "0.8rem", color: "#555", marginTop: "0.4rem" }}>
                       <i className="fas fa-star" style={{ marginRight: "4px" }} />
-                      Puntos Azules
+                      Puntos Monsalve
                     </p>
                     <hr style={{ borderColor: "rgba(0,0,0,0.15)", margin: "0.75rem 0" }} />
                     <p style={{ fontSize: "0.75rem", color: "#555", marginBottom: 0 }}>

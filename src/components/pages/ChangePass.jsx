@@ -1,63 +1,50 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 import { useAuth } from "../../auth/AuthProvider";
+import { changePassSchema } from "../../schemas";
 
 export const ChangePass = () => {
   const auth = useAuth();
-  const [newPass, setNewPass] = useState("");
   const userObject = JSON.parse(auth.getUser() || "{}");
-  const [successResponse, setSuccessResponse] = useState("");
-  const [errorResponse, setErrorResponse] = useState("");
-
   const goTo = useNavigate();
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: zodResolver(changePassSchema) });
 
+  async function onSubmit({ newPass }) {
     try {
       await api.post(`/users/${userObject.id}/change-pass`, { newPass });
       toast.success("Celular/Contraseña actualizada!", {
         description: "En el siguiente inicio de sesión usa tu nueva contraseña",
       });
-      setNewPass("");
       setTimeout(() => goTo("/"), 3000);
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   return (
     <div>
       <Toaster position="top-center" richColors />
-      {/* Content Wrapper. Contains page content */}
       <div className="content-wrapper">
-        {/* Content Header (Page header) */}
         <div className="content-header">
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-12">
-                <h1
-                  className="m-0 App-header focus-in-contract alphi-2"
-                  
-                >
-                  Actualizar celular
-                </h1>
+                <h1 className="m-0 App-header focus-in-contract alphi-2">Actualizar celular</h1>
               </div>
             </div>
-            {/* /.row */}
           </div>
-          {/* /.container-fluid */}
         </div>
-        {/* /.content-header */}
-        {/* Main content */}
         <section className="content">
           <div className="video-wrapper">
             <video playsInline autoPlay muted loop poster="">
-              <source
-                src={process.env.PUBLIC_URL + "/dist/img/panaderia.mp4"}
-                type="video/mp4"
-              />
+              <source src={process.env.PUBLIC_URL + "/dist/img/panaderia.mp4"} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
             <div className="container-fluid ctry video-header">
@@ -65,35 +52,22 @@ export const ChangePass = () => {
                 <div className="register-logo">
                   <Link to="/">
                     <img
-                      src={
-                        process.env.PUBLIC_URL + "/dist/img/logo_punto_azul.png"
-                      }
+                      src={process.env.PUBLIC_URL + "/dist/img/logo_punto_azul.png"}
                       alt="Monsalve Logo"
                       className="brand-image-xl img-circle elevation-3"
                       style={{ opacity: ".8", maxHeight: "140px" }}
                     />
                   </Link>
                 </div>
-                {!!errorResponse && (
-                  <div className="errorMessage">{errorResponse}</div>
-                )}
-                {!!successResponse && (
-                  <div className="successMessage">{successResponse}</div>
-                )}
                 <div className="card">
-                  <div
-                    className="card-body register-card-body"
-                    style={{ borderRadius: "100px" }}
-                  >
-                    <form action="/" method="post" onSubmit={handleSubmit}>
-                      <div className="input-group mb-3">
+                  <div className="card-body register-card-body" style={{ borderRadius: "100px" }}>
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                      <div className="input-group mb-1">
                         <input
                           type="text"
-                          value={newPass}
-                          onChange={(e) => setNewPass(e.target.value)}
-                          className="form-control"
+                          {...register("newPass")}
+                          className={`form-control${errors.newPass ? " is-invalid" : ""}`}
                           placeholder="nuevo celular"
-                          name="newPass"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -102,29 +76,27 @@ export const ChangePass = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="row ctry">
-                        {/* /.col */}
+                      {errors.newPass && (
+                        <div className="errorMessage mb-2">{errors.newPass.message}</div>
+                      )}
+                      <div className="row ctry mt-3">
                         <div className="col-4">
                           <button
                             type="submit"
                             className="btn btn-primary btn-block btn-xs"
+                            disabled={isSubmitting}
                           >
-                            Listo!
+                            {isSubmitting ? "Guardando..." : "Listo!"}
                           </button>
                         </div>
-                        {/* /.col */}
                       </div>
                     </form>
                   </div>
-                  {/* /.form-box */}
                 </div>
-                {/* /.card */}
               </div>
             </div>
           </div>
-          {/* /.container-fluid */}
         </section>
-        {/* /.content */}
       </div>
     </div>
   );

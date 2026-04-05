@@ -67,7 +67,7 @@ const columns = (handleDeleteUser) => [
     minWidth: "200px",
   },
   {
-    name: "PUNTOS AZULES",
+    name: "PUNTOS MONSALVE",
     selector: (row) => (
       <div
         style={{

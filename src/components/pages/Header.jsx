@@ -190,7 +190,7 @@ export const Header = () => {
               className="nav-item"
               style={{ display: "flex", alignItems: "center" }}
               data-tooltip-id="tt-puntos"
-              data-tooltip-content="Puntos Azules"
+              data-tooltip-content="Puntos Monsalve"
               data-tooltip-float={false}
               data-tooltip-class-name="custom-tooltip"
             >

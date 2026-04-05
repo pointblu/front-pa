@@ -1,37 +1,41 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import api from "../../services/api";
 import { Toaster, toast } from "sonner";
+import { advertisementSchema } from "../../schemas";
 import "./Advertisement.css";
 
 export const CreateAdvertisement = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
-  const [active, setActive] = useState("");
-  const [errorResponse, setErrorResponse] = useState("");
-  const [successResponse, setSuccessResponse] = useState("");
   const [image, setImage] = useState(null);
-  const [link, setLink] = useState(null);
   const [preview, setPreview] = useState("");
-
   const referencia = useRef();
+  const goTo = useNavigate();
 
-  const uploadFiles = () => {
-    referencia.current.click();
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(advertisementSchema),
+    defaultValues: { active: false },
+  });
+
+  const uploadFiles = () => referencia.current.click();
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    const maxSizeMB = 1; // Tamaño máximo permitido en megabytes
-    const maxSizeBytes = maxSizeMB * 1024 * 1024; // Convertir a bytes
+    if (!file) return;
+    const maxSizeBytes = 1 * 1024 * 1024;
     if (file.size > maxSizeBytes) {
       toast.error("Oops, la imagen es muy grande.", {
-        description: `Intenta con un tamaño menor a ${maxSizeMB} Mb`,
+        description: "Intenta con un tamaño menor a 1 Mb",
       });
       return;
     }
-    const imgname = event.target.files[0].name;
+    const imgname = file.name;
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
@@ -43,20 +47,10 @@ export const CreateAdvertisement = () => {
         canvas.width = maxSize;
         canvas.height = maxSize;
         const ctx = canvas.getContext("2d");
-        ctx.drawImage(
-          img,
-          (maxSize - img.width) / 2,
-          (maxSize - img.height) / 2
-        );
+        ctx.drawImage(img, (maxSize - img.width) / 2, (maxSize - img.height) / 2);
         canvas.toBlob(
           (blob) => {
-            const file = new File([blob], imgname, {
-              type: "image/png",
-              lastModified: Date.now(),
-            });
-
-            console.log(file);
-            setImage(file);
+            setImage(new File([blob], imgname, { type: "image/png", lastModified: Date.now() }));
           },
           "image/jpeg",
           0.8
@@ -69,39 +63,33 @@ export const CreateAdvertisement = () => {
   useEffect(() => {
     if (image) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result.toString());
-      };
+      reader.onloadend = () => setPreview(reader.result.toString());
       reader.readAsDataURL(image);
     } else {
       setPreview("");
     }
   }, [image]);
 
-  const goTo = useNavigate();
-
-  function handleCancel(e) {
-    e.preventDefault();
-    goTo("/");
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    console.log(image);
+  async function onSubmit({ title, description, whatsapp, link, active }) {
+    if (!image) {
+      toast.error("Debes seleccionar una imagen");
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append("file", image);
       formData.append("title", title);
-      formData.append("description", description);
-      formData.append("whatsapp", whatsapp);
-      formData.append("active", active);
-      formData.append("link", link);
+      formData.append("description", description ?? "");
+      formData.append("whatsapp", whatsapp ?? "");
+      formData.append("active", String(active ?? false));
+      formData.append("link", link ?? "");
 
       const { data } = await api.post("/advertisements", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success(data.message);
-      setTitle(""); setWhatsapp(""); setLink(""); setActive(false); setDescription("");
+      reset();
+      setImage(null);
       setTimeout(() => { goTo("/"); window.location.reload(); }, 2000);
     } catch (_) {}
   }
@@ -109,44 +97,23 @@ export const CreateAdvertisement = () => {
   return (
     <div>
       <Toaster position="top-center" richColors />
-      {/* Content Wrapper. Contains page content */}
       <div className="content-wrapper">
-        {/* Content Header (Page header) */}
         <div className="content-header">
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-12">
-                <h1 className="m-0 App-header focus-in-contract alphi-1">
-                  Crear Anuncio
-                </h1>
+                <h1 className="m-0 App-header focus-in-contract alphi-1">Crear Anuncio</h1>
               </div>
             </div>
-            {/* /.row */}
           </div>
-          {/* /.container-fluid */}
         </div>
-        {/* /.content-header */}
-        {/* Main content */}
         <section className="content">
           <div className="content-wrapper" style={{ marginTop: "1rem" }}>
             <div className="container-fluid ctry">
               <div className="register-box">
-                {!!errorResponse && (
-                  <div className="errorMessage">{errorResponse}</div>
-                )}
-                {!!successResponse && (
-                  <div className="successMessage">{successResponse}</div>
-                )}
-
-                <div className="card ">
-                  <div
-                    className="card-body register-card-body"
-                    style={{
-                      borderRadius: "0.6rem",
-                      background: "cadetblue",
-                    }}
-                  >
-                    <form action="/" method="post" onSubmit={handleSubmit}>
+                <div className="card">
+                  <div className="card-body register-card-body" style={{ borderRadius: "0.6rem", background: "cadetblue" }}>
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
                       <div className="input-group mb-3 upload-image">
                         <input
                           id="image-upload-input"
@@ -156,32 +123,24 @@ export const CreateAdvertisement = () => {
                           className="form-control"
                           ref={referencia}
                           onChange={handleImageChange}
-                          name="image"
                         />
                         {image ? (
-                          <img
-                            src={preview}
-                            onClick={uploadFiles}
-                            style={{ width: "100", cursor: "pointer" }}
-                          />
+                          <img src={preview} onClick={uploadFiles} style={{ width: "100%", cursor: "pointer" }} alt="preview" />
                         ) : (
                           <img
-                            src={
-                              "https://res.cloudinary.com/diitm4dx7/image/upload/v1705802329/UPLOAD_1-1705802328143.webp"
-                            }
-                            alt=""
+                            src="https://res.cloudinary.com/diitm4dx7/image/upload/v1705802329/UPLOAD_1-1705802328143.webp"
+                            alt="Subir imagen"
                             onClick={uploadFiles}
                           />
                         )}
                       </div>
-                      <div className="input-group mb-3">
+
+                      <div className="input-group mb-1">
                         <input
                           type="text"
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          className="form-control"
+                          {...register("title")}
+                          className={`form-control${errors.title ? " is-invalid" : ""}`}
                           placeholder="Titulo"
-                          name="title"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -190,13 +149,13 @@ export const CreateAdvertisement = () => {
                           </div>
                         </div>
                       </div>
+                      {errors.title && <div className="errorMessage mb-2">{errors.title.message}</div>}
+
                       <div className="input-group mb-3">
                         <textarea
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
+                          {...register("description")}
                           className="form-control"
                           placeholder="Descripción"
-                          name="description"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
@@ -208,11 +167,9 @@ export const CreateAdvertisement = () => {
                       <div className="input-group mb-3">
                         <input
                           type="text"
-                          value={whatsapp}
-                          onChange={(e) => setWhatsapp(e.target.value)}
+                          {...register("whatsapp")}
                           className="form-control"
                           placeholder="WhatsApp"
-                          name="whatsapp"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -222,14 +179,12 @@ export const CreateAdvertisement = () => {
                         </div>
                       </div>
 
-                      <div className="input-group mb-3">
+                      <div className="input-group mb-1">
                         <input
                           type="text"
-                          value={link}
-                          onChange={(e) => setLink(e.target.value)}
-                          className="form-control"
+                          {...register("link")}
+                          className={`form-control${errors.link ? " is-invalid" : ""}`}
                           placeholder="Página web (opcional)"
-                          name="link"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -238,58 +193,49 @@ export const CreateAdvertisement = () => {
                           </div>
                         </div>
                       </div>
+                      {errors.link && <div className="errorMessage mb-2">{errors.link.message}</div>}
 
                       <div className="form-group">
                         <div className="custom-control custom-switch">
                           <input
                             type="checkbox"
-                            checked={active}
-                            onChange={(e) => setActive(e.target.checked)}
+                            {...register("active")}
                             className="custom-control-input"
-                            name="active"
                             id="customSwitch1"
                           />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customSwitch1"
-                          >
+                          <label className="custom-control-label" htmlFor="customSwitch1">
                             Publicar
                           </label>
                         </div>
                       </div>
 
                       <div className="row ctry">
-                        {/* /.col */}
-
                         <div className="col-4">
                           <button
                             type="submit"
                             className="btn btn-outline-light btn-block btn-sm"
+                            disabled={isSubmitting}
                           >
-                            Guardar
+                            {isSubmitting ? "Guardando..." : "Guardar"}
                           </button>
                         </div>
                         <div className="col-4">
                           <button
+                            type="button"
                             className="btn btn-outline-light btn-block btn-sm"
-                            onClick={handleCancel}
+                            onClick={() => goTo("/")}
                           >
                             Cancelar
                           </button>
                         </div>
-                        {/* /.col */}
                       </div>
                     </form>
                   </div>
-                  {/* /.form-box */}
                 </div>
-                {/* /.card */}
               </div>
             </div>
           </div>
-          {/* /.container-fluid */}
         </section>
-        {/* /.content */}
       </div>
     </div>
   );

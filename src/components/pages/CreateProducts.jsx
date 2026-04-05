@@ -1,112 +1,92 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import api from "../../services/api";
 import { Toaster, toast } from "sonner";
 import { UploadImage } from "./UploadImage";
+import { productSchema } from "../../schemas";
 
 export const CreateProduct = () => {
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [name, setName] = useState("");
-  const [cost, setCost] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [stock, setStock] = useState("");
-  const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
-  const [errorResponse, setErrorResponse] = useState("");
-  const [successResponse, setSuccessResponse] = useState("");
-  const imageUrl = JSON.parse(localStorage.getItem("urlImage"));
+  const [imageUrl, setImageUrl] = useState(() =>
+    JSON.parse(localStorage.getItem("urlImage"))
+  );
   const categories = JSON.parse(localStorage.getItem("categorias")) ?? [];
   const goTo = useNavigate();
 
+  // Sincroniza imageUrl cuando UploadImage actualiza localStorage
   useEffect(() => {
-    // Verifica si existe la URL de la imagen en localStorage
-    setIsButtonDisabled(!imageUrl);
-  }, [imageUrl]);
+    const onStorage = () => setImageUrl(JSON.parse(localStorage.getItem("urlImage")));
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
-  function handleCancel(e) {
-    e.preventDefault();
-    if (imageUrl) localStorage.removeItem("urlImage");
-    goTo("/catalogo");
-  }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: zodResolver(productSchema) });
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-
+  async function onSubmit({ name, cost, price, description, stock, brand, category }) {
+    if (!imageUrl) {
+      toast.error("Debes cargar una imagen antes de guardar");
+      return;
+    }
     try {
       const { data } = await api.post("/products", {
         name,
-        cost: parseFloat(cost),
-        price: parseFloat(price),
+        cost,
+        price,
         description,
-        stock: parseInt(stock, 10),
+        stock,
         brand,
         category,
         image: imageUrl,
       });
       toast.success(data.message);
-      setName(""); setCost(""); setPrice(""); setDescription("");
-      setStock(""); setBrand(""); setCategory("");
+      reset();
       localStorage.removeItem("urlImage");
+      setImageUrl(null);
       setTimeout(() => { goTo("/catalogo"); window.location.reload(); }, 2000);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (_) {}
+  }
+
+  function handleCancel() {
+    if (imageUrl) localStorage.removeItem("urlImage");
+    goTo("/catalogo");
   }
 
   return (
     <div>
       <Toaster position="top-center" richColors />
-      {/* Content Wrapper. Contains page content */}
       <div className="content-wrapper">
-        {/* Content Header (Page header) */}
         <div className="content-header">
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-12">
-                <h1 className="m-0 App-header focus-in-contract alphi-1">
-                  Crear Producto
-                </h1>
+                <h1 className="m-0 App-header focus-in-contract alphi-1">Crear Producto</h1>
               </div>
             </div>
-            {/* /.row */}
           </div>
-          {/* /.container-fluid */}
         </div>
-        {/* /.content-header */}
-        {/* Main content */}
         <section className="content">
           <div className="content-wrapper" style={{ marginTop: "1rem" }}>
             <div className="container-fluid ctry">
               <div className="register-box">
-                {!!errorResponse && (
-                  <div className="errorMessage">{errorResponse}</div>
-                )}
-                {!!successResponse && (
-                  <div className="successMessage">{successResponse}</div>
-                )}
-
-                <div className="card ">
-                  <div
-                    className="card-body register-card-body"
-                    style={{
-                      borderRadius: "0.6rem",
-                      background: "#6B3A00",
-                    }}
-                  >
+                <div className="card">
+                  <div className="card-body register-card-body" style={{ borderRadius: "0.6rem", background: "#6B3A00" }}>
                     <UploadImage
-                      setIsButtonDisabled={setIsButtonDisabled}
+                      setIsButtonDisabled={() => setImageUrl(JSON.parse(localStorage.getItem("urlImage")))}
                       fromPayment={false}
                     />
-                    <form action="/" method="post" onSubmit={handleSubmit}>
-                      <div className="input-group mb-3">
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                      <div className="input-group mb-1">
                         <input
                           type="text"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="form-control"
+                          {...register("name")}
+                          className={`form-control${errors.name ? " is-invalid" : ""}`}
                           placeholder="Nombre del producto"
-                          name="name"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -115,19 +95,17 @@ export const CreateProduct = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="input-group mb-3">
+                      {errors.name && <div className="errorMessage mb-2">{errors.name.message}</div>}
+
+                      <div className="input-group mb-1">
                         <div className="input-group-prepend bg-light">
-                          <span className="input-group-text">
-                            <i className="fas fa-dollar-sign"></i>
-                          </span>
+                          <span className="input-group-text"><i className="fas fa-dollar-sign"></i></span>
                         </div>
                         <input
                           type="number"
-                          value={cost}
-                          onChange={(e) => setCost(e.target.value)}
-                          className="form-control"
+                          {...register("cost")}
+                          className={`form-control${errors.cost ? " is-invalid" : ""}`}
                           placeholder="Costo"
-                          name="cost"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -136,19 +114,17 @@ export const CreateProduct = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="input-group mb-3">
+                      {errors.cost && <div className="errorMessage mb-2">{errors.cost.message}</div>}
+
+                      <div className="input-group mb-1">
                         <div className="input-group-prepend bg-light">
-                          <span className="input-group-text">
-                            <i className="fas fa-dollar-sign"></i>
-                          </span>
+                          <span className="input-group-text"><i className="fas fa-dollar-sign"></i></span>
                         </div>
                         <input
                           type="number"
-                          value={price}
-                          onChange={(e) => setPrice(e.target.value)}
-                          className="form-control"
+                          {...register("price")}
+                          className={`form-control${errors.price ? " is-invalid" : ""}`}
                           placeholder="Precio"
-                          name="price"
                           autoComplete="off"
                         />
                         <div className="input-group-append">
@@ -157,13 +133,13 @@ export const CreateProduct = () => {
                           </div>
                         </div>
                       </div>
+                      {errors.price && <div className="errorMessage mb-2">{errors.price.message}</div>}
+
                       <div className="input-group mb-3">
                         <textarea
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
+                          {...register("description")}
                           className="form-control"
                           placeholder="Descripción"
-                          name="description"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
@@ -171,17 +147,16 @@ export const CreateProduct = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="input-group mb-3">
+
+                      <div className="input-group mb-1">
                         <div className="input-group-prepend bg-light">
                           <span className="input-group-text">Und.</span>
                         </div>
                         <input
                           type="number"
-                          value={stock}
-                          onChange={(e) => setStock(e.target.value)}
-                          className="form-control"
+                          {...register("stock")}
+                          className={`form-control${errors.stock ? " is-invalid" : ""}`}
                           placeholder="Existencias"
-                          name="stock"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
@@ -189,14 +164,14 @@ export const CreateProduct = () => {
                           </div>
                         </div>
                       </div>
+                      {errors.stock && <div className="errorMessage mb-2">{errors.stock.message}</div>}
+
                       <div className="input-group mb-3">
                         <input
                           type="text"
-                          value={brand}
-                          onChange={(e) => setBrand(e.target.value)}
+                          {...register("brand")}
                           className="form-control"
                           placeholder="Marca"
-                          name="brand"
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">
@@ -204,18 +179,15 @@ export const CreateProduct = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="input-group mb-3">
+
+                      <div className="input-group mb-1">
                         <select
-                          value={category}
-                          onChange={(e) => setCategory(e.target.value)}
-                          className="form-control"
-                          name="category"
+                          {...register("category")}
+                          className={`form-control${errors.category ? " is-invalid" : ""}`}
                         >
                           <option value="">Categoría</option>
                           {(Array.isArray(categories) ? categories : []).map((cat) => (
-                            <option key={cat.id} value={cat.id}>
-                              {cat.name}
-                            </option>
+                            <option key={cat.id} value={cat.id}>{cat.name}</option>
                           ))}
                         </select>
                         <div className="input-group-append">
@@ -224,43 +196,38 @@ export const CreateProduct = () => {
                           </div>
                         </div>
                       </div>
+                      {errors.category && <div className="errorMessage mb-2">{errors.category.message}</div>}
 
-                      <div className="row ctry">
-                        {/* /.col */}
-
+                      <div className="row ctry mt-3">
                         <div className="col-4">
                           <button
                             type="submit"
                             className="btn btn-outline-light btn-block btn-sm"
-                            disabled={isButtonDisabled}
+                            disabled={isSubmitting || !imageUrl}
                           >
-                            Guardar
+                            {isSubmitting ? "Guardando..." : "Guardar"}
                           </button>
                         </div>
                         <div className="col-4">
                           <button
+                            type="button"
                             className="btn btn-outline-light btn-block btn-sm"
                             onClick={handleCancel}
                           >
                             Cancelar
                           </button>
                         </div>
-                        <div className="errorMessage">
-                          {isButtonDisabled && "¡Debe cargar una imagen!"}
-                        </div>
-                        {/* /.col */}
+                        {!imageUrl && (
+                          <div className="errorMessage">¡Debe cargar una imagen!</div>
+                        )}
                       </div>
                     </form>
                   </div>
-                  {/* /.form-box */}
                 </div>
-                {/* /.card */}
               </div>
             </div>
           </div>
-          {/* /.container-fluid */}
         </section>
-        {/* /.content */}
       </div>
     </div>
   );
