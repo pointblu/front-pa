@@ -17,7 +17,7 @@ export const Catalogo = () => {
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
   const [datum, setDatum] = useState([]);
   const products = datum;
-  const { filterProducts } = useFilters();
+  const { filterProducts, filters } = useFilters();
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
 
@@ -26,6 +26,8 @@ export const Catalogo = () => {
   }, [page]);
 
   const filteredProducts = filterProducts(products);
+  const isFiltered =
+    filters.category !== "all" || (filters.search || "").trim() !== "";
 
   const fetchDataAsync = async () => {
     try {
@@ -100,7 +102,7 @@ export const Catalogo = () => {
                 next={() => {
                   setPage(page + 1);
                 }}
-                hasMore={hasMore}
+                hasMore={!isFiltered && hasMore}
                 loader={<h4>Cargando...</h4>}
               >
                 <Products products={filteredProducts} />
