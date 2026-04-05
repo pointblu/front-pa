@@ -74,6 +74,26 @@ export const MobileNav = () => {
               {isAdmin && (
                 <li
                   className="nav-item mx-2"
+                  style={{ minWidth: "45px", position: "relative", zIndex: 1100 }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Dashboard"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
+                >
+                  <NavLink
+                    to="/dashboard"
+                    className="nav-link"
+                    style={{ backgroundColor: "#2E7D32" }}
+                  >
+                    <i className="fas fa-tachometer-alt nav-icon" />
+                  </NavLink>
+                </li>
+              )}
+
+              {isAdmin && (
+                <li
+                  className="nav-item mx-2"
                   style={{
                     minWidth: "45px",
                     position: "relative",

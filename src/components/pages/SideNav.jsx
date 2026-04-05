@@ -55,6 +55,19 @@ export const SideNav = () => {
               {isAdmin && (
                 <li className="nav-item text-left">
                   <NavLink
+                    to="/dashboard"
+                    className="nav-link"
+                    style={{ backgroundColor: "#2E7D32" }}
+                  >
+                    <i className="fas fa-tachometer-alt nav-icon" />
+                    <p>DASHBOARD</p>
+                  </NavLink>
+                </li>
+              )}
+
+              {isAdmin && (
+                <li className="nav-item text-left">
+                  <NavLink
                     to="/usuarios"
                     className="nav-link"
                     style={{ backgroundColor: "#6B3A00" }}

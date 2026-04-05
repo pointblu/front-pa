@@ -26,6 +26,7 @@
     "react-thermal-printer": "^0.17.0",
     "react-to-print": "^2.14.15",
     "react-tooltip": "^5.26.0",
+    "recharts": "^3.8.1",
     "sass": "^1.75.0",
     "socket.io-client": "^4.8.3",
     "sonner": "^1.2.4",

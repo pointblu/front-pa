@@ -23,3 +23,4 @@ export * from "./EditBank";
 export * from "./ChangePass";
 export * from "./Checkout";
 export * from "./PointsHistory";
+export * from "./Dashboard";
