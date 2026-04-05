@@ -88,7 +88,7 @@ export const MobileNav = () => {
                   <NavLink
                     to="/usuarios"
                     className="nav-link"
-                    style={{ backgroundColor: "grey" }}
+                    style={{ backgroundColor: "#6B3A00" }}
                   >
                     <i className="fas fa-users nav-icon" />
                   </NavLink>
@@ -107,7 +107,7 @@ export const MobileNav = () => {
                 <NavLink
                   to="/catalogo"
                   className="nav-link"
-                  style={{ backgroundColor: "cadetblue" }}
+                  style={{ backgroundColor: "#D4A017" }}
                 >
                   <i className="fas fa-boxes nav-icon" />
                 </NavLink>
@@ -130,7 +130,7 @@ export const MobileNav = () => {
                   <NavLink
                     to="/ventas"
                     className="nav-link"
-                    style={{ backgroundColor: "#91b77d" }}
+                    style={{ backgroundColor: "#8B5E3C" }}
                   >
                     <i className="fas fa-cash-register nav-icon" />
                   </NavLink>
@@ -153,7 +153,7 @@ export const MobileNav = () => {
                   <NavLink
                     to="/categorias"
                     className="nav-link"
-                    style={{ backgroundColor: "#803b3b" }}
+                    style={{ backgroundColor: "#C0392B" }}
                   >
                     <i className="fas fa-tag nav-icon" />
                   </NavLink>
@@ -177,7 +177,7 @@ export const MobileNav = () => {
                   <NavLink
                     to="/cuentas"
                     className="nav-link"
-                    style={{ backgroundColor: "#3279fd" }}
+                    style={{ backgroundColor: "#2E1A00" }}
                   >
                     <i className="fas fa-university nav-icon" />
                   </NavLink>

@@ -62,7 +62,7 @@ export const Redimir = () => {
               <div className="col-sm-12">
                 <h1
                   className="m-0 App-header focus-in-contract alphi-1"
-                  style={{ backgroundColor: "cadetblue" }}
+                  
                 >
                   Catálogo
                 </h1>

@@ -102,7 +102,7 @@ export function PurchaseDetails() {
       const start = startDate ? format(startDate, "yyyy-MM-dd") : "";
       const end = endDate ? format(endDate, "yyyy-MM-dd") : "";
       const { data: apiData } = await api.get(
-        `/purchaseDetails?active=true&startDate=${start}&endDate=${end}`
+        `/purchaseDetails?active=true&startDate=${start}&endDate=${end}&page=${page}&take=${perPage}`
       );
       setDatum(apiData.data);
       setFilter(apiData.data);
@@ -143,6 +143,10 @@ export function PurchaseDetails() {
         columns={columns}
         data={filter}
         pagination
+        paginationServer
+        paginationTotalRows={totalRows}
+        onChangePage={handlePageChange}
+        onChangeRowsPerPage={handlePerRowsChange}
         customStyles={tableHeaderstyle}
         fixedHeader
         paginationComponentOptions={{

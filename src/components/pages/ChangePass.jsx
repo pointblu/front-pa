@@ -39,7 +39,7 @@ export const ChangePass = () => {
               <div className="col-sm-12">
                 <h1
                   className="m-0 App-header focus-in-contract alphi-2"
-                  style={{ backgroundColor: "#17a2b8" }}
+                  
                 >
                   Actualizar celular
                 </h1>

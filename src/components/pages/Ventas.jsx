@@ -10,10 +10,7 @@ export const Ventas = () => {
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-12">
-                <h1
-                  className="m-0 App-header focus-in-contract alphi-4"
-                  style={{ backgroundColor: "green" }}
-                >
+                <h1 className="m-0 App-header focus-in-contract alphi-4">
                   Ventas
                 </h1>
               </div>
