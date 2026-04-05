@@ -26,6 +26,7 @@ import {
   Checkout,
   PointsHistory,
   Dashboard,
+  WhatsappConfig,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -66,6 +67,7 @@ export const AppRouter = () => {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/mis-puntos" element={<PointsHistory />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/whatsapp" element={<WhatsappConfig />} />
               <Route
                 path="/reposicion/:productId/:pCost/:pStock/:pName"
                 element={<Replenish />}

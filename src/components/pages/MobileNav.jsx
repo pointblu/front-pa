@@ -94,6 +94,24 @@ export const MobileNav = () => {
               {isAdmin && (
                 <li
                   className="nav-item mx-2"
+                  style={{ minWidth: "45px", position: "relative", zIndex: 1100 }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="WhatsApp"
+                  data-tooltip-place="top"
+                >
+                  <NavLink
+                    to="/whatsapp"
+                    className="nav-link"
+                    style={{ backgroundColor: "#25D366" }}
+                  >
+                    <i className="fab fa-whatsapp nav-icon" />
+                  </NavLink>
+                </li>
+              )}
+
+              {isAdmin && (
+                <li
+                  className="nav-item mx-2"
                   style={{
                     minWidth: "45px",
                     position: "relative",

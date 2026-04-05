@@ -68,6 +68,19 @@ export const SideNav = () => {
               {isAdmin && (
                 <li className="nav-item text-left">
                   <NavLink
+                    to="/whatsapp"
+                    className="nav-link"
+                    style={{ backgroundColor: "#25D366" }}
+                  >
+                    <i className="fab fa-whatsapp nav-icon" />
+                    <p>WHATSAPP</p>
+                  </NavLink>
+                </li>
+              )}
+
+              {isAdmin && (
+                <li className="nav-item text-left">
+                  <NavLink
                     to="/usuarios"
                     className="nav-link"
                     style={{ backgroundColor: "#6B3A00" }}

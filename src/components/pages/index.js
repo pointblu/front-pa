@@ -24,3 +24,4 @@ export * from "./ChangePass";
 export * from "./Checkout";
 export * from "./PointsHistory";
 export * from "./Dashboard";
+export * from "./WhatsappConfig";
