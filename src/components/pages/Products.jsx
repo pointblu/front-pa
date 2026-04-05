@@ -14,14 +14,15 @@ import { Toaster, toast } from "sonner";
 export function Products({ products, from }) {
   useEffect(() => {
     AOS.init({
-      once: false, // La animación solo ocurrirá una vez
-      duration: 800, // Duración de la animación en milisegundos
+      once: false,
+      duration: 800,
       easing: "ease-out",
     });
   }, []);
 
   const [showNumber, setShowNumber] = useState(false);
   const [animatedProduct, setAnimatedProduct] = useState(null);
+  const [quickView, setQuickView] = useState(null);
   const fadeInOutProps = useSpring({
     opacity: showNumber ? 1 : 0,
     transform: showNumber ? "translateY(-30)" : "translateY(10px)",
@@ -89,6 +90,52 @@ export function Products({ products, from }) {
   };
 
   return (
+    <>
+    {/* Modal vista rápida */}
+    {quickView && (
+      <div
+        onClick={() => setQuickView(null)}
+        style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)",
+          zIndex: 99999, display: "flex", alignItems: "center", justifyContent: "center",
+        }}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            background: "linear-gradient(135deg,#fff 60%,#fff9e6)",
+            borderRadius: "16px", maxWidth: "420px", width: "90%",
+            padding: "1.5rem", position: "relative", boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+          }}
+        >
+          <button
+            onClick={() => setQuickView(null)}
+            style={{
+              position: "absolute", top: "0.75rem", right: "0.75rem",
+              background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", color: "#555",
+            }}
+          >
+            <i className="fas fa-times" />
+          </button>
+          <img
+            src={quickView.image} alt={quickView.name}
+            style={{ width: "100%", borderRadius: "10px", maxHeight: "200px", objectFit: "contain", background: "#f5f5f5" }}
+          />
+          <h5 style={{ margin: "1rem 0 0.25rem", fontWeight: 700, color: "#222" }}>{quickView.name}</h5>
+          <p style={{ fontSize: "0.82rem", color: "#555", margin: "0 0 0.75rem" }}>{quickView.description}</p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+            <span style={{ fontSize: "1.4rem", fontWeight: 700, color: "#00008b" }}>${quickView.price}</span>
+            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "1rem", color: "#8b0000" }}>
+              {quickView.points}
+              <img src={process.env.PUBLIC_URL + "/dist/img/logo_punto_azul_pq.png"} alt="puntos" style={{ width: "20px", height: "20px" }} />
+            </span>
+            <span style={{ fontSize: "0.8rem", color: quickView.stock > 0 ? "#2d7a2d" : "#c00", fontWeight: 600 }}>
+              {quickView.stock > 0 ? `Stock: ${quickView.stock}` : "AGOTADO"}
+            </span>
+          </div>
+        </div>
+      </div>
+    )}
     <ul style={{ marginTop: "5rem" }}>
       {products.map((product) => {
         const isProductInCart = checkProductInCart(product);
@@ -99,7 +146,12 @@ export function Products({ products, from }) {
           <li key={product.id} className="card" data-aos="fade-up">
             {product.stock <= 0 && <div className="agotado">AGOTADO</div>}
             <div className="price">${product.price}</div>
-            <img src={product.image} alt={product.name} />
+            <img
+              src={product.image} alt={product.name}
+              onClick={() => setQuickView(product)}
+              style={{ cursor: "zoom-in" }}
+              title="Vista rápida"
+            />
             <div className="pricePoint">
               <div style={{ position: "relative" }}>
                 {product.points}
@@ -276,5 +328,6 @@ export function Products({ products, from }) {
         );
       })}
     </ul>
+    </>
   );
 }

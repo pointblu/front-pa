@@ -56,19 +56,38 @@ export function Filters() {
           top: "3.5rem",
         }}
       >
-        <div className="navbar navbar-expand navbar-dark navbar-light  justify-content-center">
-          <div className="sidebar scrollable">
+        <div className="navbar navbar-expand navbar-dark navbar-light justify-content-center" style={{ flexWrap: "nowrap", gap: "0.5rem" }}>
+          {/* Buscador */}
+          <div style={{ display: "flex", alignItems: "center", background: "rgba(255,255,255,0.15)", borderRadius: "20px", padding: "0.15rem 0.6rem", flexShrink: 0 }}>
+            <i className="fas fa-search text-white" style={{ fontSize: "0.75rem", marginRight: "0.4rem", opacity: 0.8 }} />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, search: e.target.value }))
+              }
+              style={{
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                color: "#fff",
+                fontSize: "0.78rem",
+                width: "120px",
+              }}
+            />
+          </div>
+          <div className="sidebar scrollable" style={{ flex: 1, minWidth: 0 }}>
             {/* Sidebar Menu */}
             <div className="left-arrow active">
               <i className="fas fa-chevron-left text-white" />
             </div>
             <nav className="mt-2">
               <ul
-                className="nav nav-pills navbar-nav d-flex flex-row flex-nowrap "
+                className="nav nav-pills navbar-nav d-flex flex-row flex-nowrap"
                 style={{
-                  whiteSpace: "nowrap", // Evita el salto de línea
-                  overflowX: "auto", // Permite scroll horizontal
-                  flexWrap: "nowrap", // Asegura que no haya wrap
+                  whiteSpace: "nowrap",
+                  overflowX: "auto",
+                  flexWrap: "nowrap",
                 }}
               >
                 <li
