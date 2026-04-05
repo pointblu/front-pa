@@ -11,8 +11,8 @@ L.Icon.Default.mergeOptions({
   shadowUrl:     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Centro por defecto: Bogotá (Colombia)
-const DEFAULT_CENTER = [4.711, -74.0721];
+// Centro por defecto: C.C. Nuestro Atlántico, Soledad, Atlántico
+const DEFAULT_CENTER = [10.9178, -74.7682];
 
 function DraggableMarker({ position, onMove }) {
   useMapEvents({
@@ -104,7 +104,7 @@ export function MapPicker({ onLocationSelect }) {
 
       <MapContainer
         center={DEFAULT_CENTER}
-        zoom={12}
+        zoom={15}
         style={{ height: "220px", width: "100%", borderRadius: "8px", zIndex: 1 }}
         ref={mapRef}
       >
