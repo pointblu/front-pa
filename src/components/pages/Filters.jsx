@@ -1,30 +1,40 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useFilters } from "../../hooks/useFilters.jsx";
-import api from "../../services/api";
 
-export function Filters() {
-  const { setFilters } = useFilters();
-  const [activeCategory, setActiveCategory] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const listRef = useRef(null);
+function useSidebarWidth() {
+  const [left, setLeft] = useState("4.6rem");
 
   useEffect(() => {
-    // Intento 1: localStorage (inmediato, sin espera)
-    try {
-      const cached = JSON.parse(localStorage.getItem("categorias"));
-      const list = cached?.data ?? cached;
-      if (Array.isArray(list) && list.length > 0) setCategories(list);
-    } catch (_) {}
+    const measure = () => {
+      const sidebar = document.querySelector(".main-sidebar");
+      if (sidebar) {
+        setLeft(sidebar.offsetWidth + "px");
+      }
+    };
 
-    // Intento 2: API (actualiza aunque ya haya datos en cache)
-    api
-      .get("/categories")
-      .then(({ data }) => {
-        const list = data?.data ?? data;
-        if (Array.isArray(list) && list.length > 0) setCategories(list);
-      })
-      .catch(() => {});
+    measure();
+
+    // Detecta cambios de clase en body (AdminLTE alterna sidebar-collapse, sidebar-open, etc.)
+    const observer = new MutationObserver(measure);
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    // También detecta cambios de tamaño del sidebar (transición CSS)
+    const interval = setInterval(measure, 150);
+    setTimeout(() => clearInterval(interval), 800); // deja de polling después de 800ms
+
+    return () => {
+      observer.disconnect();
+      clearInterval(interval);
+    };
   }, []);
+
+  return left;
+}
+
+export function Filters() {
+  const { setFilters, categories } = useFilters();
+  const [activeCategory, setActiveCategory] = useState(null);
+  const listRef = useRef(null);
+  const sidebarLeft = useSidebarWidth();
 
   const handleCategoryClick = (categId, categName) => {
     setActiveCategory(categId);
@@ -38,13 +48,25 @@ export function Filters() {
     if (listRef.current) listRef.current.scrollLeft += dir * 200;
   };
 
+  const chevron = {
+    background: "none",
+    border: "none",
+    color: "#fff",
+    cursor: "pointer",
+    fontSize: "0.85rem",
+    padding: "0 0.35rem",
+    flexShrink: 0,
+    lineHeight: 1,
+  };
+
   return (
     <div
       style={{
         position: "fixed",
         top: "3.5rem",
-        left: 0,
-        width: "100%",
+        left: sidebarLeft,
+        transition: "left 0.3s ease",
+        right: 0,
         zIndex: 9900,
         background: "#343a40",
         display: "flex",
@@ -87,58 +109,32 @@ export function Filters() {
       </div>
 
       {/* Chevron izquierdo */}
-      <button
-        onClick={() => scroll(-1)}
-        style={{
-          background: "none",
-          border: "none",
-          color: "#fff",
-          cursor: "pointer",
-          fontSize: "0.85rem",
-          padding: "0 0.3rem",
-          flexShrink: 0,
-        }}
-      >
+      <button style={chevron} onClick={() => scroll(-1)}>
         <i className="fas fa-chevron-left" />
       </button>
 
-      {/* Lista de categorías scrollable */}
-      <div
-        style={{
-          flex: 1,
-          minWidth: 0,
-          overflow: "hidden",
-        }}
-      >
+      {/* Lista scrollable — contenedor con overflow hidden para no desbordarse */}
+      <div style={{ flex: 1, minWidth: 0 }}>
         <ul
           ref={listRef}
+          className="cat-list"
           style={{
             display: "flex",
             flexDirection: "row",
             flexWrap: "nowrap",
-            overflowX: "auto",
+            overflowX: "scroll",
             listStyle: "none",
             margin: 0,
             padding: "0.1rem 0",
-            gap: "0.5rem",
+            gap: "0.4rem",
             scrollBehavior: "smooth",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
+            scrollbarWidth: "none",      /* Firefox */
+            msOverflowStyle: "none",     /* IE/Edge */
           }}
         >
           <li
             onClick={() => handleCategoryClick("all")}
-            style={{
-              whiteSpace: "nowrap",
-              cursor: "pointer",
-              fontSize: "0.78rem",
-              color: activeCategory === "all" ? "#ffc107" : "#fff",
-              fontWeight: activeCategory === "all" ? 700 : 400,
-              padding: "0.1rem 0.5rem",
-              borderRadius: "10px",
-              background: activeCategory === "all" ? "rgba(255,193,7,0.15)" : "transparent",
-              flexShrink: 0,
-            }}
+            style={itemStyle(activeCategory === "all")}
           >
             TODAS
           </li>
@@ -146,17 +142,7 @@ export function Filters() {
             <li
               key={categ.id}
               onClick={() => handleCategoryClick(categ.id, categ.name)}
-              style={{
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                fontSize: "0.78rem",
-                color: categ.id === activeCategory ? "#ffc107" : "#fff",
-                fontWeight: categ.id === activeCategory ? 700 : 400,
-                padding: "0.1rem 0.5rem",
-                borderRadius: "10px",
-                background: categ.id === activeCategory ? "rgba(255,193,7,0.15)" : "transparent",
-                flexShrink: 0,
-              }}
+              style={itemStyle(categ.id === activeCategory)}
             >
               {categ.name.toUpperCase()}
             </li>
@@ -165,20 +151,24 @@ export function Filters() {
       </div>
 
       {/* Chevron derecho */}
-      <button
-        onClick={() => scroll(1)}
-        style={{
-          background: "none",
-          border: "none",
-          color: "#fff",
-          cursor: "pointer",
-          fontSize: "0.85rem",
-          padding: "0 0.3rem",
-          flexShrink: 0,
-        }}
-      >
+      <button style={chevron} onClick={() => scroll(1)}>
         <i className="fas fa-chevron-right" />
       </button>
     </div>
   );
+}
+
+function itemStyle(active) {
+  return {
+    whiteSpace: "nowrap",
+    cursor: "pointer",
+    fontSize: "0.78rem",
+    color: active ? "#ffc107" : "#fff",
+    fontWeight: active ? 700 : 400,
+    padding: "0.1rem 0.6rem",
+    borderRadius: "10px",
+    background: active ? "rgba(255,193,7,0.18)" : "transparent",
+    flexShrink: 0,
+    userSelect: "none",
+  };
 }

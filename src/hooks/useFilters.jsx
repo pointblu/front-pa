@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { FiltersContext } from "../context/filters";
 
 export function useFilters() {
-  const { filters, setFilters } = useContext(FiltersContext);
+  const { filters, setFilters, categories } = useContext(FiltersContext);
 
   const filterProducts = (products) => {
     const search = (filters.search || "").toLowerCase().trim();
@@ -16,5 +16,5 @@ export function useFilters() {
       return matchCategory && matchSearch;
     });
   };
-  return { filters, filterProducts, setFilters };
+  return { filters, filterProducts, setFilters, categories };
 }

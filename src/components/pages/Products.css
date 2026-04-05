@@ -1,6 +1,8 @@
 body {
-  overflow: auto; /* Oculta la barra de desplazamiento */
+  overflow: auto;
 }
+
+.cat-list::-webkit-scrollbar { display: none; }
 
 /* Personaliza la apariencia de la barra de desplazamiento solo en navegadores WebKit */
 body::-webkit-scrollbar {
