@@ -126,7 +126,7 @@ export function Users() {
 
   const fetchDataAsync = async () => {
     try {
-      const { data: apiData } = await api.get(`/users?pag=${page}&take=${perPage}`);
+      const { data: apiData } = await api.get(`/users?page=${page}&take=${perPage}`);
       const apiDatum = apiData.data.filter((datu) => datu.active !== false);
       setDatum(apiDatum);
       setFilter(apiDatum);
