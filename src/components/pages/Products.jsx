@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { getCloudinaryUrl, getCloudinarySrcSet } from "../../utils/cloudinaryUrl";
@@ -25,6 +25,7 @@ export function Products({ products, from }) {
   const [showNumber, setShowNumber] = useState(false);
   const [animatedProduct, setAnimatedProduct] = useState(null);
   const [quickView, setQuickView] = useState(null);
+  const closeModalRef = useRef(null);
   const fadeInOutProps = useSpring({
     opacity: showNumber ? 1 : 0,
     transform: showNumber ? "translateY(-30)" : "translateY(10px)",
@@ -103,11 +104,21 @@ export function Products({ products, from }) {
     }, 500); // Ajusta según la duración de tu animación
   };
 
+  // Mover el foco al botón de cierre al abrir el modal
+  useEffect(() => {
+    if (quickView && closeModalRef.current) {
+      closeModalRef.current.focus();
+    }
+  }, [quickView]);
+
   return (
     <>
     {/* Modal vista rápida */}
     {quickView && (
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quick-view-title"
         onClick={() => setQuickView(null)}
         style={{
           position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)",
@@ -123,13 +134,15 @@ export function Products({ products, from }) {
           }}
         >
           <button
+            ref={closeModalRef}
             onClick={() => setQuickView(null)}
+            aria-label="Cerrar vista rápida"
             style={{
               position: "absolute", top: "0.75rem", right: "0.75rem",
               background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", color: "#555",
             }}
           >
-            <i className="fas fa-times" />
+            <i className="fas fa-times" aria-hidden="true" />
           </button>
           <img
             src={getCloudinaryUrl(quickView.image, { width: 800 })}
@@ -139,7 +152,7 @@ export function Products({ products, from }) {
             loading="lazy"
             style={{ width: "100%", borderRadius: "10px", maxHeight: "200px", objectFit: "contain", background: "#f5f5f5" }}
           />
-          <h5 style={{ margin: "1rem 0 0.25rem", fontWeight: 700, color: "#222" }}>{quickView.name}</h5>
+          <h5 id="quick-view-title" style={{ margin: "1rem 0 0.25rem", fontWeight: 700, color: "#222" }}>{quickView.name}</h5>
           <p style={{ fontSize: "0.82rem", color: "#555", margin: "0 0 0.75rem" }}>{quickView.description}</p>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
             <span style={{ fontSize: "1.4rem", fontWeight: 700, color: "#00008b" }}>${quickView.price}</span>
@@ -211,6 +224,7 @@ export function Products({ products, from }) {
               {from !== "redimir" ? (
                 <button
                   className="icon-button"
+                  aria-label={isProductInCart ? "Ya en la cesta" : "Agregar a la cesta"}
                   style={{
                     backgroundColor: isProductInCart
                       ? "goldenrod"
@@ -230,7 +244,7 @@ export function Products({ products, from }) {
                   data-tooltip-float={false}
                   data-tooltip-place="top"
                 >
-                  <i className="fas fa-shopping-basket" />
+                  <i className="fas fa-shopping-basket" aria-hidden="true" />
                   <Tooltip id={"tt-add-basket" + product.id} />
                   <sup>
                     <i className="fas fa-plus nav-icon" />
@@ -252,6 +266,7 @@ export function Products({ products, from }) {
               ) : (
                 <button
                   className="icon-button"
+                  aria-label={isProductInCanje ? "Quitar del canje" : "Agregar al canje"}
                   style={{
                     backgroundColor: isProductInCanje
                       ? "goldenrod"
@@ -272,7 +287,7 @@ export function Products({ products, from }) {
                   data-tooltip-float={false}
                   data-tooltip-place="top"
                 >
-                  <i className="fas fa-shopping-basket" />
+                  <i className="fas fa-shopping-basket" aria-hidden="true" />
                   <Tooltip id={"tt-add-basket" + product.id} />
                   <sup>
                     <i className="fas fa-plus nav-icon" />
@@ -283,6 +298,7 @@ export function Products({ products, from }) {
               <Link to={`/editar-producto`}>
                 <button
                   className="icon-button"
+                  aria-label={`Editar ${product.name}`}
                   onClick={() => handleEditProduct(product)}
                   style={{
                     display:
@@ -295,7 +311,7 @@ export function Products({ products, from }) {
                   data-tooltip-float={false}
                   data-tooltip-place="top"
                 >
-                  <i className="fas fa-edit" />
+                  <i className="fas fa-edit" aria-hidden="true" />
                 </button>
                 <Tooltip id={"tt-edit-product" + product.id} />
               </Link>
@@ -304,6 +320,7 @@ export function Products({ products, from }) {
               >
                 <button
                   className="icon-button"
+                  aria-label={`Reponer existencias de ${product.name}`}
                   style={{
                     display:
                       isClient || !auth.isAuthenticated ? "none" : "block",
@@ -313,13 +330,14 @@ export function Products({ products, from }) {
                   data-tooltip-float={false}
                   data-tooltip-place="botton"
                 >
-                  <i className="fas fa-calendar-plus" />
+                  <i className="fas fa-calendar-plus" aria-hidden="true" />
                 </button>
                 <Tooltip id={"tt-replenish" + product.id} />
               </Link>
 
               <button
                 className="icon-button"
+                aria-label={`Eliminar ${product.name}`}
                 onClick={() => handleDeleteProduct(product.id)}
                 style={{
                   display:
@@ -332,13 +350,15 @@ export function Products({ products, from }) {
                 data-tooltip-float={false}
                 data-tooltip-place="top"
               >
-                <i className="fas fa-times" />
+                <i className="fas fa-times" aria-hidden="true" />
               </button>
               <Tooltip id={"tt-delete-product" + product.id} />
 
               {isClient && (
                 <button
                   className="icon-button"
+                  aria-label={favorites.includes(product.id) ? `Quitar ${product.name} de favoritos` : `Agregar ${product.name} a favoritos`}
+                  aria-pressed={favorites.includes(product.id)}
                   onClick={() => handleToggleFavorite(product)}
                   style={{ background: "none", border: "none", padding: "0.2rem", cursor: "pointer" }}
                   data-tooltip-id={"tt-fav-" + product.id}
@@ -347,6 +367,7 @@ export function Products({ products, from }) {
                   data-tooltip-place="top"
                 >
                   <i
+                    aria-hidden="true"
                     className={favorites.includes(product.id) ? "fas fa-heart" : "far fa-heart"}
                     style={{ color: favorites.includes(product.id) ? "#e74c3c" : "#999", fontSize: "1rem" }}
                   />

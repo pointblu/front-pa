@@ -27,6 +27,10 @@ import {
   PointsHistory,
   Dashboard,
   WhatsappConfig,
+  DeliveryOrders,
+  DeliveryEarnings,
+  DeliveryMap,
+  ConfigPanel,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
 import Protected from "./Protected";
@@ -68,6 +72,10 @@ export const AppRouter = () => {
               <Route path="/mis-puntos" element={<PointsHistory />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/whatsapp" element={<WhatsappConfig />} />
+              <Route path="/configuracion" element={<ConfigPanel />} />
+              <Route path="/domicilios" element={<DeliveryOrders />} />
+              <Route path="/domicilios/mapa/:purchaseId" element={<DeliveryMap />} />
+              <Route path="/domicilios/ganancias" element={<DeliveryEarnings />} />
               <Route
                 path="/reposicion/:productId/:pCost/:pStock/:pName"
                 element={<Replenish />}

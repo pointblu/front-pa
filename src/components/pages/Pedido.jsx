@@ -7,7 +7,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 import "react-datepicker/dist/react-datepicker.module.css";
 import { format } from "date-fns";
-import ConectorPluginV3 from "../../pos-print/ConectorJavaScriptB";
+import { usePrinter } from "../../hooks/usePrinter";
 import { Toaster, toast } from "sonner";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
@@ -43,8 +43,14 @@ const columns = (
   {
     name: "TOTAL",
     selector: (row) =>
-      `$ ${isSeller ? row.total.toFixed(2) : (row.total + 1000).toFixed(2)}`,
+      `$ ${isSeller ? row.total.toFixed(0) : (row.total + 1000).toFixed(0)}`,
+    minWidth: "100px",
+  },
+  {
+    name: "DOMICILIARIO",
+    selector: (row) => row.deliveryPerson?.name ?? "-",
     minWidth: "120px",
+    omit: !isAdmin,
   },
   {
     name: "ESTADO",
@@ -157,104 +163,45 @@ const columns = (
 ];
 
 const ExpandedComponent = (props) => {
-  const { isAdmin, isSeller, data } = props;
+  const { isAdmin, isSeller, data, onRefresh } = props;
+  const { printOrder } = usePrinter();
+  const [deliveryUsers, setDeliveryUsers] = useState([]);
+  const [selectedDelivery, setSelectedDelivery] = useState(data.deliveryPersonId ?? "");
+  const [assigning, setAssigning] = useState(false);
+
+  useEffect(() => {
+    if (isAdmin) {
+      api.get("/Purchases/delivery/users")
+        .then(({ data: users }) => setDeliveryUsers(users))
+        .catch(() => {});
+    }
+  }, [isAdmin]);
+
+  const handleAssignDelivery = async () => {
+    if (!selectedDelivery) return;
+    setAssigning(true);
+    try {
+      await api.post(`/Purchases/${data.id}/assign-delivery`, {
+        deliveryPersonId: selectedDelivery,
+      });
+      toast.success("Domiciliario asignado");
+      if (onRefresh) onRefresh();
+    } catch {
+      toast.error("Error al asignar domiciliario");
+    } finally {
+      setAssigning(false);
+    }
+  };
+
   const handlePrintPos = async () => {
     try {
-      const conector = new ConectorPluginV3();
-      const respuesta = conector
-        .Iniciar()
-        .DeshabilitarElModoDeCaracteresChinos()
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
-        .DescargarImagenDeInternetEImprimir(
-          "https://res.cloudinary.com/diitm4dx7/image/upload/v1737845955/logo_punto_azul_ah2ksi.png",
-          0,
-          216
-        )
-        .Feed(1)
-        .EscribirTexto("P & R MONSALVE\n")
-        .EscribirTexto("Ciudad Bonita, Soledad-AT\n")
-        .TextoSegunPaginaDeCodigos(2, "cp850", "Teléfono: 322 9560143\n")
-        .EscribirTexto(
-          "Fecha y hora: " + new Intl.DateTimeFormat("es-MX").format(new Date())
-        )
-        .Feed(1);
-      data.prDetail.forEach((purchase) => {
-        conector
-          .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-          .EscribirTexto(`____________________\n`)
-          .EscribirTexto(`${purchase.quantity} ${purchase.product.name}\n`)
-          .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-          .EscribirTexto(
-            `$${purchase.active ? purchase.subtotal.toFixed(1) : 0.0}\n`
-          );
-      }); // Continuar con las operaciones comunes
-      conector
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-        .EscribirTexto(`____________________\n`)
-        .EscribirTexto(`Domicilio: \n`)
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-        .EscribirTexto(`$ ${isSeller ? 0.0 : 1000.0} \n`)
-        .EscribirTexto(`____________________\n`)
-        .EscribirTexto(
-          `TOTAL: $${
-            isSeller ? data.total.toFixed(1) : (data.total + 1000).toFixed(1)
-          } \n`
-        )
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_CENTRO)
-        .EscribirTexto("____________________\n")
-        .Feed(1)
-        .EstablecerEnfatizado(true)
-        .EstablecerTamañoFuente(1, 1)
-        .TextoSegunPaginaDeCodigos(2, "cp850", "¡Gracias por su compra!\n")
-        .Feed(1)
-        .EscribirTexto(".............................\n")
-        .Feed(1)
-        .EstablecerTamañoFuente(1, 1)
-        .EscribirTexto("DATOS DE ENVIO\n")
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-        .EscribirTexto(`Cliente: \n`)
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-        .TextoSegunPaginaDeCodigos(2, "cp850", `${data.buyer.name} \n`)
-        .Feed(1)
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-        .TextoSegunPaginaDeCodigos(2, "cp850", `Dirección: \n`)
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-        .TextoSegunPaginaDeCodigos(2, "cp850", `${data.buyer.address} \n`)
-        .Feed(1)
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-        .TextoSegunPaginaDeCodigos(2, "cp850", `Teléfono: \n`)
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-        .EscribirTexto(`${data.buyer.phone} \n`)
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_IZQUIERDA)
-        .TextoSegunPaginaDeCodigos(2, "cp850", `NOTA: \n`)
-        .EstablecerAlineacion(ConectorPluginV3.ALINEACION_DERECHA)
-        .EscribirTexto(`${data.note} \n`)
-        .Feed(2)
-        .EscribirTexto(".............................\n")
-        .Feed(3)
-        .Corte(1)
-        .Pulso(48, 60, 120)
-        .imprimirEn("ZJ-58");
-      if (respuesta === true) {
-        toast.success("Impersión exitosa");
-      } else {
-        toast.error("Oops, Error al imprimir.", {
-          description:
-            "Valida que este funcionando el controlador de impresión",
-        });
-      }
+      await printOrder(data, isSeller);
+      toast.success("Impresión exitosa");
     } catch (error) {
-      if (error instanceof TypeError && error.message === "Failed to fetch") {
-        console.error("Error de red durante la impresión. Puede ser ignorado.");
-        toast.error(
-          "Error al imprimir. Problema de red. Consulta la consola para más detalles."
-        );
-      } else {
-        console.error("Error durante la impresión:", error);
-        toast.error(
-          "Error al imprimir. Consulta la consola para más detalles."
-        );
-      }
+      console.error("Error durante la impresión:", error);
+      toast.error("Error al imprimir", {
+        description: error?.message ?? "Consulta la consola para más detalles.",
+      });
     }
   };
 
@@ -264,7 +211,7 @@ const ExpandedComponent = (props) => {
       <div className="row">
       <div className="section col-md-6">
         {(isAdmin || isSeller) && (
-          <div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", marginBottom: "0.5rem" }}>
             <Tooltip id="tt-print" />
             <button
               className="iconise-button"
@@ -277,6 +224,31 @@ const ExpandedComponent = (props) => {
             >
               <i className="fas fa-print nav-icon" />
             </button>
+
+            {isAdmin && deliveryUsers.length > 0 && (
+              <>
+                <select
+                  className="form-control form-control-sm custom-input-form"
+                  style={{ maxWidth: "180px" }}
+                  value={selectedDelivery}
+                  onChange={(e) => setSelectedDelivery(e.target.value)}
+                  aria-label="Seleccionar domiciliario"
+                >
+                  <option value="">-- Domiciliario --</option>
+                  {deliveryUsers.map((u) => (
+                    <option key={u.id} value={u.id}>{u.name}</option>
+                  ))}
+                </select>
+                <button
+                  className="iconise-button"
+                  onClick={handleAssignDelivery}
+                  disabled={assigning || !selectedDelivery}
+                  title="Asignar domiciliario"
+                >
+                  <i className="fas fa-motorcycle nav-icon" />
+                </button>
+              </>
+            )}
           </div>
         )}
         <pre style={{ maxWidth: "250px" }}>
@@ -284,147 +256,103 @@ const ExpandedComponent = (props) => {
             <img
               src="https://res.cloudinary.com/diitm4dx7/image/upload/v1737845955/logo_punto_azul_ah2ksi.png"
               alt="logo"
-              style={{ width: "180px", filter: "grayscale(100%)" }}
+              style={{ width: "140px", filter: "grayscale(100%)" }}
             />
-            <h3 className="company-name">P & R MONSALVE</h3>
-            <p> El Manantial, Soledad-AT </p>
+            <h3 className="company-name">P &amp; R MONSALVE</h3>
+            <p>El Manantial, Soledad-AT</p>
             <p>TEL: 322 9560143</p>
             <p className="bill">¡Bienvenido!</p>
           </header>
+
           <div className="main-body separator">
-            <div className="info-item-list">
-              <table className="table1" style={{ width: "95%" }}>
-                <thead>
-                  <tr>
-                    <td>
-                      <strong>Prod.</strong>
-                    </td>
-                    <td style={{ width: "10px" }}>
-                      <strong>Cant.</strong>
-                    </td>
-                    <td>
-                      <strong>P/unid.</strong>
-                    </td>
-                    <td className="text-right">
-                      <strong>Sub-tot.</strong>
-                    </td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.prDetail.map((purchase) => (
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <colgroup>
+                <col style={{ width: "40%" }} />
+                <col style={{ width: "12%" }} />
+                <col style={{ width: "24%" }} />
+                <col style={{ width: "24%" }} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <td><strong>Prod.</strong></td>
+                  <td style={{ textAlign: "center" }}><strong>Cant.</strong></td>
+                  <td style={{ textAlign: "right" }}><strong>P/unid.</strong></td>
+                  <td style={{ textAlign: "right" }}><strong>Sub-tot.</strong></td>
+                </tr>
+              </thead>
+              <tbody>
+                {data.prDetail
+                  .filter((p) => p.product.name !== "DOMICILIO")
+                  .map((purchase) => (
                     <tr key={purchase.id}>
-                      <td
-                        style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                      >
-                        {purchase.product.name !== "DOMICILIO"
-                          ? purchase.product.name
-                          : ""}
+                      <td style={{ whiteSpace: "normal", wordBreak: "break-word" }}>
+                        {purchase.product.name}
                       </td>
-                      <td className="text-rigth" style={{ width: "10px" }}>
-                        {purchase.product.name !== "DOMICILIO"
-                          ? purchase.quantity
-                          : ""}
+                      <td style={{ textAlign: "center" }}>{purchase.quantity}</td>
+                      <td style={{ textAlign: "right" }}>
+                        ${purchase.active ? purchase.product.price.toFixed(0) : "0"}
                       </td>
-                      <td
-                        style={{
-                          whiteSpace: "normal",
-                          wordWrap: "break-word",
-                          visibility:
-                            purchase.product.name === "DOMICILIO"
-                              ? "hidden"
-                              : "visible",
-                        }}
-                      >
-                        $
-                        {purchase.active
-                          ? purchase.product.price.toFixed(1)
-                          : 0.0}
-                      </td>
-                      <td
-                        className="text-right"
-                        style={{
-                          display:
-                            purchase.product.name === "DOMICILIO"
-                              ? "none"
-                              : "block",
-                        }}
-                      >
-                        ${purchase.active ? purchase.subtotal.toFixed(1) : 0}
+                      <td style={{ textAlign: "right" }}>
+                        ${purchase.active ? purchase.subtotal.toFixed(0) : "0"}
                       </td>
                     </tr>
                   ))}
 
-                  <tr className="dark-background sub-total">
-                    <td className="pad-l-5">SUB TOTAL</td>
-                    <td colSpan={3} className="text-right">
-                      ${data.total.toFixed(1)}
-                    </td>
-                  </tr>
+                <tr className="dark-background sub-total">
+                  <td className="pad-l-5" colSpan={2}><strong>SUB TOTAL</strong></td>
+                  <td colSpan={2} className="text-right">
+                    <strong>${data.total.toFixed(0)}</strong>
+                  </td>
+                </tr>
 
-                  <tr>
-                    <td
-                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                    >
-                      Domicilio
-                    </td>
-                    <td className="text-rigth" style={{ width: "10px" }}>
-                      1
-                    </td>
-                    <td
-                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                    >
-                      {isSeller ? "$0.00" : "$1000.0"}
-                    </td>
-                    <td className="text-right">
-                      {isSeller ? "$0.00" : "$1000.0"}
-                    </td>
-                  </tr>
-                  <tr className="total">
-                    <td>TOTAL A PAGAR</td>
-                    <td colSpan={3} className="info-total-price text-right">
-                      ${" "}
-                      {isSeller
-                        ? data.total.toFixed(1)
-                        : (data.total + 1000).toFixed(1)}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                <tr>
+                  <td>Domicilio</td>
+                  <td style={{ textAlign: "center" }}>1</td>
+                  <td style={{ textAlign: "right" }}>{isSeller ? "$0" : "$1000"}</td>
+                  <td style={{ textAlign: "right" }}>{isSeller ? "$0" : "$1000"}</td>
+                </tr>
+
+                <tr className="total">
+                  <td colSpan={2}><strong>TOTAL A PAGAR</strong></td>
+                  <td colSpan={2} className="info-total-price text-right">
+                    <strong>
+                      ${isSeller ? data.total.toFixed(0) : (data.total + 1000).toFixed(0)}
+                    </strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
           <footer className="info-client">
             <div className="info-table-client border-bottom">
-              <table style={{ width: "100%" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <tbody>
                   <tr>
-                    <td style={{ width: "45px" }}>Cliente: </td>
-                    <td>
+                    <td style={{ width: "55px", verticalAlign: "top" }}>Cliente:</td>
+                    <td style={{ whiteSpace: "normal", wordBreak: "break-word" }}>
                       <strong>{data.buyer.name}</strong>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ width: "45px" }}>Direccion: </td>
-                    <td
-                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                    >
+                    <td style={{ width: "55px", verticalAlign: "top" }}>Direccion:</td>
+                    <td style={{ whiteSpace: "normal", wordBreak: "break-word" }}>
                       <strong>{data.buyer.address}</strong>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ width: "45px" }}>Telefono: </td>
-                    <td>
-                      <strong>{data.buyer.phone}</strong>
+                    <td style={{ width: "55px" }}>Telefono:</td>
+                    <td><strong>{data.buyer.phone}</strong></td>
+                  </tr>
+                  <tr>
+                    <td style={{ width: "55px", verticalAlign: "top" }}>NOTA:</td>
+                    <td style={{ whiteSpace: "normal", wordBreak: "break-word" }}>
+                      <strong>{data.note || "-"}</strong>
                     </td>
                   </tr>
                   <tr>
-                    <td style={{ width: "45px" }}>NOTA: </td>
+                    <td style={{ width: "55px" }}>Fecha:</td>
                     <td>
-                      <strong>{data.note}</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{ width: "45px" }}>Fecha: </td>
-                    <td style={{ textAlign: "start" }}>
                       {Intl.DateTimeFormat("es-ES", {
                         day: "numeric",
                         month: "numeric",
@@ -609,6 +537,7 @@ export function Pedido() {
             isAdmin={isAdmin}
             isSeller={isSeller}
             data={datum.data}
+            onRefresh={() => setRefreshKey((k) => k + 1)}
           />
         )}
         paginationComponentOptions={{

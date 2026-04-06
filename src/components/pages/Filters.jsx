@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useFilters } from "../../hooks/useFilters.jsx";
 import { useAuth } from "../../auth/AuthProvider";
+import { useDebounce } from "../../hooks/useDebounce";
 
 function useSidebarWidth() {
   const [left, setLeft] = useState("4.6rem");
@@ -43,11 +44,17 @@ function useSidebarWidth() {
 export function Filters() {
   const { setFilters, categories } = useFilters();
   const [activeCategory, setActiveCategory] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearch = useDebounce(searchInput, 350);
   const auth = useAuth();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isClient = auth.isAuthenticated && userObject?.role === "CLIENT";
   const listRef = useRef(null);
   const sidebarLeft = useSidebarWidth();
+
+  useEffect(() => {
+    setFilters((prev) => ({ ...prev, search: debouncedSearch }));
+  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCategoryClick = (categId, categName) => {
     setActiveCategory(categId);
@@ -107,9 +114,9 @@ export function Filters() {
         <input
           type="text"
           placeholder="Buscar..."
-          onChange={(e) =>
-            setFilters((prev) => ({ ...prev, search: e.target.value }))
-          }
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          aria-label="Buscar productos"
           style={{
             background: "transparent",
             border: "none",
@@ -122,8 +129,8 @@ export function Filters() {
       </div>
 
       {/* Chevron izquierdo */}
-      <button style={chevron} onClick={() => scroll(-1)}>
-        <i className="fas fa-chevron-left" />
+      <button style={chevron} onClick={() => scroll(-1)} aria-label="Desplazar categorías a la izquierda">
+        <i className="fas fa-chevron-left" aria-hidden="true" />
       </button>
 
       {/* Lista scrollable — contenedor con overflow hidden para no desbordarse */}
@@ -176,8 +183,8 @@ export function Filters() {
       </div>
 
       {/* Chevron derecho */}
-      <button style={chevron} onClick={() => scroll(1)}>
-        <i className="fas fa-chevron-right" />
+      <button style={chevron} onClick={() => scroll(1)} aria-label="Desplazar categorías a la derecha">
+        <i className="fas fa-chevron-right" aria-hidden="true" />
       </button>
     </div>
   );

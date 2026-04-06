@@ -25,3 +25,7 @@ export * from "./Checkout";
 export * from "./PointsHistory";
 export * from "./Dashboard";
 export * from "./WhatsappConfig";
+export * from "./DeliveryOrders";
+export * from "./DeliveryEarnings";
+export * from "./DeliveryMap";
+export * from "./ConfigPanel";

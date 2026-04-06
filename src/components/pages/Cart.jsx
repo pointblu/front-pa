@@ -26,17 +26,18 @@ function CartItem({
         <small>Cantidad: </small>
         <button
           className="iconio-button"
+          aria-label={quantity <= 1 ? `Eliminar ${name} del carrito` : `Reducir cantidad de ${name}`}
           onClick={quantity <= 1 ? removeFromCart : decrementQuantity}
         >
-          <i className="fas fa-minus" style={{ fontSize: "0.6rem" }} />
+          <i className="fas fa-minus" aria-hidden="true" style={{ fontSize: "0.6rem" }} />
         </button>
 
         <strong>
           <small> {quantity} </small>
         </strong>
 
-        <button className="iconio-button" onClick={addToCart}>
-          <i className="fas fa-plus" style={{ fontSize: "0.6rem" }} />
+        <button className="iconio-button" aria-label={`Aumentar cantidad de ${name}`} onClick={addToCart}>
+          <i className="fas fa-plus" aria-hidden="true" style={{ fontSize: "0.6rem" }} />
         </button>
         <div>
           <strong> $ {(price * quantity).toFixed(2)} </strong>
@@ -100,10 +101,11 @@ export function Cart() {
             data-slide="true"
             className="nav-link flyer"
             data-aos="fade-left"
+            aria-label={`Abrir cesta (${cartCounter} productos)`}
             onClick={scrollToTop}
           >
-            <i className="fas fa-shopping-basket nav-icon" />
-            <span className="badge badge-light navbar-badge">
+            <i className="fas fa-shopping-basket nav-icon" aria-hidden="true" />
+            <span className="badge badge-light navbar-badge" aria-hidden="true">
               {cartCounter}
             </span>
           </button>
@@ -116,6 +118,7 @@ export function Cart() {
           <Tooltip id="tt-cart" />
           <button
             className="iconio-button"
+            aria-label="Confirmar pedido"
             onClick={() => goTo("/checkout")}
             disabled={!emptyCart?.length}
             data-tooltip-id="tt-cart"
@@ -124,11 +127,12 @@ export function Cart() {
             data-tooltip-float={false}
             data-tooltip-class-name="custom-tooltip"
           >
-            <i className="fas fa-check nav-icon" />
+            <i className="fas fa-check nav-icon" aria-hidden="true" />
           </button>
           <div>
             <button
               className="iconio-button"
+              aria-label="Vaciar cesta"
               onClick={() => {
                 clearCart();
                 clearCanje();
@@ -140,7 +144,7 @@ export function Cart() {
               data-tooltip-float={false}
               data-tooltip-class-name="custom-tooltip"
             >
-              <i className="fas fa-eraser nav-icon" />
+              <i className="fas fa-eraser nav-icon" aria-hidden="true" />
             </button>
           </div>
         </div>

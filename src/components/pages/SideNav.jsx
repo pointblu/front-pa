@@ -9,6 +9,8 @@ export const SideNav = () => {
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+  const isDelivery =
+    auth.isAuthenticated && userObject && userObject.role === "DELIVERY";
   const goTo = useNavigate();
   function handleNoAuth(e) {
     e.preventDefault();
@@ -148,6 +150,45 @@ export const SideNav = () => {
                   >
                     <i className="fas fa-university nav-icon" />
                     <p>CUENTAS</p>
+                  </NavLink>
+                </li>
+              )}
+
+              {isAdmin && (
+                <li className="nav-item text-left">
+                  <NavLink
+                    to="/configuracion"
+                    className="nav-link"
+                    style={{ backgroundColor: "#1565C0" }}
+                  >
+                    <i className="fas fa-cog nav-icon" />
+                    <p>CONFIGURACIÓN</p>
+                  </NavLink>
+                </li>
+              )}
+
+              {isDelivery && (
+                <li className="nav-item text-left">
+                  <NavLink
+                    to="/domicilios"
+                    className="nav-link"
+                    style={{ backgroundColor: "#00695C" }}
+                  >
+                    <i className="fas fa-motorcycle nav-icon" />
+                    <p>MIS PEDIDOS</p>
+                  </NavLink>
+                </li>
+              )}
+
+              {isDelivery && (
+                <li className="nav-item text-left">
+                  <NavLink
+                    to="/domicilios/ganancias"
+                    className="nav-link"
+                    style={{ backgroundColor: "#2E7D32" }}
+                  >
+                    <i className="fas fa-dollar-sign nav-icon" />
+                    <p>MIS GANANCIAS</p>
                   </NavLink>
                 </li>
               )}
