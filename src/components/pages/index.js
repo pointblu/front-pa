@@ -29,3 +29,4 @@ export * from "./DeliveryOrders";
 export * from "./DeliveryEarnings";
 export * from "./DeliveryMap";
 export * from "./ConfigPanel";
+export * from "./DeliveryPayouts";

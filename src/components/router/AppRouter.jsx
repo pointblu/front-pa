@@ -30,6 +30,7 @@ import {
   DeliveryOrders,
   DeliveryEarnings,
   DeliveryMap,
+  DeliveryPayouts,
   ConfigPanel,
 } from "../pages";
 import { Route, Routes } from "react-router-dom";
@@ -76,6 +77,7 @@ export const AppRouter = () => {
               <Route path="/domicilios" element={<DeliveryOrders />} />
               <Route path="/domicilios/mapa/:purchaseId" element={<DeliveryMap />} />
               <Route path="/domicilios/ganancias" element={<DeliveryEarnings />} />
+              <Route path="/domicilios/pagos" element={<DeliveryPayouts />} />
               <Route
                 path="/reposicion/:productId/:pCost/:pStock/:pName"
                 element={<Replenish />}

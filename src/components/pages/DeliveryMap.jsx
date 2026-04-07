@@ -60,15 +60,21 @@ export function DeliveryMap() {
     : [10.9171, -74.7830]; // Soledad, Atlántico
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.75rem" }}>
-        <button className="ican-button" onClick={() => navigate(-1)} title="Volver">
-          <i className="fas fa-arrow-left nav-icon" />
-        </button>
-        <h5 style={{ margin: 0 }}>
-          Mapa — {order?.buyer?.name ?? "Cargando..."}
-        </h5>
+    <div className="content-wrapper">
+      <div className="content-header">
+        <div className="container-fluid">
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <button className="ican-button" onClick={() => navigate(-1)} title="Volver">
+              <i className="fas fa-arrow-left nav-icon" />
+            </button>
+            <h1 className="m-0 App-header focus-in-contract alphi-2">
+              {order?.buyer?.name ?? "Cargando..."}
+            </h1>
+          </div>
+        </div>
       </div>
+      <section className="content">
+      <div className="container-fluid">
 
       {order && (
         <div style={{ marginBottom: "0.75rem", fontSize: "0.875rem" }}>
@@ -114,6 +120,8 @@ export function DeliveryMap() {
           El cliente no tiene coordenadas registradas. Se muestra la ciudad por defecto.
         </p>
       )}
+      </div>
+      </section>
     </div>
   );
 }

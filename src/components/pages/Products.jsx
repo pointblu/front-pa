@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { getCloudinaryUrl, getCloudinarySrcSet } from "../../utils/cloudinaryUrl";
+import { getCloudinaryUrl } from "../../utils/cloudinaryUrl";
 import { useCart } from "../../hooks/useCarts";
 import { useAuth } from "../../auth/AuthProvider";
 import { Link } from "react-router-dom";
@@ -145,9 +145,7 @@ export function Products({ products, from }) {
             <i className="fas fa-times" aria-hidden="true" />
           </button>
           <img
-            src={getCloudinaryUrl(quickView.image, { width: 800 })}
-            srcSet={getCloudinarySrcSet(quickView.image, [400, 800])}
-            sizes="(max-width: 480px) 400px, 800px"
+            src={getCloudinaryUrl(quickView.image)}
             alt={quickView.name}
             loading="lazy"
             style={{ width: "100%", borderRadius: "10px", maxHeight: "200px", objectFit: "contain", background: "#f5f5f5" }}
@@ -178,9 +176,7 @@ export function Products({ products, from }) {
             {product.stock <= 0 && <div className="agotado">AGOTADO</div>}
             <div className="price">${product.price}</div>
             <img
-              src={getCloudinaryUrl(product.image, { width: 400 })}
-              srcSet={getCloudinarySrcSet(product.image, [400, 800])}
-              sizes="(max-width: 600px) 400px, 800px"
+              src={getCloudinaryUrl(product.image)}
               alt={product.name}
               loading="lazy"
               onClick={() => setQuickView(product)}

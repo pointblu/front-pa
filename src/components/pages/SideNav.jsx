@@ -93,28 +93,32 @@ export const SideNav = () => {
                 </li>
               )}
 
-              <li className="nav-item text-left ">
-                <NavLink
-                  to="/catalogo"
-                  className="nav-link"
-                  style={{ backgroundColor: "#D4A017" }}
-                >
-                  <i className="fas fa-boxes nav-icon" />
-                  <p>CATÁLOGO</p>
-                </NavLink>
-              </li>
+              {!isDelivery && (
+                <li className="nav-item text-left ">
+                  <NavLink
+                    to="/catalogo"
+                    className="nav-link"
+                    style={{ backgroundColor: "#D4A017" }}
+                  >
+                    <i className="fas fa-boxes nav-icon" />
+                    <p>CATÁLOGO</p>
+                  </NavLink>
+                </li>
+              )}
 
-              <li className="nav-item text-left">
-                <NavLink
-                  to="/pedidos"
-                  className="nav-link"
-                  style={{ backgroundColor: "#C3A873" }}
-                  onClick={!auth.isAuthenticated && handleNoAuth}
-                >
-                  <i className="fas fa-shopping-basket nav-icon" />
-                  <p>PEDIDOS</p>
-                </NavLink>
-              </li>
+              {!isDelivery && (
+                <li className="nav-item text-left">
+                  <NavLink
+                    to="/pedidos"
+                    className="nav-link"
+                    style={{ backgroundColor: "#C3A873" }}
+                    onClick={!auth.isAuthenticated && handleNoAuth}
+                  >
+                    <i className="fas fa-shopping-basket nav-icon" />
+                    <p>PEDIDOS</p>
+                  </NavLink>
+                </li>
+              )}
               {isAdmin && (
                 <li className="nav-item text-left">
                   <NavLink
@@ -150,6 +154,19 @@ export const SideNav = () => {
                   >
                     <i className="fas fa-university nav-icon" />
                     <p>CUENTAS</p>
+                  </NavLink>
+                </li>
+              )}
+
+              {isAdmin && (
+                <li className="nav-item text-left">
+                  <NavLink
+                    to="/domicilios/pagos"
+                    className="nav-link"
+                    style={{ backgroundColor: "#00695C" }}
+                  >
+                    <i className="fas fa-money-bill-wave nav-icon" />
+                    <p>PAGOS DOMICILIO</p>
                   </NavLink>
                 </li>
               )}

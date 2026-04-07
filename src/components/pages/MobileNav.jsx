@@ -10,6 +10,8 @@ export const MobileNav = () => {
   const userObject = JSON.parse(auth.getUser() || "{}");
   const isAdmin =
     auth.isAuthenticated && userObject && userObject.role === "ADMIN";
+  const isDelivery =
+    auth.isAuthenticated && userObject && userObject.role === "DELIVERY";
   const goTo = useNavigate();
   function handleNoAuth(e) {
     e.preventDefault();
@@ -133,23 +135,65 @@ export const MobileNav = () => {
                 </li>
               )}
 
-              <li
-                className="nav-item mx-2"
-                style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
-                data-tooltip-id="tt-menu-m"
-                data-tooltip-content="Catalogo"
-                data-tooltip-place="top"
-                data-tooltip-float={false}
-                data-tooltip-class-name="custom-tooltip"
-              >
-                <NavLink
-                  to="/catalogo"
-                  className="nav-link"
-                  style={{ backgroundColor: "#D4A017" }}
+              {!isDelivery && (
+                <li
+                  className="nav-item mx-2"
+                  style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Catalogo"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
                 >
-                  <i className="fas fa-boxes nav-icon" />
-                </NavLink>
-              </li>
+                  <NavLink
+                    to="/catalogo"
+                    className="nav-link"
+                    style={{ backgroundColor: "#D4A017" }}
+                  >
+                    <i className="fas fa-boxes nav-icon" />
+                  </NavLink>
+                </li>
+              )}
+
+              {isDelivery && (
+                <li
+                  className="nav-item mx-2"
+                  style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Mis pedidos"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
+                >
+                  <NavLink
+                    to="/domicilios"
+                    className="nav-link"
+                    style={{ backgroundColor: "#00695C" }}
+                  >
+                    <i className="fas fa-motorcycle nav-icon" />
+                  </NavLink>
+                </li>
+              )}
+
+              {isDelivery && (
+                <li
+                  className="nav-item mx-2"
+                  style={{ minWidth: "45px", position: "relative", zIndex: 9999 }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Mis ganancias"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
+                >
+                  <NavLink
+                    to="/domicilios/ganancias"
+                    className="nav-link"
+                    style={{ backgroundColor: "#2E7D32" }}
+                  >
+                    <i className="fas fa-dollar-sign nav-icon" />
+                  </NavLink>
+                </li>
+              )}
 
               {isAdmin && (
                 <li
@@ -218,6 +262,30 @@ export const MobileNav = () => {
                     style={{ backgroundColor: "#2E1A00" }}
                   >
                     <i className="fas fa-university nav-icon" />
+                  </NavLink>
+                </li>
+              )}
+
+              {isAdmin && (
+                <li
+                  className="nav-item mx-2"
+                  style={{
+                    minWidth: "45px",
+                    position: "relative",
+                    zIndex: 9999,
+                  }}
+                  data-tooltip-id="tt-menu-m"
+                  data-tooltip-content="Pagos domicilio"
+                  data-tooltip-place="top"
+                  data-tooltip-float={false}
+                  data-tooltip-class-name="custom-tooltip"
+                >
+                  <NavLink
+                    to="/domicilios/pagos"
+                    className="nav-link"
+                    style={{ backgroundColor: "#00695C" }}
+                  >
+                    <i className="fas fa-money-bill-wave nav-icon" />
                   </NavLink>
                 </li>
               )}

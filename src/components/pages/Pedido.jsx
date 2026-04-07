@@ -167,12 +167,13 @@ const ExpandedComponent = (props) => {
   const { printOrder } = usePrinter();
   const [deliveryUsers, setDeliveryUsers] = useState([]);
   const [selectedDelivery, setSelectedDelivery] = useState(data.deliveryPersonId ?? "");
+  const [earning, setEarning] = useState("");
   const [assigning, setAssigning] = useState(false);
 
   useEffect(() => {
     if (isAdmin) {
       api.get("/Purchases/delivery/users")
-        .then(({ data: users }) => setDeliveryUsers(users))
+        .then(({ data: res }) => setDeliveryUsers(res.data ?? res))
         .catch(() => {});
     }
   }, [isAdmin]);
@@ -183,6 +184,7 @@ const ExpandedComponent = (props) => {
     try {
       await api.post(`/Purchases/${data.id}/assign-delivery`, {
         deliveryPersonId: selectedDelivery,
+        earning: parseFloat(earning) || 0,
       });
       toast.success("Domiciliario asignado");
       if (onRefresh) onRefresh();
@@ -239,6 +241,15 @@ const ExpandedComponent = (props) => {
                     <option key={u.id} value={u.id}>{u.name}</option>
                   ))}
                 </select>
+                <input
+                  type="number"
+                  className="form-control form-control-sm custom-input-form"
+                  style={{ maxWidth: "100px" }}
+                  placeholder="Ganancia"
+                  value={earning}
+                  onChange={(e) => setEarning(e.target.value)}
+                  min={0}
+                />
                 <button
                   className="iconise-button"
                   onClick={handleAssignDelivery}

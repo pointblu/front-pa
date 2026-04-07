@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { useAuth } from "../../auth/AuthProvider";
 import { Toaster, toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 
 const STATUS_MAP = {
@@ -71,16 +71,18 @@ const CustomNoData = () => (
 
 export function DeliveryOrders() {
   const auth = useAuth();
+  const navigate = useNavigate();
   const userObject = JSON.parse(auth.getUser() || "{}");
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    let cancelled = false;
+    if (userObject.role !== "DELIVERY") { navigate("/"); return; }
 
+    let cancelled = false;
     const fetchOrders = async () => {
       try {
         const { data } = await api.get("/Purchases/delivery/mine");
-        if (!cancelled) setOrders(Array.isArray(data) ? data : []);
+        if (!cancelled) setOrders(Array.isArray(data.data ?? data) ? (data.data ?? data) : []);
       } catch {
         toast.error("Error al cargar pedidos");
       }
@@ -89,24 +91,32 @@ export function DeliveryOrders() {
     fetchOrders();
     const id = setInterval(fetchOrders, 30000);
     return () => { cancelled = true; clearInterval(id); };
-  }, []);
+  }, []); // eslint-disable-line
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div className="content-wrapper">
       <Toaster position="top-center" richColors />
-      <h4>Mis pedidos — {userObject.name}</h4>
-      <DataTable
-        columns={columns}
-        data={orders}
-        pagination
-        highlightOnHover
-        noDataComponent={<CustomNoData />}
-        customStyles={{ headCells: { style: { fontWeight: "bold", fontSize: "12px" } } }}
-        paginationComponentOptions={{
-          rowsPerPageText: "Registros por página:",
-          rangeSeparatorText: "de",
-        }}
-      />
+      <div className="content-header">
+        <div className="container-fluid">
+          <h1 className="m-0 App-header focus-in-contract alphi-2">Mis pedidos</h1>
+        </div>
+      </div>
+      <section className="content">
+        <div className="container-fluid">
+          <DataTable
+            columns={columns}
+            data={orders}
+            pagination
+            highlightOnHover
+            noDataComponent={<CustomNoData />}
+            customStyles={{ headCells: { style: { fontWeight: "bold", fontSize: "12px" } } }}
+            paginationComponentOptions={{
+              rowsPerPageText: "Registros por página:",
+              rangeSeparatorText: "de",
+            }}
+          />
+        </div>
+      </section>
     </div>
   );
 }

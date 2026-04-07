@@ -111,9 +111,16 @@ export function ConfigPanel() {
 
   return (
     <div className="content-wrapper">
-    <div style={{ padding: "1.5rem", maxWidth: "620px" }}>
       <Toaster position="top-center" richColors />
-      <h4>Configuración del negocio</h4>
+      <div className="content-header">
+        <div className="container-fluid">
+          <h1 className="m-0 App-header focus-in-contract alphi-1">Configuración</h1>
+        </div>
+      </div>
+      <section className="content">
+      <div className="container-fluid">
+    <div style={{ maxWidth: "620px" }}>
+
 
       {/* Delivery cost */}
       <div className="card" style={{ padding: "1.25rem", marginBottom: "1rem" }}>
@@ -193,6 +200,8 @@ export function ConfigPanel() {
         </MapContainer>
       </div>
     </div>
+      </div>
+      </section>
     </div>
   );
 }

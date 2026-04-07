@@ -3,7 +3,7 @@ import "./Home.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useAuth } from "../../auth/AuthProvider";
-import { getCloudinaryUrl, getCloudinarySrcSet } from "../../utils/cloudinaryUrl";
+import { getCloudinaryUrl } from "../../utils/cloudinaryUrl";
 import api from "../../services/api";
 import Carousel from "nuka-carousel";
 import { Link, useNavigate } from "react-router-dom";
@@ -138,9 +138,7 @@ export const Home = () => {
                   <i className="fas fa-eye-slash nav-icon no-visible" />
                 )}
                 <img
-                  src={getCloudinaryUrl(advertisement.urlImage, { width: 1200 })}
-                  srcSet={getCloudinarySrcSet(advertisement.urlImage, [600, 1200])}
-                  sizes="100vw"
+                  src={getCloudinaryUrl(advertisement.urlImage)}
                   alt={advertisement.title || "Anuncio"}
                   loading="lazy"
                 />
