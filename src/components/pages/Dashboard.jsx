@@ -83,12 +83,18 @@ export const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchStats = () => {
+    setLoading(true);
+    setStats(null);
     api
       .get("/Stats/dashboard")
       .then(({ data }) => setStats(data.data))
       .catch(() => {})
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchStats();
   }, []);
 
   if (loading)
@@ -101,7 +107,25 @@ export const Dashboard = () => {
   if (!stats)
     return (
       <div className="content-wrapper d-flex align-items-center justify-content-center" style={{ minHeight: "60vh" }}>
-        <p style={{ color: "#C0392B" }}>No se pudieron cargar las estadísticas.</p>
+        <div style={{ textAlign: "center" }}>
+          <p style={{ color: "#C0392B", marginBottom: "12px" }}>
+            No se pudieron cargar las estadísticas.
+          </p>
+          <button
+            onClick={fetchStats}
+            style={{
+              backgroundColor: "#D4A017",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              padding: "8px 20px",
+              cursor: "pointer",
+              fontWeight: 600,
+            }}
+          >
+            Reintentar
+          </button>
+        </div>
       </div>
     );
 
